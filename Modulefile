@@ -1,0 +1,12 @@
+name 'ericsson-qas'
+version '0.1.0'
+source 'UNKNOWN'
+author 'Johan Wennerberg X <johan.x.wennerberg@ericsson.com>'
+license 'UNKNOWN'
+summary 'Manage Quest Authentication Services'
+description 'Manage Quest Authentication Services'
+project_page 'UNKNOWN'
+
+dependency 'ericsson/nisclient', '>= 0.1.0'
+#dependency 'ericsson/pam', '>= 1.0.0'
+#dependency 'ericsson/nsswitch', '>= 1.0.0'

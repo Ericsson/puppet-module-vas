@@ -1,0 +1,51 @@
+
+[domain_realm]
+ <%= fqdn %> = <%= realm.upcase %>
+
+[libdefaults]
+ default_realm = <%= realm.upcase %>
+ default_tgs_enctypes = arcfour-hmac-md5
+ default_tkt_enctypes = arcfour-hmac-md5
+ default_etypes_des = des-cbc-crc
+ default_etypes = arcfour-hmac-md5
+ forwardable = true
+ renew_lifetime = 604800
+
+ ticket_lifetime = 36000
+ default_keytab_name = /etc/opt/quest/vas/host.keytab
+
+[libvas]
+<% if sitenameoverride != 'UNSET' -%>
+ site-name-override = <%= sitenameoverride %>
+<% end -%>
+ use-server-referrals = true
+ vascache-ipc-timeout = 15
+
+[pam_vas]
+ prompt-vas-ad-pw = Enter Windows password: 
+
+[vasypd]
+ search-base = <%= nismaps_ou %>
+ split-groups = true
+ update-interval = 1800
+ domainname-override = <%= ypdomainname %>
+<% if !vas_conf_update_process.empty? -%>
+ update-process = <%= vas_conf_update_process %>
+<% end -%>
+
+[vasd]
+ upm-search-path = <%= users_ou %>
+<% if virtual == "zone" -%>
+ timesync-interval = 0
+<% end %>
+ workstation-mode = false
+ auto-ticket-renew-interval = 32400
+ lazy-cache-update-interval = 10
+<% if !vas_conf_upm_computerou_attr.empty?-%>
+ upm-computerou-attr = <%= vas_conf_upm_computerou_attr %>
+<% end -%>
+
+[nss_vas]
+ group-update-mode = none
+ root-update-mode = none
+
