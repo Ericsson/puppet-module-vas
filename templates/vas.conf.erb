@@ -32,6 +32,9 @@
 <% if !vas_conf_update_process.empty? -%>
  update-process = <%= vas_conf_update_process %>
 <% end -%>
+<% if vas_conf_client_addrs != 'UNSET' -%>
+ client-addrs = <%= vas_conf_client_addrs %>
+<% end -%>
 
 [vasd]
  upm-search-path = <%= users_ou %>
