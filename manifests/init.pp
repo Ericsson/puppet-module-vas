@@ -14,6 +14,7 @@ class qas(
   $ensure                       = 'present',
   $package_version              = 'UNSET',
   $users_allow_entries          = ['UNSET'],
+  $user_override_entries        = ['UNSET'],
   $username                     = 'username',
   $keytab_source                = 'UNSET',
   $keytab_target                = '/etc/vasinst.key',
@@ -72,7 +73,17 @@ class qas(
     content => template('qas/users.allow.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
   }
-  
+
+  file { '/etc/opt/quest/vas/user-override':
+    ensure  => present,
+    owner   => root,
+    group   => root,
+    mode    => 0644,
+    content => template('qas/user-override.erb'),
+    require => Package['vasclnt','vasyp','vasgp'],
+    before  => Service['vasd','vasypd'],
+  }
+
   file { $keytab_target:
     ensure => present,
     owner  => root,
@@ -81,7 +92,7 @@ class qas(
     source => "puppet:///${keytab_source}",
   }
   
-  service { ['vasd', 'vasypd']:
+  service { ['vasd','vasypd']:
     ensure    => running,
     enable    => true,
     subscribe => Exec['vasinst'],
