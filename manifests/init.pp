@@ -24,6 +24,7 @@ class qas(
   $sitenameoverride             = 'UNSET',
   $vas_conf_update_process      = '/opt/quest/libexec/vas/mapupdate_2307',
   $vas_conf_upm_computerou_attr = 'department',
+  $vas_conf_client_addrs        = 'UNSET',
   
   $solaris_vasclntpath          = 'UNSET',
   $solaris_vasyppath            = 'UNSET',
