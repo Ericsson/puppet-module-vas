@@ -1,4 +1,4 @@
-puppet-module-qas
+puppet-module-vas
 =================
 
-Puppet module to manage Quest Authentication Services
+Puppet module to manage VAS - Quest Authentication Services

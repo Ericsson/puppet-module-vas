@@ -1,6 +1,6 @@
-# == Class: qas::solaris
+# == Class: vas::solaris
 #
-class qas::solaris inherits qas {
+class vas::solaris inherits vas {
 
   $deps = ['rpc/rstat', 'rpc/keyserv']
 
@@ -14,12 +14,14 @@ class qas::solaris inherits qas {
     adminfile    => $solaris_adminpath,
     responsefile => "${solaris_responsepattern}.vasclnt",
   }
+
   package { 'vasyp':
     ensure       => installed,
     source       => $solaris_vasyppath,
     adminfile    => $solaris_adminpath,
     responsefile => "${solaris_responsepattern}.vasyp",
   }
+
   package { 'vasgp':
     ensure       => installed,
     source       => $solaris_vasgppath,
@@ -29,13 +31,13 @@ class qas::solaris inherits qas {
 
   service { $deps:
     ensure    => running,
-    enable    => true, 
+    enable    => true,
     subscribe => Exec['vasinst'],
     require   => Service['vasypd'],
   }
 
-  #No vasgpd service in QAS 4
-  if $::qas_version =~ /^3/ {
+  # No vasgpd service in VAS 4
+  if $::vas_version =~ /^3/ {
     service { 'vasgpd':
       ensure    => running,
       enable    => true,
@@ -49,5 +51,4 @@ class qas::solaris inherits qas {
     refreshonly => true,
     notify      => Service[$deps],
   }
-
 }

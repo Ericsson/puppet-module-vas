@@ -1,16 +1,8 @@
-# == Class: qas
+# == Class: vas
 #
-# Puppet module to manage Quest Authentication Services
+# Puppet module to manage VAS - Quest Authentication Services
 #
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-class qas(
+class vas (
   $ensure                       = 'present',
   $package_version              = 'UNSET',
   $users_allow_entries          = ['UNSET'],
@@ -26,22 +18,21 @@ class qas(
   $vas_conf_update_process      = '/opt/quest/libexec/vas/mapupdate_2307',
   $vas_conf_upm_computerou_attr = 'department',
   $vas_conf_client_addrs        = 'UNSET',
-  
+
   $solaris_vasclntpath          = 'UNSET',
   $solaris_vasyppath            = 'UNSET',
   $solaris_vasgppath            = 'UNSET',
   $solaris_adminpath            = 'UNSET',
   $solaris_responsepattern      = 'UNSET',
-
 ) {
 
   case $::osfamily {
     /Suse|RedHat|Debian/: {
-      include qas::linux
+      include vas::linux
     }
     /Solaris/: {
       fail("Module ${module_name} has not been tested on ${::osfamily}")
-      #include qas::solaris
+      #include vas::solaris
     }
     default: {
       fail("Module ${module_name} not supported on osfamily <${::osfamily}>")
@@ -61,7 +52,7 @@ class qas(
     owner   => root,
     group   => root,
     mode    => 0644,
-    content => template('qas/vas.conf.erb'),
+    content => template('vas/vas.conf.erb'),
     require => Package['vasgp'],
   }
 
@@ -70,7 +61,7 @@ class qas(
     owner   => root,
     group   => root,
     mode    => 0644,
-    content => template('qas/users.allow.erb'),
+    content => template('vas/users.allow.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
@@ -79,7 +70,7 @@ class qas(
     owner   => root,
     group   => root,
     mode    => 0644,
-    content => template('qas/user-override.erb'),
+    content => template('vas/user-override.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
     before  => Service['vasd','vasypd'],
   }
@@ -91,19 +82,19 @@ class qas(
     mode   => 0400,
     source => "puppet:///${keytab_source}",
   }
-  
+
   service { ['vasd','vasypd']:
     ensure    => running,
     enable    => true,
     subscribe => Exec['vasinst'],
     notify    => Service[$nisclient::service_name],
   }
-  
+
   $s_opts = $sitenameoverride ? {
     'UNSET' => '',
     default => "-s ${sitenameoverride}",
   }
-  
+
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':

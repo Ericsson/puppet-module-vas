@@ -1,6 +1,6 @@
-# qas_version
+# vas_version
 
-Facter.add('qas_version') do
+Facter.add('vas_version') do
   setcode do
     test_installed = 'test -f /opt/quest/bin/vastool; echo $?'
     if Facter::Util::Resolution.exec(test_installed) == '0'
@@ -11,7 +11,7 @@ Facter.add('qas_version') do
   end
 end
 
-Facter.add('qasmajversion') do
+Facter.add('vasmajversion') do
   setcode do
     test_installed = 'test -f /opt/quest/bin/vastool; echo $?'
     if Facter::Util::Resolution.exec(test_installed) == '0'
