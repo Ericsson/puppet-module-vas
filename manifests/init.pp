@@ -36,10 +36,10 @@ class qas(
 ) {
 
   case $::osfamily {
-    /suse|redhat|debian/: {
+    /Suse|RedHat|Debian/: {
       include qas::linux
     }
-    /solaris/: {
+    /Solaris/: {
       fail("Module ${module_name} has not been tested on ${::osfamily}")
       #include qas::solaris
     }
