@@ -1,6 +1,6 @@
-# qas_domain
+# vas_domain
 
-Facter.add("qas_domain") do
+Facter.add("vas_domain") do
   setcode do
     test_installed = "test -f /opt/quest/bin/vastool; echo $?"
     if Facter::Util::Resolution.exec(test_installed) == '0'
