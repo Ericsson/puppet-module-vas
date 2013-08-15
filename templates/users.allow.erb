@@ -1,0 +1,9 @@
+#
+# This file is maintained by puppet. Manual changes will be overwritten.
+#
+
+<% users_allow_entries.each do |allowentry| -%>
+<% if allowentry != 'UNSET' -%>
+  <%= allowentry %>
+<% end -%>
+<% end -%>

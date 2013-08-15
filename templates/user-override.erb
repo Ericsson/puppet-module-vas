@@ -1,0 +1,9 @@
+#
+# This file is maintained by puppet. Manual changes will be overwritten.
+#
+
+<% user_override_entries.each do |overrideentry| -%>
+<% if overrideentry != 'UNSET' -%>
+  <%= overrideentry %>
+<% end -%>
+<% end -%>
