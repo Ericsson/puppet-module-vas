@@ -8,26 +8,11 @@ class vas::linux inherits vas {
     }
 
     'Debian','Suse','RedHat': {
-      $package_ensure = $vas::package_version ? {
-        'UNSET' => installed,
-        default => $vas::package_version,
-      }
-
       $vasver = regsubst($vas::package_version, '-', '.')
       if ($::vas_version and $vasver > $::vas_version and $vas::package_version != 'UNSET') {
         $upgrade = true
       } else {
         $upgrade = false
-      }
-
-      package { ['vasclnt', 'vasyp', 'vasgp'] :
-        ensure => $package_ensure,
-      }
-
-      # GH: wtf?
-      exec { 'deps' :
-        command     => '/bin/true',
-        refreshonly => true,
       }
 
       # No vasgpd service in VAS 4
