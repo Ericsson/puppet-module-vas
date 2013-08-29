@@ -1,0 +1,11 @@
+fixtures:
+  repositories:
+    "pam": "git://github.com/ghoneycutt/puppet-module-pam.git"
+    "nsswitch": "git://github.com/ghoneycutt/puppet-module-nsswitch.git"
+    "nisclient": "git://github.com/Ericsson/puppet-module-nisclient.git"
+    "rpcbind": "git://github.com/ghoneycutt/puppet-module-rpcbind.git"
+    "stdlib":
+      repo: "git://github.com/puppetlabs/puppetlabs-stdlib.git"
+      ref: "3.2.0"
+  symlinks:
+    "vas": "#{source_dir}"
