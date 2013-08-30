@@ -1,6 +1,7 @@
-
+# This file is being maintained by Puppet.
+# DO NOT EDIT
 [domain_realm]
- <%= fqdn %> = <%= realm.upcase %>
+ <%= @fqdn %> = <%= realm.upcase %>
 
 [libdefaults]
  default_realm = <%= realm.upcase %>
@@ -22,13 +23,13 @@
  vascache-ipc-timeout = 15
 
 [pam_vas]
- prompt-vas-ad-pw = Enter Windows password: 
+ prompt-vas-ad-pw = "Enter Windows password: "
 
 [vasypd]
  search-base = <%= nismaps_ou %>
  split-groups = true
  update-interval = 1800
- domainname-override = <%= nisdomainname %>
+ domainname-override = <%= my_nisdomainname %>
 <% if !vas_conf_update_process.empty? -%>
  update-process = <%= vas_conf_update_process %>
 <% end -%>
@@ -38,9 +39,9 @@
 
 [vasd]
  upm-search-path = <%= users_ou %>
-<% if virtual == "zone" -%>
+<% if @virtual == "zone" -%>
  timesync-interval = 0
-<% end %>
+<% end -%>
  workstation-mode = false
  auto-ticket-renew-interval = 32400
  lazy-cache-update-interval = 10
@@ -51,4 +52,3 @@
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
-

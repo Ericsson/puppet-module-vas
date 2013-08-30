@@ -3,107 +3,162 @@
 # Puppet module to manage VAS - Quest Authentication Services
 #
 class vas (
-  $ensure                       = 'present',
-  $package_version              = 'UNSET',
+  $package_version              = undef,
   $users_allow_entries          = ['UNSET'],
   $user_override_entries        = ['UNSET'],
   $username                     = 'username',
-  $keytab_source                = 'UNSET',
-  $keytab_target                = '/etc/vasinst.key',
-  $computers_ou                 = 'ou=computers,ou=example,ou=com',
-  $users_ou                     = 'ou=users,ou=example,ou=com',
-  $nismaps_ou                   = 'ou=nismaps,ou=example,ou=com',
+  $keytab_path                  = '/etc/vasinst.key',
+  $keytab_owner                 = 'root',
+  $keytab_group                 = 'root',
+  $keytab_mode                  = '0400',
+  $computers_ou                 = 'ou=computers,dc=example,dc=com',
+  $users_ou                     = 'ou=users,dc=example,dc=com',
+  $nismaps_ou                   = 'ou=nismaps,dc=example,dc=com',
+  $nisdomainname                = undef,
   $realm                        = 'realm.example.com',
   $sitenameoverride             = 'UNSET',
   $vas_conf_update_process      = '/opt/quest/libexec/vas/mapupdate_2307',
   $vas_conf_upm_computerou_attr = 'department',
   $vas_conf_client_addrs        = 'UNSET',
-
+  $vas_config_path              = '/etc/opt/quest/vas/vas.conf',
+  $vas_config_owner             = 'root',
+  $vas_config_group             = 'root',
+  $vas_config_mode              = '0644',
+  $vas_user_override_path       = '/etc/opt/quest/vas/user-override',
+  $vas_user_override_owner      = 'root',
+  $vas_user_override_group      = 'root',
+  $vas_user_override_mode       = '0644',
+  $vas_users_allow_path         = '/etc/opt/quest/vas/users.allow',
+  $vas_users_allow_owner        = 'root',
+  $vas_users_allow_group        = 'root',
+  $vas_users_allow_mode         = '0644',
+  $vasjoin_logfile              = '/var/tmp/vasjoin.log',
+  $vaskeytab_package_name       = 'vaskeytab',
   $solaris_vasclntpath          = 'UNSET',
   $solaris_vasyppath            = 'UNSET',
   $solaris_vasgppath            = 'UNSET',
+  $solaris_vaskeytabpath        = 'UNSET',
   $solaris_adminpath            = 'UNSET',
   $solaris_responsepattern      = 'UNSET',
 ) {
 
-  case $::osfamily {
-    /Suse|RedHat|Debian/: {
+  case $::kernel {
+    'Linux': {
       include vas::linux
     }
-    /Solaris/: {
-      fail("Module ${module_name} has not been tested on ${::osfamily}")
-      #include vas::solaris
+    'SunOS': {
+      include vas::solaris
     }
     default: {
-      fail("Module ${module_name} not supported on osfamily <${::osfamily}>")
+      fail("Vas module support Linux and SunOS kernels. Detected kernel is <${::kernel}>")
     }
   }
 
   include nisclient
-  #include nsswitch
-  #include pam
+  include nsswitch
+  include pam
 
-  $nisdomainname = $nisclient::domainname
-
-  Package['vasclnt'] -> Package['vasyp'] -> Package['vasgp'] -> Exec['vasinst']
-
-  file { '/etc/opt/quest/vas/vas.conf':
-    ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => 0644,
-    content => template('vas/vas.conf.erb'),
-    require => Package['vasgp'],
+  # Use nisdomainname is supplied. If not, use nisclient::domainname if it
+  # exists, last resort fall back to domain fact
+  if $nisdomainname == undef {
+    if $nisclient::domainname != undef {
+      $my_nisdomainname = $nisclient::domainname
+    } else {
+      $my_nisdomainname = $::domain
+    }
+  } else {
+    $my_nisdomainname = $nisdomainname
   }
 
-  file { '/etc/opt/quest/vas/users.allow':
+  if $package_version == undef {
+    $package_ensure = 'installed'
+  } else {
+    $package_ensure = $package_version
+  }
+
+  package { 'vasclnt':
+    ensure => $package_ensure,
+  }
+
+  package { 'vasyp':
+    ensure => $package_ensure,
+  }
+
+  package { 'vasgp':
+    ensure => $package_ensure,
+  }
+
+  package { 'vaskeytab':
+    ensure => 'installed',
+    name   => $vaskeytab_package_name,
+  }
+
+  file { 'vas_config':
     ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => 0644,
+    path    => $vas_config_path,
+    owner   => $vas_config_owner,
+    group   => $vas_config_group,
+    mode    => $vas_config_mode,
+    content => template('vas/vas.conf.erb'),
+    require => Package['vasclnt','vasyp','vasgp'],
+  }
+
+  file { 'vas_users_allow':
+    ensure  => present,
+    path    => $vas_users_allow_path,
+    owner   => $vas_users_allow_owner,
+    group   => $vas_users_allow_group,
+    mode    => $vas_users_allow_mode,
     content => template('vas/users.allow.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
-  file { '/etc/opt/quest/vas/user-override':
+  file { 'vas_user_override':
     ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => 0644,
+    path    => $vas_user_override_path,
+    owner   => $vas_user_override_owner,
+    group   => $vas_user_override_group,
+    mode    => $vas_user_override_mode,
     content => template('vas/user-override.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
     before  => Service['vasd','vasypd'],
   }
 
-  file { $keytab_target:
-    ensure => present,
-    owner  => root,
-    group  => root,
-    mode   => 0400,
-    source => "puppet:///${keytab_source}",
+  file { 'keytab':
+    ensure  => 'present',
+    name    => $keytab_path,
+    owner   => $keytab_owner,
+    group   => $keytab_group,
+    mode    => $keytab_mode,
+    require => Package['vaskeytab'],
   }
 
-  service { ['vasd','vasypd']:
-    ensure    => running,
-    enable    => true,
-    subscribe => Exec['vasinst'],
-    notify    => Service[$nisclient::service_name],
+  service { 'vasd':
+    ensure  => 'running',
+    enable  => true,
+    require => Exec['vasinst'],
   }
 
-  $s_opts = $sitenameoverride ? {
-    'UNSET' => '',
-    default => "-s ${sitenameoverride}",
+  service { 'vasypd':
+    ensure  => 'running',
+    enable  => true,
+    require => Service['vasd'],
+    before  => Class['nisclient'],
+  }
+
+  if $sitenameoverride == 'UNSET' {
+    $s_opts = ''
+  } else {
+    $s_opts = "-s ${sitenameoverride}"
   }
 
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    path    => '/bin:/usr/bin',
-    command => "/opt/quest/bin/vastool -u ${username} -k ${keytab_target} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${::fqdn} ${s_opts} ${realm} >/var/tmp/vasjoin.log 2>&1 && touch ${once_file}",
-    timeout => 1200,
+    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${::fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    path    => '/bin:/usr/bin:/opt/quest/bin',
+    timeout => 1800,
     creates => $once_file,
-    require => File[$keytab_target],
-    notify  => Exec['deps'],
+    require => Package['vasclnt','vasyp','vasgp','vaskeytab'],
   }
-
 }
