@@ -109,6 +109,19 @@ Name of AD site to join. The AD site is determined automatically in AD by defaul
 
 - *Default*: 'UNSET'
 
+vas_conf_client_addrs
+---------------------
+client-addrs option in vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_preload_nested_memberships
+-----------------------------------
+preload-nested-membership option in vas.conf. Set this to 'false' to speed up
+flush (and join) operations in VAS version 4.0.3-206 and later.
+
+- *Default*: 'UNSET' (keep default value from VAS)
+
 vas_conf_update_process
 -----------------------
 update-process option in vas.conf. See VAS.CONF(5) for more info.
@@ -120,12 +133,6 @@ vas_conf_upm_computerou_attr
 upm-computerou-attr option in vas.conf. Changed to 'department' to work in a multi-AD-domain setup. See VAS.CONF(5) for more info.
 
 - *Default*: 'department'
-
-vas_conf_client_addrs
----------------------
-client-addrs option in vas.conf. See VAS.CONF(5) for more info.
-
-- *Default*: 'UNSET'
 
 vas_config_path
 ---------------
