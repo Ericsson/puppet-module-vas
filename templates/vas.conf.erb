@@ -45,6 +45,9 @@
  workstation-mode = false
  auto-ticket-renew-interval = 32400
  lazy-cache-update-interval = 10
+<% if vas_conf_preload_nested_memberships != 'UNSET' -%>
+ preload-nested-memberships = <%= vas_conf_preload_nested_memberships %>
+<% end -%>
 <% if !vas_conf_upm_computerou_attr.empty?-%>
  upm-computerou-attr = <%= vas_conf_upm_computerou_attr %>
 <% end -%>
