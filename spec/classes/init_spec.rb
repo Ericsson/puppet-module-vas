@@ -6,7 +6,7 @@ describe 'vas' do
 
     context 'defaults on osfamily RedHat with lsbmajdistrelease 6' do
       let :facts do
-      { 
+      {
         :kernel            => 'Linux',
         :osfamily          => 'RedHat',
         :lsbmajdistrelease => '6'
@@ -30,7 +30,7 @@ describe 'vas' do
 # pam module does not support Suse yet
 #    context 'defaults on osfamily Suse with lsbmajdistrelease 11' do
 #      let :facts do
-#      { 
+#      {
 #        :kernel            => 'Linux',
 #        :osfamily          => 'Suse',
 #        :lsbmajdistrelease => '11'
@@ -54,7 +54,7 @@ describe 'vas' do
 # pam module does not support Solaris yet
 #    context 'defaults on osfamily Solaris with kernelrelease 5.10' do
 #      let :facts do
-#      { 
+#      {
 #        :kernel        => 'SunOS',
 #        :osfamily      => 'Solaris',
 #        :kernelrelease => '5.10'
@@ -74,10 +74,10 @@ describe 'vas' do
 #        should contain_package('vaskeytab').with({'ensure' => 'installed'})
 #      end
 #    end
-    
+
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
       let :facts do
-        { 
+        {
           :kernel            => 'Linux',
           :osfamily          => 'RedHat',
           :lsbmajdistrelease => '6'
@@ -104,9 +104,9 @@ describe 'vas' do
     end
 
   end
-  
+
   describe 'config' do
-    
+
     context 'defaults on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
@@ -197,7 +197,7 @@ describe 'vas' do
 })
       end
     end
-    
+
     context 'with ou parameters specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
@@ -215,7 +215,7 @@ describe 'vas' do
           :users_ou     => 'ou=site,ou=users,dc=example,dc=com',
         }
       end
-      
+
       it do
         should contain_file('vas_config').with({
           'ensure'  => 'present',
@@ -267,9 +267,9 @@ describe 'vas' do
  group-update-mode = none
  root-update-mode = none
 })
-      end 
+      end
     end
-      
+
     context 'with realm and nisdomainname parameters specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
@@ -286,7 +286,7 @@ describe 'vas' do
           :nisdomainname => 'nis.domain',
         }
       end
-    
+
       it do
         should contain_file('vas_config').with({
           'ensure'  => 'present',
@@ -355,7 +355,7 @@ describe 'vas' do
           :sitenameoverride => 'adsite42',
         }
       end
-    
+
       it do
         should contain_file('vas_config').with({
           'ensure'  => 'present',
@@ -367,7 +367,7 @@ describe 'vas' do
         should contain_file('vas_config').with_content(/ site-name-override = adsite42/)
       end
     end
-    
+
     context 'with vas_conf_client_addrs specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
@@ -383,7 +383,7 @@ describe 'vas' do
           :vas_conf_client_addrs => '10.10.0.0/24 10.50.0.0/24',
         }
       end
-    
+
       it do
         should contain_file('vas_config').with({
           'ensure'  => 'present',
@@ -393,34 +393,6 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_config').with_content(/ client-addrs = 10.10.0.0\/24 10.50.0.0\/24/)
-      end
-    end
-    
-    context 'with vas_conf_update_process specified on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        {
-          :vas_conf_update_process => '/opt/quest/libexec/vas/mapupdate',
-        }
-      end
-    
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(/ update-process = \/opt\/quest\/libexec\/vas\/mapupdate/)
       end
     end
 
@@ -436,10 +408,38 @@ describe 'vas' do
       end
       let :params do
         {
+          :vas_conf_update_process => '/opt/quest/libexec/vas/mapupdate',
+        }
+      end
+
+      it do
+        should contain_file('vas_config').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_config').with_content(/ update-process = \/opt\/quest\/libexec\/vas\/mapupdate/)
+      end
+    end
+
+    context 'with vas_conf_upm_computerou_attr specified on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        {
           :vas_conf_upm_computerou_attr => 'managedBy',
         }
       end
-    
+
       it do
         should contain_file('vas_config').with({
           'ensure'  => 'present',
@@ -449,6 +449,34 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_config').with_content(/ upm-computerou-attr = managedBy/)
+      end
+    end
+
+    context 'with vas_conf_preload_nested_memberships specified on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :vas_conf_preload_nested_memberships => 'false',
+        }
+      end
+
+      it do
+        should contain_file('vas_config').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_config').with_content(/ preload-nested-memberships = false/)
       end
     end
 
@@ -467,7 +495,7 @@ describe 'vas' do
           :users_allow_entries => ['user@realm.com','DOMAIN\adgroup'],
         }
       end
-    
+
       it do
         should contain_file('vas_users_allow').with({
           'ensure'  => 'present',
@@ -500,7 +528,7 @@ DOMAIN\\adgroup
           :user_override_entries => ['jdoe@example.com::::::/bin/sh'],
         }
       end
-    
+
       it do
         should contain_file('vas_user_override').with({
           'ensure'  => 'present',
@@ -533,7 +561,7 @@ jdoe@example.com::::::/bin/sh
         }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels./)
       end
     end
-    
+
     context 'fail on unsupported osfamily' do
       let :facts do
         {
