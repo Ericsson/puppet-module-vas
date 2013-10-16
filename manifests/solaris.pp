@@ -35,11 +35,6 @@ class vas::solaris inherits vas {
         responsefile => "${vas::solaris_responsepattern}.vasgp",
       }
 
-      Package['vaskeytab'] {
-        ensure => 'installed',
-        source => $vas::solaris_vaskeytabpath,
-      }
-
       service { 'vas_deps':
         ensure    => 'running',
         name      => $deps,

@@ -13,18 +13,9 @@ describe 'vas' do
       }
       end
 
-      it do
-        should contain_package('vasclnt').with({'ensure' => 'installed'})
-      end
-      it do
-        should contain_package('vasyp').with({'ensure' => 'installed'})
-      end
-      it do
-        should contain_package('vasgp').with({'ensure' => 'installed'})
-      end
-      it do
-        should contain_package('vaskeytab').with({'ensure' => 'installed'})
-      end
+      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
     end
 
 # pam module does not support Suse yet
@@ -37,18 +28,9 @@ describe 'vas' do
 #      }
 #      end
 #
-#      it do
-#        should contain_package('vasclnt').with({'ensure' => 'installed'})
-#      end
-##      it do
-#        should contain_package('vasyp').with({'ensure' => 'installed'})
-#      end
-#      it do
-#        should contain_package('vasgp').with({'ensure' => 'installed'})
-#      end
-#      it do
-#        should contain_package('vaskeytab').with({'ensure' => 'installed'})
-#      end
+#      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+#      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+#      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
 #    end
 
 # pam module does not support Solaris yet
@@ -61,18 +43,9 @@ describe 'vas' do
 #      }
 #      end
 #
-#      it do
-#        should contain_package('vasclnt').with({'ensure' => 'installed'})
-#      end
-#      it do
-#        should contain_package('vasyp').with({'ensure' => 'installed'})
-#      end
-#      it do
-#        should contain_package('vasgp').with({'ensure' => 'installed'})
-#      end
-#      it do
-#        should contain_package('vaskeytab').with({'ensure' => 'installed'})
-#      end
+#      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+#      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+#      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
 #    end
 
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
@@ -89,18 +62,9 @@ describe 'vas' do
         }
       end
 
-      it do
-        should contain_package('vasclnt').with({'ensure' => '4.0.3-206'})
-      end
-      it do
-        should contain_package('vasyp').with({'ensure' => '4.0.3-206'})
-      end
-      it do
-        should contain_package('vasgp').with({'ensure' => '4.0.3-206'})
-      end
-      it do
-        should contain_package('vaskeytab').with({'ensure' => 'installed'})
-      end
+      it { should contain_package('vasclnt').with({'ensure' => '4.0.3-206'}) }
+      it { should contain_package('vasyp').with({'ensure' => '4.0.3-206'}) }
+      it { should contain_package('vasgp').with({'ensure' => '4.0.3-206'}) }
     end
 
   end
