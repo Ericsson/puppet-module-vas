@@ -34,6 +34,7 @@ vas::users_ou: 'ou=users,dc=example,dc=com'
 vas::nismaps_ou: 'ou=nismaps,dc=example,dc=com'
 vas::realm: 'realm.example.com'
 vas::vas_conf_upm_computerou_attr: 'department'
+</pre>
 
 # Parameters
 
