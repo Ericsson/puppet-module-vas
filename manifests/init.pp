@@ -8,6 +8,7 @@ class vas (
   $user_override_entries               = ['UNSET'],
   $username                            = 'username',
   $keytab_path                         = '/etc/vasinst.key',
+  $keytab_source                       = undef,
   $keytab_owner                        = 'root',
   $keytab_group                        = 'root',
   $keytab_mode                         = '0400',
@@ -34,11 +35,9 @@ class vas (
   $vas_users_allow_group               = 'root',
   $vas_users_allow_mode                = '0644',
   $vasjoin_logfile                     = '/var/tmp/vasjoin.log',
-  $vaskeytab_package_name              = 'vaskeytab',
   $solaris_vasclntpath                 = 'UNSET',
   $solaris_vasyppath                   = 'UNSET',
   $solaris_vasgppath                   = 'UNSET',
-  $solaris_vaskeytabpath               = 'UNSET',
   $solaris_adminpath                   = 'UNSET',
   $solaris_responsepattern             = 'UNSET',
 ) {
@@ -89,11 +88,6 @@ class vas (
     ensure => $package_ensure,
   }
 
-  package { 'vaskeytab':
-    ensure => 'installed',
-    name   => $vaskeytab_package_name,
-  }
-
   file { 'vas_config':
     ensure  => present,
     path    => $vas_config_path,
@@ -128,10 +122,10 @@ class vas (
   file { 'keytab':
     ensure  => 'present',
     name    => $keytab_path,
+    source  => $keytab_source,
     owner   => $keytab_owner,
     group   => $keytab_group,
     mode    => $keytab_mode,
-    require => Package['vaskeytab'],
   }
 
   service { 'vasd':
@@ -160,6 +154,6 @@ class vas (
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
-    require => Package['vasclnt','vasyp','vasgp','vaskeytab'],
+    require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
   }
 }

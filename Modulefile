@@ -1,7 +1,7 @@
 name 'ericsson-vas'
 version '0.1.0'
 source 'https://github.com/Ericsson/puppet-module-vas.git'
-author 'Johan Wennerberg X <johan.x.wennerberg@ericsson.com>'
+author 'ericsson'
 license 'Apache License, Version 2.0'
 summary 'Manage VAS - Quest Authentication Services'
 description 'Manage VAS - Quest Authentication Services'

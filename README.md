@@ -23,6 +23,18 @@ pam::allowed_users:
 </pre>
 ===
 
+Example hiera config:
+
+<pre>
+---
+vas::username: 'joinuser'
+vas::keytab_source: '/net/server/join.keytab'
+vas::computers_ou: 'ou=computers,dc=example,dc=com'
+vas::users_ou: 'ou=users,dc=example,dc=com'
+vas::nismaps_ou: 'ou=nismaps,dc=example,dc=com'
+vas::realm: 'realm.example.com'
+vas::vas_conf_upm_computerou_attr: 'department'
+
 # Parameters
 
 
@@ -51,10 +63,16 @@ Name of user account used to join Active Directory.
 - *Default*: 'username'
 
 keytab_path
--------------
-The path to the keytab file used together with <username> to join Active Directoy.
+-----------
+The path to the keytab file used together with <username> to join Active Directory.
 
 - *Default*: '/etc/vasinst.key'
+
+keytab_source
+-------------
+File source for the keytab file used to join Active Directory.
+
+- *Default*: undef
 
 keytab_owner
 ------------
@@ -212,12 +230,6 @@ Path to logfile used by AD join commando.
 
 - *Default*: '/var/tmp/vasjoin.log'
 
-vaskeytab_package_name
-----------------------
-Name of vaskeytab package.
-
-- *Default*: 'vaskeytab'
-
 solaris_vasclntpath
 -------------------
 *Solaris only* Path to Solaris vasclnt package.
@@ -233,12 +245,6 @@ solaris_vasyppath
 solaris_vasgppath
 -----------------
 *Solaris only* Path to Solaris vasgp package.
-
-- *Default*: 'UNSET'
-
-solaris_vaskeytabpath
----------------------
-*Solaris only* Path to Solaris vaskeytab package.
 
 - *Default*: 'UNSET'
 
