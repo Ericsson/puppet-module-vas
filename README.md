@@ -153,6 +153,14 @@ upm-computerou-attr option in vas.conf. Changed to 'department' to work in a mul
 
 - *Default*: 'department'
 
+vas_conf_vasd_update_interval
+-----------------------------
+Integer for number of seconds to set update-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+
+- *Default*: 600
+
+
 vas_config_path
 ---------------
 Path to VAS config file.

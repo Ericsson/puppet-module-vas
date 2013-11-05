@@ -22,6 +22,7 @@ class vas (
   $vas_conf_preload_nested_memberships = 'UNSET',
   $vas_conf_update_process             = '/opt/quest/libexec/vas/mapupdate_2307',
   $vas_conf_upm_computerou_attr        = 'department',
+  $vas_conf_vasd_update_interval       = '600',
   $vas_config_path                     = '/etc/opt/quest/vas/vas.conf',
   $vas_config_owner                    = 'root',
   $vas_config_group                    = 'root',
@@ -41,6 +42,9 @@ class vas (
   $solaris_adminpath                   = 'UNSET',
   $solaris_responsepattern             = 'UNSET',
 ) {
+
+  # validate params
+  validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
 
   case $::kernel {
     'Linux': {
