@@ -123,6 +123,7 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ update-interval = 600
  upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
@@ -221,6 +222,7 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ update-interval = 600
  upm-search-path = ou=site,ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
@@ -292,6 +294,7 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ update-interval = 600
  upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
@@ -441,6 +444,53 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_config').with_content(/ preload-nested-memberships = false/)
+      end
+    end
+
+    context 'with vas_conf_vasd_update_interval specified' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_vasd_update_interval => '1200' }
+      end
+
+      it do
+        should contain_file('vas_config').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+      end
+      it { should contain_file('vas_config').with_content(/ update-interval = 1200/) }
+    end
+
+    context 'with vas_conf_vasd_update_interval set to invalid string (non-integer)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_vasd_update_interval => '600invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_update_interval must be an integer. Detected value is <600invalid>./)
       end
     end
 
