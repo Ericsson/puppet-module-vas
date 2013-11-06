@@ -153,6 +153,30 @@ upm-computerou-attr option in vas.conf. Changed to 'department' to work in a mul
 
 - *Default*: 'department'
 
+vas_conf_vasd_update_interval
+-----------------------------
+Integer for number of seconds to set value of update-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 600
+
+vas_conf_libvas_auth_helper_timeout
+-----------------------------------
+Integer for number of seconds to set value of auth-helper-timeout in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 10
+
+vas_conf_libvas_use_dns_srv
+---------------------------
+Boolean to set value of use-dns-srv in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: true
+
+vas_conf_libvas_use_tcp_only
+----------------------------
+Boolean to set value of use-tcp-only in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: true
+
 vas_config_path
 ---------------
 Path to VAS config file.

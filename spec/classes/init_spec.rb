@@ -109,6 +109,9 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ use-dns-srv = true
+ use-tcp-only = true
+ auth-helper-timeout = 10
  use-server-referrals = true
  vascache-ipc-timeout = 15
 
@@ -123,6 +126,7 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ update-interval = 600
  upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
@@ -207,6 +211,9 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ use-dns-srv = true
+ use-tcp-only = true
+ auth-helper-timeout = 10
  use-server-referrals = true
  vascache-ipc-timeout = 15
 
@@ -221,6 +228,7 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ update-interval = 600
  upm-search-path = ou=site,ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
@@ -278,6 +286,9 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ use-dns-srv = true
+ use-tcp-only = true
+ auth-helper-timeout = 10
  use-server-referrals = true
  vascache-ipc-timeout = 15
 
@@ -292,6 +303,7 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ update-interval = 600
  upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
@@ -441,6 +453,175 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_config').with_content(/ preload-nested-memberships = false/)
+      end
+    end
+
+    context 'with vas_conf_vasd_update_interval specified' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_vasd_update_interval => '1200' }
+      end
+
+      it do
+        should contain_file('vas_config').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+      end
+      it { should contain_file('vas_config').with_content(/ update-interval = 1200/) }
+    end
+
+    context 'with settings related to libvas section of vas.conf specified' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_auth_helper_timeout => 120,
+          :sitenameoverride                    => 'foobar',
+          :vas_conf_libvas_use_dns_srv         => false,
+          :vas_conf_libvas_use_tcp_only        => false,
+        }
+      end
+
+      it do
+        should contain_file('vas_config').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+      end
+      it { should contain_file('vas_config').with_content(/ auth-helper-timeout = 120/) }
+      it { should contain_file('vas_config').with_content(/ site-name-override = foobar/) }
+      it { should contain_file('vas_config').with_content(/ use-dns-srv = false/) }
+      it { should contain_file('vas_config').with_content(/ use-tcp-only = false/) }
+    end
+
+    context 'with vas_conf_libvas_auth_helper_timeout set to stringified \'23\' integer' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_auth_helper_timeout => '23' }
+      end
+
+      it do
+        should contain_file('vas_config').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+      end
+      it { should contain_file('vas_config').with_content(/ auth-helper-timeout = 23/) }
+    end
+
+    context 'with vas_conf_vasd_update_interval set to invalid string (non-integer)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_vasd_update_interval => '600invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_update_interval must be an integer. Detected value is <600invalid>./)
+      end
+    end
+
+    context 'with vas_conf_libvas_use_dns_srv set to invalid non-boolean string' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_use_dns_srv => 'invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'with vas_conf_libvas_use_tcp_only set to invalid non-boolean string' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_use_tcp_only => 'invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'with vas_conf_libvas_auth_helper_timeout set to invalid string (non-integer)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_auth_helper_timeout => '10invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <10invalid>./)
       end
     end
 

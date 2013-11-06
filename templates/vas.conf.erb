@@ -19,6 +19,9 @@
 <% if sitenameoverride != 'UNSET' -%>
  site-name-override = <%= sitenameoverride %>
 <% end -%>
+ use-dns-srv = <%= @vas_conf_libvas_use_dns_srv_real %>
+ use-tcp-only = <%= @vas_conf_libvas_use_tcp_only_real %>
+ auth-helper-timeout = <%= @vas_conf_libvas_auth_helper_timeout %>
  use-server-referrals = true
  vascache-ipc-timeout = 15
 
@@ -38,6 +41,7 @@
 <% end -%>
 
 [vasd]
+ update-interval = <%= @vas_conf_vasd_update_interval %>
  upm-search-path = <%= users_ou %>
 <% if @virtual == "zone" -%>
  timesync-interval = 0
