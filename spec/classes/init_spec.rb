@@ -136,6 +136,8 @@ describe 'vas' do
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+
+[vas_auth]
 })
       end
       it do
@@ -238,6 +240,8 @@ describe 'vas' do
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+
+[vas_auth]
 })
       end
     end
@@ -313,6 +317,8 @@ describe 'vas' do
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+
+[vas_auth]
 })
       end
     end
