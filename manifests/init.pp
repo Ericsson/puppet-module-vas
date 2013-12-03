@@ -75,6 +75,10 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
   }
 
+  if $::virtual == "zone" {
+    $vas_conf_vasd_timesync_interval = 0
+  }
+
   case $::kernel {
     'Linux': {
       include vas::linux

@@ -28,7 +28,7 @@
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
 <% if vas_conf_pam_vas_prompt_ad_lockout_msg != 'UNSET' -%>
- prompt-ad-lockout-msg = <%= vas_conf_pam_vas_prompt_ad_lockout_msg %>
+ prompt-ad-lockout-msg = "<%= vas_conf_pam_vas_prompt_ad_lockout_msg %>"
 <% end -%>
 
 [vasypd]
@@ -46,9 +46,6 @@
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
  upm-search-path = <%= users_ou %>
-<% if @virtual == "zone" -%>
- timesync-interval = 0
-<% end -%>
  workstation-mode = false
  auto-ticket-renew-interval = <%= vas_conf_vasd_auto_ticket_renew_interval %>
  lazy-cache-update-interval = 10
