@@ -178,6 +178,18 @@ Boolean to set value of cross-domain-user-groups-member-search in [vasd] section
 
 - *Default*: 'UNSET'
 
+vas_conf_vasd_password_change_script
+------------------------------------
+Path for script to set value of password-change-script in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_password_change_script_timelimit
+----------------------------------------------
+Integer for number of seconds to set value of password-change-script-timelimit in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
 vas_conf_pam_vas_prompt_ad_lockout_msg
 --------------------------------------
 prompt-ad-lockout-msg option in vas.conf. See VAS.CONF(5) for more info.

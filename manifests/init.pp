@@ -26,6 +26,8 @@ class vas (
   $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
   $vas_conf_vasd_timesync_interval                      = 'UNSET',
   $vas_conf_vasd_cross_domain_user_groups_member_search = 'UNSET',
+  $vas_conf_vasd_password_change_script                 = 'UNSET',
+  $vas_conf_vasd_password_change_script_timelimit       = 'UNSET',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
