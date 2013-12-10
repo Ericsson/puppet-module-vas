@@ -159,6 +159,43 @@ Integer for number of seconds to set value of update-interval in [vasd] section 
 
 - *Default*: 600
 
+vas_conf_vasd_auto_ticket_renew_interval
+----------------------------------------
+Integer for number of seconds to set value of auto-ticket-renew-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 32400
+
+vas_conf_vasd_timesync_interval
+-------------------------------
+Integer for number of seconds to set value of timesync-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+If $::virtual is "zone" this value is set to 0
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_cross_domain_user_groups_member_search
+----------------------------------------------------
+Boolean to set value of cross-domain-user-groups-member-search in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_pam_vas_prompt_ad_lockout_msg
+--------------------------------------
+prompt-ad-lockout-msg option in vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_libdefaults_forwardable
+--------------------------------
+Boolean to set value of forwardable in [libdefaults] vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: true
+
+vas_conf_vas_auth_uid_check_limit
+---------------------------------
+Integer for uid-check-limit option in vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
 vas_conf_libvas_auth_helper_timeout
 -----------------------------------
 Integer for number of seconds to set value of auth-helper-timeout in [libvas] section of vas.conf. See VAS.CONF(5) for more info.

@@ -136,6 +136,8 @@ describe 'vas' do
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+
+[vas_auth]
 })
       end
       it do
@@ -166,7 +168,7 @@ describe 'vas' do
       end
     end
 
-    context 'with ou parameters specified on osfamily redhat with lsbmajdistrelease 6' do
+    context 'with parameters for vas.conf specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
           :kernel            => 'Linux',
@@ -178,84 +180,26 @@ describe 'vas' do
       end
       let :params do
         {
-          :computers_ou => 'ou=site,ou=computers,dc=example,dc=com',
-          :nismaps_ou   => 'ou=site,ou=nismaps,dc=example,dc=com',
-          :users_ou     => 'ou=site,ou=users,dc=example,dc=com',
-        }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(
-%{# This file is being maintained by Puppet.
-# DO NOT EDIT
-[domain_realm]
- host.example.com = REALM.EXAMPLE.COM
-
-[libdefaults]
- default_realm = REALM.EXAMPLE.COM
- default_tgs_enctypes = arcfour-hmac-md5
- default_tkt_enctypes = arcfour-hmac-md5
- default_etypes_des = des-cbc-crc
- default_etypes = arcfour-hmac-md5
- forwardable = true
- renew_lifetime = 604800
-
- ticket_lifetime = 36000
- default_keytab_name = /etc/opt/quest/vas/host.keytab
-
-[libvas]
- use-dns-srv = true
- use-tcp-only = true
- auth-helper-timeout = 10
- use-server-referrals = true
- vascache-ipc-timeout = 15
-
-[pam_vas]
- prompt-vas-ad-pw = "Enter Windows password: "
-
-[vasypd]
- search-base = ou=site,ou=nismaps,dc=example,dc=com
- split-groups = true
- update-interval = 1800
- domainname-override = example.com
- update-process = /opt/quest/libexec/vas/mapupdate_2307
-
-[vasd]
- update-interval = 600
- upm-search-path = ou=site,ou=users,dc=example,dc=com
- workstation-mode = false
- auto-ticket-renew-interval = 32400
- lazy-cache-update-interval = 10
- upm-computerou-attr = department
-
-[nss_vas]
- group-update-mode = none
- root-update-mode = none
-})
-      end
-    end
-
-    context 'with realm and nisdomainname parameters specified on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        {
-          :realm         => 'realm2.example.com',
-          :nisdomainname => 'nis.domain',
+          :computers_ou                                         => 'ou=site,ou=computers,dc=example,dc=com',
+          :nismaps_ou                                           => 'ou=site,ou=nismaps,dc=example,dc=com',
+          :users_ou                                             => 'ou=site,ou=users,dc=example,dc=com',
+          :realm                                                => 'realm2.example.com',
+          :nisdomainname                                        => 'nis.domain',
+          :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
+          :vas_conf_libdefaults_forwardable                     => 'false',
+          :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
+          :vas_conf_update_process                              => '/opt/quest/libexec/vas/mapupdate',
+          :vas_conf_vasd_update_interval                        => '1200',
+          :vas_conf_upm_computerou_attr                         => 'managedBy',
+          :vas_conf_preload_nested_memberships                  => 'false',
+          :vas_conf_vasd_cross_domain_user_groups_member_search => 'true',
+          :vas_conf_vasd_timesync_interval                      => '0',
+          :vas_conf_vasd_auto_ticket_renew_interval             => '540',
+          :vas_conf_libvas_auth_helper_timeout                  => '120',
+          :sitenameoverride                                     => 'foobar',
+          :vas_conf_libvas_use_dns_srv                          => 'false',
+          :vas_conf_libvas_use_tcp_only                         => 'false',
+          :vas_conf_vas_auth_uid_check_limit                    => '100000',
         }
       end
 
@@ -279,44 +223,54 @@ describe 'vas' do
  default_tkt_enctypes = arcfour-hmac-md5
  default_etypes_des = des-cbc-crc
  default_etypes = arcfour-hmac-md5
- forwardable = true
+ forwardable = false
  renew_lifetime = 604800
 
  ticket_lifetime = 36000
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
- use-dns-srv = true
- use-tcp-only = true
- auth-helper-timeout = 10
+ site-name-override = foobar
+ use-dns-srv = false
+ use-tcp-only = false
+ auth-helper-timeout = 120
  use-server-referrals = true
  vascache-ipc-timeout = 15
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
+ prompt-ad-lockout-msg = "Account is locked"
 
 [vasypd]
- search-base = ou=nismaps,dc=example,dc=com
+ search-base = ou=site,ou=nismaps,dc=example,dc=com
  split-groups = true
  update-interval = 1800
  domainname-override = nis.domain
- update-process = /opt/quest/libexec/vas/mapupdate_2307
+ update-process = /opt/quest/libexec/vas/mapupdate
+ client-addrs = 10.10.0.0/24 10.50.0.0/24
 
 [vasd]
- update-interval = 600
- upm-search-path = ou=users,dc=example,dc=com
+ update-interval = 1200
+ upm-search-path = ou=site,ou=users,dc=example,dc=com
  workstation-mode = false
- auto-ticket-renew-interval = 32400
+ auto-ticket-renew-interval = 540
  lazy-cache-update-interval = 10
- upm-computerou-attr = department
+ cross-domain-user-groups-member-search = true
+ timesync-interval = 0
+ preload-nested-memberships = false
+ upm-computerou-attr = managedBy
 
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+
+[vas_auth]
+ uid-check-limit = 100000
 })
       end
     end
-    context 'with sitenameoverride specified on osfamily redhat with lsbmajdistrelease 6' do
+
+    context 'with vas_conf_vasd_auto_ticket_renew_interval to invalid string (non-integer)' do
       let :facts do
         {
           :kernel            => 'Linux',
@@ -327,218 +281,14 @@ describe 'vas' do
         }
       end
       let :params do
-        {
-          :sitenameoverride => 'adsite42',
-        }
+        { :vas_conf_vasd_auto_ticket_renew_interval => '600invalid' }
       end
 
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(/ site-name-override = adsite42/)
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <600invalid>./)
       end
-    end
-
-    context 'with vas_conf_client_addrs specified on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        {
-          :vas_conf_client_addrs => '10.10.0.0/24 10.50.0.0/24',
-        }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(/ client-addrs = 10.10.0.0\/24 10.50.0.0\/24/)
-      end
-    end
-
-    context 'with vas_conf_update_process specified on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        {
-          :vas_conf_update_process => '/opt/quest/libexec/vas/mapupdate',
-        }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(/ update-process = \/opt\/quest\/libexec\/vas\/mapupdate/)
-      end
-    end
-
-    context 'with vas_conf_upm_computerou_attr specified on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        {
-          :vas_conf_upm_computerou_attr => 'managedBy',
-        }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(/ upm-computerou-attr = managedBy/)
-      end
-    end
-
-    context 'with vas_conf_preload_nested_memberships specified on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        {
-          :vas_conf_preload_nested_memberships => 'false',
-        }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-        should contain_file('vas_config').with_content(/ preload-nested-memberships = false/)
-      end
-    end
-
-    context 'with vas_conf_vasd_update_interval specified' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        { :vas_conf_vasd_update_interval => '1200' }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-      end
-      it { should contain_file('vas_config').with_content(/ update-interval = 1200/) }
-    end
-
-    context 'with settings related to libvas section of vas.conf specified' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        { :vas_conf_libvas_auth_helper_timeout => 120,
-          :sitenameoverride                    => 'foobar',
-          :vas_conf_libvas_use_dns_srv         => false,
-          :vas_conf_libvas_use_tcp_only        => false,
-        }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-      end
-      it { should contain_file('vas_config').with_content(/ auth-helper-timeout = 120/) }
-      it { should contain_file('vas_config').with_content(/ site-name-override = foobar/) }
-      it { should contain_file('vas_config').with_content(/ use-dns-srv = false/) }
-      it { should contain_file('vas_config').with_content(/ use-tcp-only = false/) }
-    end
-
-    context 'with vas_conf_libvas_auth_helper_timeout set to stringified \'23\' integer' do
-      let :facts do
-        {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
-        }
-      end
-      let :params do
-        { :vas_conf_libvas_auth_helper_timeout => '23' }
-      end
-
-      it do
-        should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
-        })
-      end
-      it { should contain_file('vas_config').with_content(/ auth-helper-timeout = 23/) }
     end
 
     context 'with vas_conf_vasd_update_interval set to invalid string (non-integer)' do

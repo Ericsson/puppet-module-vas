@@ -3,52 +3,65 @@
 # Puppet module to manage VAS - Quest Authentication Services
 #
 class vas (
-  $package_version                     = undef,
-  $users_allow_entries                 = ['UNSET'],
-  $user_override_entries               = ['UNSET'],
-  $username                            = 'username',
-  $keytab_path                         = '/etc/vasinst.key',
-  $keytab_source                       = undef,
-  $keytab_owner                        = 'root',
-  $keytab_group                        = 'root',
-  $keytab_mode                         = '0400',
-  $computers_ou                        = 'ou=computers,dc=example,dc=com',
-  $users_ou                            = 'ou=users,dc=example,dc=com',
-  $nismaps_ou                          = 'ou=nismaps,dc=example,dc=com',
-  $nisdomainname                       = undef,
-  $realm                               = 'realm.example.com',
-  $sitenameoverride                    = 'UNSET',
-  $vas_conf_client_addrs               = 'UNSET',
-  $vas_conf_preload_nested_memberships = 'UNSET',
-  $vas_conf_update_process             = '/opt/quest/libexec/vas/mapupdate_2307',
-  $vas_conf_upm_computerou_attr        = 'department',
-  $vas_conf_vasd_update_interval       = '600',
-  $vas_conf_libvas_auth_helper_timeout = 10,
-  $vas_conf_libvas_use_dns_srv         = true,
-  $vas_conf_libvas_use_tcp_only        = true,
-  $vas_config_path                     = '/etc/opt/quest/vas/vas.conf',
-  $vas_config_owner                    = 'root',
-  $vas_config_group                    = 'root',
-  $vas_config_mode                     = '0644',
-  $vas_user_override_path              = '/etc/opt/quest/vas/user-override',
-  $vas_user_override_owner             = 'root',
-  $vas_user_override_group             = 'root',
-  $vas_user_override_mode              = '0644',
-  $vas_users_allow_path                = '/etc/opt/quest/vas/users.allow',
-  $vas_users_allow_owner               = 'root',
-  $vas_users_allow_group               = 'root',
-  $vas_users_allow_mode                = '0644',
-  $vasjoin_logfile                     = '/var/tmp/vasjoin.log',
-  $solaris_vasclntpath                 = 'UNSET',
-  $solaris_vasyppath                   = 'UNSET',
-  $solaris_vasgppath                   = 'UNSET',
-  $solaris_adminpath                   = 'UNSET',
-  $solaris_responsepattern             = 'UNSET',
+  $package_version                                      = undef,
+  $users_allow_entries                                  = ['UNSET'],
+  $user_override_entries                                = ['UNSET'],
+  $username                                             = 'username',
+  $keytab_path                                          = '/etc/vasinst.key',
+  $keytab_source                                        = undef,
+  $keytab_owner                                         = 'root',
+  $keytab_group                                         = 'root',
+  $keytab_mode                                          = '0400',
+  $computers_ou                                         = 'ou=computers,dc=example,dc=com',
+  $users_ou                                             = 'ou=users,dc=example,dc=com',
+  $nismaps_ou                                           = 'ou=nismaps,dc=example,dc=com',
+  $nisdomainname                                        = undef,
+  $realm                                                = 'realm.example.com',
+  $sitenameoverride                                     = 'UNSET',
+  $vas_conf_client_addrs                                = 'UNSET',
+  $vas_conf_preload_nested_memberships                  = 'UNSET',
+  $vas_conf_update_process                              = '/opt/quest/libexec/vas/mapupdate_2307',
+  $vas_conf_upm_computerou_attr                         = 'department',
+  $vas_conf_vasd_update_interval                        = '600',
+  $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
+  $vas_conf_vasd_timesync_interval                      = 'UNSET',
+  $vas_conf_vasd_cross_domain_user_groups_member_search = 'UNSET',
+  $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
+  $vas_conf_libdefaults_forwardable                     = true,
+  $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
+  $vas_conf_libvas_auth_helper_timeout                  = 10,
+  $vas_conf_libvas_use_dns_srv                          = true,
+  $vas_conf_libvas_use_tcp_only                         = true,
+  $vas_config_path                                      = '/etc/opt/quest/vas/vas.conf',
+  $vas_config_owner                                     = 'root',
+  $vas_config_group                                     = 'root',
+  $vas_config_mode                                      = '0644',
+  $vas_user_override_path                               = '/etc/opt/quest/vas/user-override',
+  $vas_user_override_owner                              = 'root',
+  $vas_user_override_group                              = 'root',
+  $vas_user_override_mode                               = '0644',
+  $vas_users_allow_path                                 = '/etc/opt/quest/vas/users.allow',
+  $vas_users_allow_owner                                = 'root',
+  $vas_users_allow_group                                = 'root',
+  $vas_users_allow_mode                                 = '0644',
+  $vasjoin_logfile                                      = '/var/tmp/vasjoin.log',
+  $solaris_vasclntpath                                  = 'UNSET',
+  $solaris_vasyppath                                    = 'UNSET',
+  $solaris_vasgppath                                    = 'UNSET',
+  $solaris_adminpath                                    = 'UNSET',
+  $solaris_responsepattern                              = 'UNSET',
 ) {
 
   # validate params
+  validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
+
+  if type($vas_conf_libdefaults_forwardable) == 'string' {
+    $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
+  } else {
+    $vas_conf_libdefaults_forwardable_real = $vas_conf_libdefaults_forwardable
+  }
 
   if type($vas_conf_libvas_use_dns_srv) == 'string' {
     $vas_conf_libvas_use_dns_srv_real = str2bool($vas_conf_libvas_use_dns_srv)
@@ -60,6 +73,10 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = str2bool($vas_conf_libvas_use_tcp_only)
   } else {
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
+  }
+
+  if $::virtual == "zone" {
+    $vas_conf_vasd_timesync_interval = 0
   }
 
   case $::kernel {

@@ -9,7 +9,7 @@
  default_tkt_enctypes = arcfour-hmac-md5
  default_etypes_des = des-cbc-crc
  default_etypes = arcfour-hmac-md5
- forwardable = true
+ forwardable = <%= vas_conf_libdefaults_forwardable_real %>
  renew_lifetime = 604800
 
  ticket_lifetime = 36000
@@ -27,6 +27,9 @@
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
+<% if vas_conf_pam_vas_prompt_ad_lockout_msg != 'UNSET' -%>
+ prompt-ad-lockout-msg = "<%= vas_conf_pam_vas_prompt_ad_lockout_msg %>"
+<% end -%>
 
 [vasypd]
  search-base = <%= nismaps_ou %>
@@ -43,12 +46,15 @@
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
  upm-search-path = <%= users_ou %>
-<% if @virtual == "zone" -%>
- timesync-interval = 0
-<% end -%>
  workstation-mode = false
- auto-ticket-renew-interval = 32400
+ auto-ticket-renew-interval = <%= vas_conf_vasd_auto_ticket_renew_interval %>
  lazy-cache-update-interval = 10
+<% if vas_conf_vasd_cross_domain_user_groups_member_search != 'UNSET' -%>
+ cross-domain-user-groups-member-search = <%= vas_conf_vasd_cross_domain_user_groups_member_search %>
+<% end -%>
+<% if vas_conf_vasd_timesync_interval != 'UNSET' -%>
+ timesync-interval = <%= vas_conf_vasd_timesync_interval %>
+<% end -%>
 <% if vas_conf_preload_nested_memberships != 'UNSET' -%>
  preload-nested-memberships = <%= vas_conf_preload_nested_memberships %>
 <% end -%>
@@ -59,3 +65,8 @@
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+
+[vas_auth]
+<% if vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
+ uid-check-limit = <%= vas_conf_vas_auth_uid_check_limit %>
+<% end -%>
