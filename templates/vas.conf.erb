@@ -61,6 +61,12 @@
 <% if !vas_conf_upm_computerou_attr.empty?-%>
  upm-computerou-attr = <%= vas_conf_upm_computerou_attr %>
 <% end -%>
+<% if vas_conf_vasd_password_change_script != 'UNSET' -%>
+ password-change-script = <%= vas_conf_vasd_password_change_script %>
+<% end -%>
+<% if vas_conf_vasd_password_change_script_timelimit != 'UNSET' -%>
+ password-change-script-timelimit = <%= vas_conf_vasd_password_change_script_timelimit %>
+<% end -%>
 
 [nss_vas]
  group-update-mode = none

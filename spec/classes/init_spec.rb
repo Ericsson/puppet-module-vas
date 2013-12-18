@@ -195,6 +195,8 @@ describe 'vas' do
           :vas_conf_vasd_cross_domain_user_groups_member_search => 'true',
           :vas_conf_vasd_timesync_interval                      => '0',
           :vas_conf_vasd_auto_ticket_renew_interval             => '540',
+          :vas_conf_vasd_password_change_script                 => '/opt/quest/libexec/vas-set-samba-password',
+          :vas_conf_vasd_password_change_script_timelimit       => '30',
           :vas_conf_libvas_auth_helper_timeout                  => '120',
           :sitenameoverride                                     => 'foobar',
           :vas_conf_libvas_use_dns_srv                          => 'false',
@@ -259,6 +261,8 @@ describe 'vas' do
  timesync-interval = 0
  preload-nested-memberships = false
  upm-computerou-attr = managedBy
+ password-change-script = /opt/quest/libexec/vas-set-samba-password
+ password-change-script-timelimit = 30
 
 [nss_vas]
  group-update-mode = none
