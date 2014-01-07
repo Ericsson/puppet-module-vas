@@ -180,6 +180,7 @@ describe 'vas' do
       end
       let :params do
         {
+          :vas_fqdn                                             => 'host2.example.com',
           :computers_ou                                         => 'ou=site,ou=computers,dc=example,dc=com',
           :nismaps_ou                                           => 'ou=site,ou=nismaps,dc=example,dc=com',
           :users_ou                                             => 'ou=site,ou=users,dc=example,dc=com',
@@ -217,7 +218,7 @@ describe 'vas' do
 %{# This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
- host.example.com = REALM2.EXAMPLE.COM
+ host2.example.com = REALM2.EXAMPLE.COM
 
 [libdefaults]
  default_realm = REALM2.EXAMPLE.COM
@@ -271,6 +272,27 @@ describe 'vas' do
 [vas_auth]
  uid-check-limit = 100000
 })
+      end
+    end
+
+    context 'with vas_fqdn to invalid domainname' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_fqdn => 'bad!@#hostname' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
       end
     end
 
