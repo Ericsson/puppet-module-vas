@@ -92,6 +92,12 @@ keytab_mode
 keytab file's mode.
 - *Default*: '0400'
 
+vas_fqdn
+------------
+FQDN to join to VAS as.
+
+- *Default*: system FQDN
+
 computers_ou
 ------------
 Path to OU where to store computer object.

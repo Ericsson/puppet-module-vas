@@ -12,6 +12,7 @@ class vas (
   $keytab_owner                                         = 'root',
   $keytab_group                                         = 'root',
   $keytab_mode                                          = '0400',
+  $vas_fqdn                                             = $::fqdn,
   $computers_ou                                         = 'ou=computers,dc=example,dc=com',
   $users_ou                                             = 'ou=users,dc=example,dc=com',
   $nismaps_ou                                           = 'ou=nismaps,dc=example,dc=com',
@@ -189,7 +190,7 @@ class vas (
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${::fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
