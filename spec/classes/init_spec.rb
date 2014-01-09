@@ -292,7 +292,7 @@ describe 'vas' do
       it 'should fail' do
         expect {
           should include_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN.  Detected value is <bad!@#hostname>./)
+        }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
       end
     end
 

@@ -61,7 +61,7 @@ class vas (
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
 
   if !is_domain_name($vas_fqdn) {
-    fail("vas::vas_fqdn is not a valid FQDN.  Detected value is <${vas_fqdn}>.")
+    fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
   }
 
   if type($vas_conf_libdefaults_forwardable) == 'string' {
