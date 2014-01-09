@@ -96,7 +96,7 @@ vas_fqdn
 ------------
 FQDN to join to VAS as.
 
-- *Default*: system FQDN
+- *Default*: $::fqdn
 
 computers_ou
 ------------

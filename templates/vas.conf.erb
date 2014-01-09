@@ -1,7 +1,7 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
- <%= vas_fqdn %> = <%= realm.upcase %>
+ <%= @vas_fqdn %> = <%= realm.upcase %>
 
 [libdefaults]
  default_realm = <%= realm.upcase %>

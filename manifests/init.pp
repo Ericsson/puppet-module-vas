@@ -60,6 +60,10 @@ class vas (
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
 
+  if !is_domain_name($vas_fqdn) {
+    fail("vas::vas_fqdn is not a valid FQDN.  Detected value is <${vas_fqdn}>.")
+  }
+
   if type($vas_conf_libdefaults_forwardable) == 'string' {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
   } else {
@@ -78,7 +82,7 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
   }
 
-  if $::virtual == "zone" {
+  if $::virtual == 'zone' {
     $vas_conf_vasd_timesync_interval = 0
   }
 
