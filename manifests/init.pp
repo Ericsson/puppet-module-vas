@@ -12,6 +12,7 @@ class vas (
   $keytab_owner                                         = 'root',
   $keytab_group                                         = 'root',
   $keytab_mode                                          = '0400',
+  $vas_fqdn                                             = $::fqdn,
   $computers_ou                                         = 'ou=computers,dc=example,dc=com',
   $users_ou                                             = 'ou=users,dc=example,dc=com',
   $nismaps_ou                                           = 'ou=nismaps,dc=example,dc=com',
@@ -59,6 +60,10 @@ class vas (
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
 
+  if !is_domain_name($vas_fqdn) {
+    fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
+  }
+
   if type($vas_conf_libdefaults_forwardable) == 'string' {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
   } else {
@@ -77,7 +82,7 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
   }
 
-  if $::virtual == "zone" {
+  if $::virtual == 'zone' {
     $vas_conf_vasd_timesync_interval = 0
   }
 
@@ -189,7 +194,7 @@ class vas (
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${::fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
