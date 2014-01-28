@@ -8,5 +8,5 @@ description 'Manage VAS - Quest Authentication Services'
 project_page 'https://github.com/Ericsson/puppet-module-vas'
 
 dependency 'ericsson/nisclient', '>= 0.1.0'
-dependency 'ghoneycutt/pam', '2.x'
-dependency 'ghoneycutt/nsswitch', '1.x'
+dependency 'ghoneycutt/pam', '>= 2.0.0'
+dependency 'ghoneycutt/nsswitch', '>= 1.0.0'
