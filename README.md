@@ -337,3 +337,21 @@ solaris_adminpath
 solaris_responsepattern
 -----------------------
 - *Default*: 'UNSET'
+
+vastool_binary
+-------------
+Path to vastool binary to create symlink from
+
+- *Default*: '/opt/quest/bin/vastool'
+
+symlink_vastool_binary_target
+----------------------------
+Path to where the symlink should be created
+
+- *Default*: '/usr/bin/vastool'
+
+symlink_vastool_binary
+---------------------
+Boolean for ensuring a symlink for vastool_binary to symlink_vastool_binary_target. This is useful since /opt/quest/bin is a non-standard location that is not in your $PATH.
+
+- *Default*: false
