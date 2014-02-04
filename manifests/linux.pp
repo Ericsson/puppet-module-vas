@@ -1,34 +1,28 @@
-# == Class: qas::linux
+# == Class: vas::linux
 #
-class qas::linux inherits qas {
-  
-  $package_ensure = $package_version ? {
-    'UNSET' => installed,
-    default => $package_version,
-  }
+class vas::linux inherits vas {
 
-  $qasver = regsubst($package_version, '-', '.')
-  if ($::qas_version and $qasver > $::qas_version and $package_version != 'UNSET') {
-    $upgrade = true
-  } else {
-    $upgrade = false
-  }
-  
-  package { ['vasclnt', 'vasyp', 'vasgp'] :
-    ensure => $package_ensure,
-  }
-      
-  exec { 'deps' :
-    command     => '/bin/true',
-    refreshonly => true,
-  }
+  case $::osfamily {
+    default: {
+      fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${::osfamily}>")
+    }
 
-  #No vasgpd service in QAS 4
-  if $::qas_version =~ /^3/ and $upgrade == false {
-    service { 'vasgpd':
-      ensure    => running,
-      enable    => true,
-      subscribe => Exec['vasinst'],
+    'Debian','Suse','RedHat': {
+      $vasver = regsubst($vas::package_version, '-', '.')
+      if ($::vas_version and $vasver > $::vas_version and $vas::package_version != 'UNSET') {
+        $upgrade = true
+      } else {
+        $upgrade = false
+      }
+
+      # No vasgpd service in VAS 4
+      if $::vas_version =~ /^3/ and $upgrade == false {
+        service { 'vasgpd':
+          ensure    => running,
+          enable    => true,
+          subscribe => Exec['vasinst'],
+        }
+      }
     }
   }
 }

@@ -1,9 +1,7 @@
-#
-# This file is maintained by puppet. Manual changes will be overwritten.
-#
-
-<% user_override_entries.each do |overrideentry| -%>
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+<% @user_override_entries.each do |overrideentry| -%>
 <% if overrideentry != 'UNSET' -%>
-  <%= overrideentry %>
+<%= overrideentry %>
 <% end -%>
 <% end -%>
