@@ -25,10 +25,12 @@ class vas (
   $vas_conf_upm_computerou_attr                         = 'department',
   $vas_conf_vasd_update_interval                        = '600',
   $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
+  $vas_conf_vasd_lazy_cache_update_interval             = '10',
   $vas_conf_vasd_timesync_interval                      = 'UNSET',
   $vas_conf_vasd_cross_domain_user_groups_member_search = 'UNSET',
   $vas_conf_vasd_password_change_script                 = 'UNSET',
   $vas_conf_vasd_password_change_script_timelimit       = 'UNSET',
+  $vas_conf_vasd_workstation_mode                       = false,
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
@@ -80,6 +82,12 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = str2bool($vas_conf_libvas_use_tcp_only)
   } else {
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
+  }
+
+  if type($vas_conf_vasd_workstation_mode) == 'string' {
+    $vas_conf_vasd_workstation_mode_real = str2bool($vas_conf_vasd_workstation_mode)
+  } else {
+    $vas_conf_vasd_workstation_mode_real = $vas_conf_vasd_workstation_mode
   }
 
   if $::virtual == 'zone' {
