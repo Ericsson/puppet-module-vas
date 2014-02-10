@@ -109,11 +109,11 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ vascache-ipc-timeout = 15
+ use-server-referrals = true
  use-dns-srv = true
  use-tcp-only = true
  auth-helper-timeout = 10
- use-server-referrals = true
- vascache-ipc-timeout = 15
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
@@ -197,6 +197,8 @@ describe 'vas' do
           :vas_conf_vasd_timesync_interval                      => '0',
           :vas_conf_vasd_auto_ticket_renew_interval             => '540',
           :vas_conf_vasd_password_change_script                 => '/opt/quest/libexec/vas-set-samba-password',
+          :vas_conf_vasd_workstation_mode                       => true,
+          :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
           :vas_conf_libvas_auth_helper_timeout                  => '120',
           :sitenameoverride                                     => 'foobar',
@@ -233,12 +235,12 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ vascache-ipc-timeout = 15
+ use-server-referrals = true
  site-name-override = foobar
  use-dns-srv = false
  use-tcp-only = false
  auth-helper-timeout = 120
- use-server-referrals = true
- vascache-ipc-timeout = 15
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
@@ -255,9 +257,9 @@ describe 'vas' do
 [vasd]
  update-interval = 1200
  upm-search-path = ou=site,ou=users,dc=example,dc=com
- workstation-mode = false
+ workstation-mode = true
  auto-ticket-renew-interval = 540
- lazy-cache-update-interval = 10
+ lazy-cache-update-interval = 5
  cross-domain-user-groups-member-search = true
  timesync-interval = 0
  preload-nested-memberships = false
