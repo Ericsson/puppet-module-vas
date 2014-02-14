@@ -25,14 +25,21 @@ class vas (
   $vas_conf_upm_computerou_attr                         = 'department',
   $vas_conf_vasd_update_interval                        = '600',
   $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
+  $vas_conf_vasd_lazy_cache_update_interval             = '10',
   $vas_conf_vasd_timesync_interval                      = 'UNSET',
   $vas_conf_vasd_cross_domain_user_groups_member_search = 'UNSET',
   $vas_conf_vasd_password_change_script                 = 'UNSET',
   $vas_conf_vasd_password_change_script_timelimit       = 'UNSET',
+  $vas_conf_vasd_workstation_mode                       = false,
+  $vas_conf_vasd_workstation_mode_users_preload         = 'UNSET',
+  $vas_conf_vasd_workstation_mode_group_do_member       = false,
+  $vas_conf_vasd_workstation_mode_groups_skip_update    = false,
+  $vas_conf_vasd_ws_resolve_uid                         = false,
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_libvas_auth_helper_timeout                  = 10,
+  $vas_conf_libvas_mscldap_timeout                      = 1,
   $vas_conf_libvas_use_dns_srv                          = true,
   $vas_conf_libvas_use_tcp_only                         = true,
   $vas_config_path                                      = '/etc/opt/quest/vas/vas.conf',
@@ -81,6 +88,30 @@ class vas (
   } else {
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
   }
+
+  if type($vas_conf_vasd_workstation_mode) == 'string' {
+    $vas_conf_vasd_workstation_mode_real = str2bool($vas_conf_vasd_workstation_mode)
+  } else {
+    $vas_conf_vasd_workstation_mode_real = $vas_conf_vasd_workstation_mode
+  }
+
+  if type($vas_conf_vasd_workstation_mode_group_do_member) == 'string' {
+    $vas_conf_vasd_workstation_mode_group_do_member_real = str2bool($vas_conf_vasd_workstation_mode_group_do_member)
+  } else {
+    $vas_conf_vasd_workstation_mode_group_do_member_real = $vas_conf_vasd_workstation_mode_group_do_member
+  }
+
+  if type($vas_conf_vasd_workstation_mode_groups_skip_update) == 'string' {
+    $vas_conf_vasd_workstation_mode_groups_skip_update_real = str2bool($vas_conf_vasd_workstation_mode_groups_skip_update)
+  } else {
+    $vas_conf_vasd_workstation_mode_groups_skip_update_real = $vas_conf_vasd_workstation_mode_groups_skip_update
+  }
+  if type($vas_conf_vasd_ws_resolve_uid) == 'string' {
+    $vas_conf_vasd_ws_resolve_uid_real = str2bool($vas_conf_vasd_ws_resolve_uid)
+  } else {
+    $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
+  }
+
 
   if $::virtual == 'zone' {
     $vas_conf_vasd_timesync_interval = 0
