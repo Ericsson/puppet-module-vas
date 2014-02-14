@@ -111,6 +111,7 @@ describe 'vas' do
 [libvas]
  vascache-ipc-timeout = 15
  use-server-referrals = true
+ mscldap-timeout = 1
  use-dns-srv = true
  use-tcp-only = true
  auth-helper-timeout = 10
@@ -204,6 +205,7 @@ describe 'vas' do
           :sitenameoverride                                     => 'foobar',
           :vas_conf_libvas_use_dns_srv                          => 'false',
           :vas_conf_libvas_use_tcp_only                         => 'false',
+          :vas_conf_libvas_mscldap_timeout                      => '10',
           :vas_conf_vas_auth_uid_check_limit                    => '100000',
         }
       end
@@ -238,6 +240,7 @@ describe 'vas' do
  vascache-ipc-timeout = 15
  use-server-referrals = true
  site-name-override = foobar
+ mscldap-timeout = 10
  use-dns-srv = false
  use-tcp-only = false
  auth-helper-timeout = 120
