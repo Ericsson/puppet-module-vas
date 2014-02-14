@@ -35,6 +35,7 @@ class vas (
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_libvas_auth_helper_timeout                  = 10,
+  $vas_conf_libvas_mscldap_timeout                      = 1,
   $vas_conf_libvas_use_dns_srv                          = true,
   $vas_conf_libvas_use_tcp_only                         = true,
   $vas_config_path                                      = '/etc/opt/quest/vas/vas.conf',
