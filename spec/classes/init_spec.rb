@@ -198,7 +198,11 @@ describe 'vas' do
           :vas_conf_vasd_timesync_interval                      => '0',
           :vas_conf_vasd_auto_ticket_renew_interval             => '540',
           :vas_conf_vasd_password_change_script                 => '/opt/quest/libexec/vas-set-samba-password',
-          :vas_conf_vasd_workstation_mode                       => true,
+          :vas_conf_vasd_workstation_mode                       => 'true',
+          :vas_conf_vasd_workstation_mode_users_preload         => 'usergroup',
+          :vas_conf_vasd_workstation_mode_group_do_member       => 'true',
+          :vas_conf_vasd_workstation_mode_groups_skip_update    => 'true',
+          :vas_conf_vasd_ws_resolve_uid                         => 'true',
           :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
           :vas_conf_libvas_auth_helper_timeout                  => '120',
@@ -261,6 +265,10 @@ describe 'vas' do
  update-interval = 1200
  upm-search-path = ou=site,ou=users,dc=example,dc=com
  workstation-mode = true
+ workstation-mode-users-preload = usergroup
+ workstation-mode-group-do-member = true
+ workstation-mode-groups-skip-update = true
+ ws-resolve-uid = true
  auto-ticket-renew-interval = 540
  lazy-cache-update-interval = 5
  cross-domain-user-groups-member-search = true
