@@ -171,6 +171,12 @@ Integer for number of seconds to set value of auto-ticket-renew-interval in [vas
 
 - *Default*: 32400
 
+vas_conf_vasd_lazy_cache_update_interval
+----------------------------------------
+Integer for number of minutes for the value of lazy-cache-update-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 10
+
 vas_conf_vasd_timesync_interval
 -------------------------------
 Integer for number of seconds to set value of timesync-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
@@ -196,6 +202,42 @@ Integer for number of seconds to set value of password-change-script-timelimit i
 
 - *Default*: 'UNSET'
 
+vas_conf_vasd_workstation_mode
+------------------------------
+Boolean to control whether or not vasd operates in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_workstation_mode
+------------------------------
+Boolean to control whether or not vasd operates in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_workstation_mode_users_preload
+--------------------------------------------
+Comma separated list of groups for preloading users in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_workstation_mode_group_do_member
+----------------------------------------------
+Boolean to control if vasd should process group memberships in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_workstation_mode_groups_skip_update
+-------------------------------------------------
+Boolean that can be used to reduce the number of updates by vasd in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_ws_resolve_uid
+----------------------------
+Boolean to control whether vasd will resolve unknown UIDs when in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
 vas_conf_pam_vas_prompt_ad_lockout_msg
 --------------------------------------
 prompt-ad-lockout-msg option in vas.conf. See VAS.CONF(5) for more info.
@@ -219,6 +261,12 @@ vas_conf_libvas_auth_helper_timeout
 Integer for number of seconds to set value of auth-helper-timeout in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 10
+
+vas_conf_libvas_mscldap_timeout
+-------------------------------
+Integer to control the timeout when performing a MSCLDAP ping against AD Domain Controllers. See VAS.CONF(5) for more info.
+
+- *Default*: 1
 
 vas_conf_libvas_use_dns_srv
 ---------------------------
