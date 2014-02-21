@@ -53,6 +53,9 @@ class vas (
   $solaris_vasgppath                                    = 'UNSET',
   $solaris_adminpath                                    = 'UNSET',
   $solaris_responsepattern                              = 'UNSET',
+  $vastool_binary                                       = '/opt/quest/bin/vastool',
+  $symlink_vastool_binary_target                        = '/usr/bin/vastool',
+  $symlink_vastool_binary                               = false,
 ) {
 
   # validate params
@@ -199,5 +202,25 @@ class vas (
     timeout => 1800,
     creates => $once_file,
     require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
+  }
+
+  if type($symlink_vastool_binary) == 'string' {
+    $symlink_vastool_binary_bool = str2bool($symlink_vastool_binary)
+  } else {
+    $symlink_vastool_binary_bool = $symlink_vastool_binary
+  }
+  validate_bool($symlink_vastool_binary_bool)
+
+  # optionally create symlinks to vastool binary
+  if $symlink_vastool_binary_bool == true {
+    # validate params
+    validate_absolute_path($symlink_vastool_binary_target)
+    validate_absolute_path($vastool_binary)
+
+    file { 'vastool_symlink':
+      ensure => link,
+      path   => $symlink_vastool_binary_target,
+      target => $vastool_binary,
+    }
   }
 }

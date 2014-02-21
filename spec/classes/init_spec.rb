@@ -499,4 +499,79 @@ jdoe@example.com::::::/bin/sh
 
   end
 
+  describe 'with symlink_vastool_binary' do
+    ['true',true].each do |value|
+      context "set to #{value} (default)" do
+        let(:facts) { { :kernel            => 'Linux',
+                        :osfamily          => 'Redhat',
+                        :lsbmajdistrelease => 6,
+                    } }
+        let(:params) do
+          { :symlink_vastool_binary => value, }
+        end
+
+        it {
+          should contain_file('vastool_symlink').with({
+            'path'    => '/usr/bin/vastool',
+            'target'  => '/opt/quest/bin/vastool',
+            'ensure'  => 'link',
+          })
+        }
+      end
+    end
+
+    ['false',false].each do |value|
+      context "set to #{value} (default)" do
+        let(:facts) { { :kernel            => 'Linux',
+                        :osfamily          => 'Redhat',
+                        :lsbmajdistrelease => 6,
+                    } }
+        let(:params) do
+          { :symlink_vastool_binary => value, }
+        end
+
+        it { should_not contain_file('vastool_symlink') }
+      end
+    end
+
+    context 'enabled with all params specified' do
+      let(:facts) { { :kernel            => 'Linux',
+                      :osfamily          => 'Redhat',
+                      :lsbmajdistrelease => 6,
+                  } }
+      let(:params) do
+        { :symlink_vastool_binary        => true,
+          :vastool_binary                => '/foo/bar',
+          :symlink_vastool_binary_target => '/bar',
+        }
+      end
+
+      it {
+        should contain_file('vastool_symlink').with({
+          'path'    => '/bar',
+          'target'  => '/foo/bar',
+          'ensure'  => 'link',
+        })
+      }
+    end
+
+    context 'enabled with invalid vastool_binary' do
+      let(:params) { { :symlink_vastool_binary        => true,
+                       :vastool_binary                => 'true',
+                       :symlink_vastool_binary_target => '/bar' } }
+      it do
+        expect { should }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'enabled with invalid symlink_vastool_binary_target' do
+      let(:params) { { :symlink_vastool_binary        => true,
+                       :vastool_binary                => '/foo/bar',
+                       :symlink_vastool_binary_target => 'undef' } }
+      it do
+        expect { should }.to raise_error(Puppet::Error)
+      end
+    end
+  end
+
 end
