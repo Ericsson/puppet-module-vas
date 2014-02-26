@@ -26,7 +26,7 @@ class vas (
   $vas_conf_vasd_update_interval                        = '600',
   $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
   $vas_conf_vasd_lazy_cache_update_interval             = '10',
-  $vas_conf_vasd_timesync_interval                      = 'UNSET',
+  $vas_conf_vasd_timesync_interval                      = 'USE_DEFAULTS',
   $vas_conf_vasd_cross_domain_user_groups_member_search = 'UNSET',
   $vas_conf_vasd_password_change_script                 = 'UNSET',
   $vas_conf_vasd_password_change_script_timelimit       = 'UNSET',
@@ -116,8 +116,20 @@ class vas (
   }
 
 
-  if $::virtual == 'zone' {
-    $vas_conf_vasd_timesync_interval = 0
+  case $::virtual {
+    'zone': {
+      $default_vas_conf_vasd_timesync_interval = 0
+    }
+    default: {
+      $default_vas_conf_vasd_timesync_interval = 'UNSET'
+    }
+  }
+
+  # Use defaults if a value was not specified in Hiera.
+  if $vas_conf_vasd_timesync_interval == 'USE_DEFAULTS' {
+    $vas_conf_vasd_timesync_interval_real = $default_vas_conf_vasd_timesync_interval
+  } else {
+    $vas_conf_vasd_timesync_interval_real = $vas_conf_vasd_timesync_interval
   }
 
   case $::kernel {
