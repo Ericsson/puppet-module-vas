@@ -40,6 +40,7 @@ class vas (
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_libvas_auth_helper_timeout                  = 10,
   $vas_conf_libvas_mscldap_timeout                      = 1,
+  $vas_conf_libvas_site_only_servers                    = false,
   $vas_conf_libvas_use_dns_srv                          = true,
   $vas_conf_libvas_use_tcp_only                         = true,
   $vas_config_path                                      = '/etc/opt/quest/vas/vas.conf',
@@ -90,6 +91,12 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = str2bool($vas_conf_libvas_use_tcp_only)
   } else {
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
+  }
+
+  if type($vas_conf_libvas_site_only_servers) == 'string' {
+    $vas_conf_libvas_site_only_serevrs = str2bool($vas_conf_libvas_site_only_servers)
+  } else {
+    $vas_conf_libvas_site_only_servers = $vas_conf_libvas_site_only_servers 
   }
 
   if type($vas_conf_vasd_workstation_mode) == 'string' {
