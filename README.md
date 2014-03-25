@@ -268,6 +268,12 @@ Integer to control the timeout when performing a MSCLDAP ping against AD Domain 
 
 - *Default*: 1
 
+vas_conf_libvas_site_only_servers
+---------------------------------
+Boolean to set valut of site-only-servers in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
 vas_conf_libvas_use_dns_srv
 ---------------------------
 Boolean to set value of use-dns-srv in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
