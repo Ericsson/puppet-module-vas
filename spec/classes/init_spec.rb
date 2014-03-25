@@ -115,6 +115,7 @@ describe 'vas' do
  use-dns-srv = true
  use-tcp-only = true
  auth-helper-timeout = 10
+ site-only-servers = false
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
@@ -210,6 +211,7 @@ describe 'vas' do
           :vas_conf_libvas_use_dns_srv                          => 'false',
           :vas_conf_libvas_use_tcp_only                         => 'false',
           :vas_conf_libvas_mscldap_timeout                      => '10',
+          :vas_conf_libvas_site_only_servers                    => 'false',
           :vas_conf_vas_auth_uid_check_limit                    => '100000',
         }
       end
@@ -248,6 +250,7 @@ describe 'vas' do
  use-dns-srv = false
  use-tcp-only = false
  auth-helper-timeout = 120
+ site-only-servers = false
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
@@ -384,6 +387,27 @@ describe 'vas' do
       end
       let :params do
         { :vas_conf_libvas_use_tcp_only => 'invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'with vas_conf_libvas_site_only_servers set to invalid non-boolean string' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_site_only_servers => 'invalid' }
       end
 
       it 'should fail' do
