@@ -51,6 +51,14 @@ List of users.allow entries. All users are allowed by default.
 
 - *Default*: ['UNSET']
 
+users_allow_hiera_array
+-----------------------
+Boolean to control merges of all found instances of vas::users_allow_entries in Hiera. This is useful for specifying users.allow entries at different levels of the hierarchy and having them all included in the catalog.
+
+This will default to 'true' in future versions.
+
+- *Default*: false
+
 user_override_entries
 ---------------------
 List of user-override entries. Used to override specific user data fields; UID, GID, GECOS, HOME_DIR and SHELL.

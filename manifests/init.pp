@@ -5,6 +5,7 @@
 class vas (
   $package_version                                      = undef,
   $users_allow_entries                                  = ['UNSET'],
+  $users_allow_hiera_array                              = false,
   $user_override_entries                                = ['UNSET'],
   $username                                             = 'username',
   $keytab_path                                          = '/etc/vasinst.key',
@@ -74,6 +75,13 @@ class vas (
   if !is_domain_name($vas_fqdn) {
     fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
   }
+
+  if type($users_allow_hiera_array) == 'string' {
+    $users_allow_hiera_array_real = str2bool($users_allow_hiera_array)
+  } else {
+    $users_allow_hiera_array_real = $users_allow_hiera_array
+  }
+  validate_bool($users_allow_hiera_array_real)
 
   if type($vas_conf_libdefaults_forwardable) == 'string' {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
@@ -171,6 +179,12 @@ class vas (
     $package_ensure = 'installed'
   } else {
     $package_ensure = $package_version
+  }
+
+  if $users_allow_hiera_array_real == true {
+    $users_allow_entries_real = hiera_array('vas::users_allow_entries')
+  } else {
+    $users_allow_entries_real = $users_allow_entries
   }
 
   package { 'vasclnt':
