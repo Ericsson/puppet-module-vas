@@ -5,7 +5,7 @@
 class vas (
   $package_version                                      = undef,
   $users_allow_entries                                  = ['UNSET'],
-  $users_allow_hiera_array                              = false,
+  $users_allow_hiera_merge                              = false,
   $user_override_entries                                = ['UNSET'],
   $username                                             = 'username',
   $keytab_path                                          = '/etc/vasinst.key',
@@ -76,12 +76,12 @@ class vas (
     fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
   }
 
-  if type($users_allow_hiera_array) == 'string' {
-    $users_allow_hiera_array_real = str2bool($users_allow_hiera_array)
+  if type($users_allow_hiera_merge) == 'string' {
+    $users_allow_hiera_merge_real = str2bool($users_allow_hiera_merge)
   } else {
-    $users_allow_hiera_array_real = $users_allow_hiera_array
+    $users_allow_hiera_merge_real = $users_allow_hiera_merge
   }
-  validate_bool($users_allow_hiera_array_real)
+  validate_bool($users_allow_hiera_merge_real)
 
   if type($vas_conf_libdefaults_forwardable) == 'string' {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
@@ -181,7 +181,7 @@ class vas (
     $package_ensure = $package_version
   }
 
-  if $users_allow_hiera_array_real == true {
+  if $users_allow_hiera_merge_real == true {
     $users_allow_entries_real = hiera_array('vas::users_allow_entries')
   } else {
     $users_allow_entries_real = $users_allow_entries
