@@ -12,7 +12,9 @@ This module has been tested to work on the following systems using Puppet v3 and
 
  * EL 5
  * EL 6
+ * Solaris 9
  * Solaris 10
+ * Solaris 11
 
 When using the users.allow functionality in VAS, make sure to set the following option:
 
