@@ -1,5 +1,6 @@
 fixtures:
   repositories:
+    'common': 'git://github.com/ghoneycutt/puppet-module-common.git'
     'pam': 'git://github.com/ghoneycutt/puppet-module-pam.git'
     'nsswitch': 'git://github.com/ghoneycutt/puppet-module-nsswitch.git'
     'nisclient': 'git://github.com/Ericsson/puppet-module-nisclient.git'
