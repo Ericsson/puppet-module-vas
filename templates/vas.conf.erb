@@ -28,7 +28,7 @@
  site-only-servers = <%= @vas_conf_libvas_site_only_servers_real %>
 
 [pam_vas]
- prompt-vas-ad-pw = "Enter Windows password: "
+ prompt-vas-ad-pw = <%= @vas_conf_prompt_vas_ad_pw %>
 <% if @vas_conf_pam_vas_prompt_ad_lockout_msg != 'UNSET' -%>
  prompt-ad-lockout-msg = "<%= @vas_conf_pam_vas_prompt_ad_lockout_msg %>"
 <% end -%>
@@ -82,7 +82,9 @@
  group-update-mode = none
  root-update-mode = none
 
-[vas_auth]
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
+[vas_auth]
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
+<% else -%>
+#[vas_auth]
 <% end -%>
