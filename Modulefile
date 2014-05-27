@@ -1,5 +1,5 @@
 name 'ericsson-vas'
-version '0.7.0'
+version '0.8.0'
 source 'https://github.com/Ericsson/puppet-module-vas.git'
 author 'ericsson'
 license 'Apache License, Version 2.0'

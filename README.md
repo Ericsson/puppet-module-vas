@@ -2,7 +2,7 @@
 
 Puppet module to manage VAS - Quest Authentication Services
 
-[![Build Status](https://api.travis-ci.org/Ericsson/puppet-module-vas.png?branch=master)](https://travis-ci.org/Ericsson/puppet-module-vas)
+[![Build Status](https://api.travis-ci.org/Ericsson/puppet-module-vas.png)](https://travis-ci.org/Ericsson/puppet-module-vas)
 
 ===
 
@@ -12,6 +12,9 @@ This module has been tested to work on the following systems using Puppet v3 and
 
  * EL 5
  * EL 6
+ * Suse 10
+ * Suse 11
+ * Ubuntu 12.04
  * Solaris 9
  * Solaris 10
  * Solaris 11
@@ -35,7 +38,6 @@ vas::computers_ou: 'ou=computers,dc=example,dc=com'
 vas::users_ou: 'ou=users,dc=example,dc=com'
 vas::nismaps_ou: 'ou=nismaps,dc=example,dc=com'
 vas::realm: 'realm.example.com'
-vas::vas_conf_upm_computerou_attr: 'department'
 </pre>
 
 # Parameters
