@@ -248,6 +248,12 @@ Boolean to control whether vasd will resolve unknown UIDs when in Workstation mo
 
 - *Default*: false
 
+vas_conf_prompt_vas_ad_pw
+-------------------------
+prompt-vas-ad-pw option in vas.conf. Sets the password prompt for logins.
+
+- *Default*: '"Enter Windows password: "'
+
 vas_conf_pam_vas_prompt_ad_lockout_msg
 --------------------------------------
 prompt-ad-lockout-msg option in vas.conf. See VAS.CONF(5) for more info.
