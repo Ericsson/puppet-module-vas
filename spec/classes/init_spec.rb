@@ -139,7 +139,7 @@ describe 'vas' do
  group-update-mode = none
  root-update-mode = none
 
-[vas_auth]
+#[vas_auth]
 })
       end
       it do
@@ -188,6 +188,7 @@ describe 'vas' do
           :users_ou                                             => 'ou=site,ou=users,dc=example,dc=com',
           :realm                                                => 'realm2.example.com',
           :nisdomainname                                        => 'nis.domain',
+          :vas_conf_prompt_vas_ad_pw                            => 'Enter pw',
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
           :vas_conf_libdefaults_forwardable                     => 'false',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
@@ -253,7 +254,7 @@ describe 'vas' do
  site-only-servers = false
 
 [pam_vas]
- prompt-vas-ad-pw = "Enter Windows password: "
+ prompt-vas-ad-pw = Enter pw
  prompt-ad-lockout-msg = "Account is locked"
 
 [vasypd]
@@ -351,6 +352,27 @@ describe 'vas' do
         expect {
           should include_class('vas')
         }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_update_interval must be an integer. Detected value is <600invalid>./)
+      end
+    end
+
+    context 'with vas_conf_prompt_vas_ad_pw set to invalid type (non-string)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_prompt_vas_ad_pw => ['array'] }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/is not a string/)
       end
     end
 

@@ -36,6 +36,7 @@ class vas (
   $vas_conf_vasd_workstation_mode_group_do_member       = false,
   $vas_conf_vasd_workstation_mode_groups_skip_update    = false,
   $vas_conf_vasd_ws_resolve_uid                         = false,
+  $vas_conf_prompt_vas_ad_pw                             = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
@@ -71,6 +72,7 @@ class vas (
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
+  validate_string($vas_conf_prompt_vas_ad_pw)
 
   if !is_domain_name($vas_fqdn) {
     fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
