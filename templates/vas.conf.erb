@@ -46,6 +46,7 @@
 <% end -%>
 
 [vasd]
+ lazy-cache-update-interval = <%= @vas_conf_vasd_lazy_cache_update_interval %>
  update-interval = <%= @vas_conf_vasd_update_interval %>
  upm-search-path = <%= @users_ou %>
  workstation-mode = <%= @vas_conf_vasd_workstation_mode_real %>
@@ -58,7 +59,6 @@
  ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
 <% end -%>
  auto-ticket-renew-interval = <%= @vas_conf_vasd_auto_ticket_renew_interval %>
- lazy-cache-update-interval = <%= @vas_conf_vasd_lazy_cache_update_interval %>
 <% if @vas_conf_vasd_cross_domain_user_groups_member_search != 'UNSET' -%>
  cross-domain-user-groups-member-search = <%= @vas_conf_vasd_cross_domain_user_groups_member_search %>
 <% end -%>
@@ -81,6 +81,12 @@
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+<% if @vas_conf_disabled_user_pwhash != nil -%>
+ disabled-user-pwhash = <%= @vas_conf_disabled_user_pwhash  %>
+<% end -%>
+<% if @vas_conf_locked_out_pwhash != nil -%>
+ locked-out-pwhash = <%= @vas_conf_locked_out_pwhash %>
+<% end -%>
 
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
 [vas_auth]

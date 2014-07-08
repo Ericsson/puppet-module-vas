@@ -128,11 +128,11 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ lazy-cache-update-interval = 10
  update-interval = 600
  upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
- lazy-cache-update-interval = 10
  upm-computerou-attr = department
 
 [nss_vas]
@@ -192,6 +192,8 @@ describe 'vas' do
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
           :vas_conf_libdefaults_forwardable                     => 'false',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
+          :vas_conf_disabled_user_pwhash                        => 'disabled',
+          :vas_conf_locked_out_pwhash                           => 'locked',
           :vas_conf_update_process                              => '/opt/quest/libexec/vas/mapupdate',
           :vas_conf_vasd_update_interval                        => '1200',
           :vas_conf_upm_computerou_attr                         => 'managedBy',
@@ -266,6 +268,7 @@ describe 'vas' do
  client-addrs = 10.10.0.0/24 10.50.0.0/24
 
 [vasd]
+ lazy-cache-update-interval = 5
  update-interval = 1200
  upm-search-path = ou=site,ou=users,dc=example,dc=com
  workstation-mode = true
@@ -274,7 +277,6 @@ describe 'vas' do
  workstation-mode-groups-skip-update = true
  ws-resolve-uid = true
  auto-ticket-renew-interval = 540
- lazy-cache-update-interval = 5
  cross-domain-user-groups-member-search = true
  timesync-interval = 0
  preload-nested-memberships = false
@@ -285,6 +287,8 @@ describe 'vas' do
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+ disabled-user-pwhash = disabled
+ locked-out-pwhash = locked
 
 [vas_auth]
  uid-check-limit = 100000
@@ -367,6 +371,48 @@ describe 'vas' do
       end
       let :params do
         { :vas_conf_prompt_vas_ad_pw => ['array'] }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/is not a string/)
+      end
+    end
+
+    context 'with vas_conf_disabled_user_pwhash set to invalid type (non-string)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_disabled_user_pwhash => ['array'] }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/is not a string/)
+      end
+    end
+
+    context 'with vas_conf_locked_out_pwhash set to invalid type (non-string)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_locked_out_pwhash => ['array'] }
       end
 
       it 'should fail' do

@@ -152,6 +152,18 @@ client-addrs option in vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 'UNSET'
 
+vas_conf_disabled_user_pwhash
+-----------------------------
+String to be used for disabled-user-pwhash option in vas.conf. If undef, line will be suppressed.
+
+- *Default*: undef
+
+vas_conf_locked_out_pwhash
+--------------------------
+String to be used for locked-out-pwhash option in vas.conf. If undef, line will be suppressed.
+
+- *Default*: undef
+
 vas_conf_preload_nested_memberships
 -----------------------------------
 preload-nested-membership option in vas.conf. Set this to 'false' to speed up
