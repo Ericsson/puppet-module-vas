@@ -128,11 +128,11 @@ describe 'vas' do
  update-process = /opt/quest/libexec/vas/mapupdate_2307
 
 [vasd]
+ lazy-cache-update-interval = 10
  update-interval = 600
  upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
- lazy-cache-update-interval = 10
  upm-computerou-attr = department
 
 [nss_vas]
@@ -268,6 +268,7 @@ describe 'vas' do
  client-addrs = 10.10.0.0/24 10.50.0.0/24
 
 [vasd]
+ lazy-cache-update-interval = 5
  update-interval = 1200
  upm-search-path = ou=site,ou=users,dc=example,dc=com
  workstation-mode = true
@@ -276,7 +277,6 @@ describe 'vas' do
  workstation-mode-groups-skip-update = true
  ws-resolve-uid = true
  auto-ticket-renew-interval = 540
- lazy-cache-update-interval = 5
  cross-domain-user-groups-member-search = true
  timesync-interval = 0
  preload-nested-memberships = false
