@@ -81,6 +81,12 @@
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
+<% if @vas_conf_disabled_user_pwhash != nil -%>
+ disabled-user-pwhash = <%= @vas_conf_disabled_user_pwhash  %>
+<% end -%>
+<% if @vas_conf_locked_out_pwhash != nil -%>
+ locked-out-pwhash = <%= @vas_conf_locked_out_pwhash %>
+<% end -%>
 
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
 [vas_auth]
