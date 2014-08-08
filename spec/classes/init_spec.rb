@@ -109,11 +109,13 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ vascache-ipc-timeout = 15
+ use-server-referrals = true
+ mscldap-timeout = 1
  use-dns-srv = true
  use-tcp-only = true
  auth-helper-timeout = 10
- use-server-referrals = true
- vascache-ipc-timeout = 15
+ site-only-servers = false
 
 [pam_vas]
  prompt-vas-ad-pw = "Enter Windows password: "
@@ -137,7 +139,7 @@ describe 'vas' do
  group-update-mode = none
  root-update-mode = none
 
-[vas_auth]
+#[vas_auth]
 })
       end
       it do
@@ -186,6 +188,7 @@ describe 'vas' do
           :users_ou                                             => 'ou=site,ou=users,dc=example,dc=com',
           :realm                                                => 'realm2.example.com',
           :nisdomainname                                        => 'nis.domain',
+          :vas_conf_prompt_vas_ad_pw                            => 'Enter pw',
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
           :vas_conf_libdefaults_forwardable                     => 'false',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
@@ -197,11 +200,19 @@ describe 'vas' do
           :vas_conf_vasd_timesync_interval                      => '0',
           :vas_conf_vasd_auto_ticket_renew_interval             => '540',
           :vas_conf_vasd_password_change_script                 => '/opt/quest/libexec/vas-set-samba-password',
+          :vas_conf_vasd_workstation_mode                       => 'true',
+          :vas_conf_vasd_workstation_mode_users_preload         => 'usergroup',
+          :vas_conf_vasd_workstation_mode_group_do_member       => 'true',
+          :vas_conf_vasd_workstation_mode_groups_skip_update    => 'true',
+          :vas_conf_vasd_ws_resolve_uid                         => 'true',
+          :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
           :vas_conf_libvas_auth_helper_timeout                  => '120',
           :sitenameoverride                                     => 'foobar',
           :vas_conf_libvas_use_dns_srv                          => 'false',
           :vas_conf_libvas_use_tcp_only                         => 'false',
+          :vas_conf_libvas_mscldap_timeout                      => '10',
+          :vas_conf_libvas_site_only_servers                    => 'false',
           :vas_conf_vas_auth_uid_check_limit                    => '100000',
         }
       end
@@ -233,15 +244,17 @@ describe 'vas' do
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
+ vascache-ipc-timeout = 15
+ use-server-referrals = true
  site-name-override = foobar
+ mscldap-timeout = 10
  use-dns-srv = false
  use-tcp-only = false
  auth-helper-timeout = 120
- use-server-referrals = true
- vascache-ipc-timeout = 15
+ site-only-servers = false
 
 [pam_vas]
- prompt-vas-ad-pw = "Enter Windows password: "
+ prompt-vas-ad-pw = Enter pw
  prompt-ad-lockout-msg = "Account is locked"
 
 [vasypd]
@@ -255,9 +268,13 @@ describe 'vas' do
 [vasd]
  update-interval = 1200
  upm-search-path = ou=site,ou=users,dc=example,dc=com
- workstation-mode = false
+ workstation-mode = true
+ workstation-mode-users-preload = usergroup
+ workstation-mode-group-do-member = true
+ workstation-mode-groups-skip-update = true
+ ws-resolve-uid = true
  auto-ticket-renew-interval = 540
- lazy-cache-update-interval = 10
+ lazy-cache-update-interval = 5
  cross-domain-user-groups-member-search = true
  timesync-interval = 0
  preload-nested-memberships = false
@@ -338,6 +355,27 @@ describe 'vas' do
       end
     end
 
+    context 'with vas_conf_prompt_vas_ad_pw set to invalid type (non-string)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_prompt_vas_ad_pw => ['array'] }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/is not a string/)
+      end
+    end
+
     context 'with vas_conf_libvas_use_dns_srv set to invalid non-boolean string' do
       let :facts do
         {
@@ -371,6 +409,27 @@ describe 'vas' do
       end
       let :params do
         { :vas_conf_libvas_use_tcp_only => 'invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'with vas_conf_libvas_site_only_servers set to invalid non-boolean string' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_site_only_servers => 'invalid' }
       end
 
       it 'should fail' do
@@ -497,6 +556,81 @@ jdoe@example.com::::::/bin/sh
       end
     end
 
+  end
+
+  describe 'with symlink_vastool_binary' do
+    ['true',true].each do |value|
+      context "set to #{value} (default)" do
+        let(:facts) { { :kernel            => 'Linux',
+                        :osfamily          => 'Redhat',
+                        :lsbmajdistrelease => 6,
+                    } }
+        let(:params) do
+          { :symlink_vastool_binary => value, }
+        end
+
+        it {
+          should contain_file('vastool_symlink').with({
+            'path'    => '/usr/bin/vastool',
+            'target'  => '/opt/quest/bin/vastool',
+            'ensure'  => 'link',
+          })
+        }
+      end
+    end
+
+    ['false',false].each do |value|
+      context "set to #{value} (default)" do
+        let(:facts) { { :kernel            => 'Linux',
+                        :osfamily          => 'Redhat',
+                        :lsbmajdistrelease => 6,
+                    } }
+        let(:params) do
+          { :symlink_vastool_binary => value, }
+        end
+
+        it { should_not contain_file('vastool_symlink') }
+      end
+    end
+
+    context 'enabled with all params specified' do
+      let(:facts) { { :kernel            => 'Linux',
+                      :osfamily          => 'Redhat',
+                      :lsbmajdistrelease => 6,
+                  } }
+      let(:params) do
+        { :symlink_vastool_binary        => true,
+          :vastool_binary                => '/foo/bar',
+          :symlink_vastool_binary_target => '/bar',
+        }
+      end
+
+      it {
+        should contain_file('vastool_symlink').with({
+          'path'    => '/bar',
+          'target'  => '/foo/bar',
+          'ensure'  => 'link',
+        })
+      }
+    end
+
+    context 'enabled with invalid vastool_binary' do
+      let(:params) { { :symlink_vastool_binary        => true,
+                       :vastool_binary                => 'true',
+                       :symlink_vastool_binary_target => '/bar' } }
+      it do
+        expect { should }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'enabled with invalid symlink_vastool_binary_target' do
+      let(:params) { { :symlink_vastool_binary        => true,
+                       :vastool_binary                => '/foo/bar',
+                       :symlink_vastool_binary_target => 'undef' } }
+      it do
+        expect { should }.to raise_error(Puppet::Error)
+      end
+    end
   end
 
 end

@@ -2,7 +2,7 @@
 
 Puppet module to manage VAS - Quest Authentication Services
 
-[![Build Status](https://api.travis-ci.org/Ericsson/puppet-module-vas.png?branch=master)](https://travis-ci.org/Ericsson/puppet-module-vas)
+[![Build Status](https://api.travis-ci.org/Ericsson/puppet-module-vas.png)](https://travis-ci.org/Ericsson/puppet-module-vas)
 
 ===
 
@@ -12,7 +12,12 @@ This module has been tested to work on the following systems using Puppet v3 and
 
  * EL 5
  * EL 6
+ * Suse 10
+ * Suse 11
+ * Ubuntu 12.04
+ * Solaris 9
  * Solaris 10
+ * Solaris 11
 
 When using the users.allow functionality in VAS, make sure to set the following option:
 
@@ -33,7 +38,6 @@ vas::computers_ou: 'ou=computers,dc=example,dc=com'
 vas::users_ou: 'ou=users,dc=example,dc=com'
 vas::nismaps_ou: 'ou=nismaps,dc=example,dc=com'
 vas::realm: 'realm.example.com'
-vas::vas_conf_upm_computerou_attr: 'department'
 </pre>
 
 # Parameters
@@ -50,6 +54,14 @@ users_allow_entries
 List of users.allow entries. All users are allowed by default.
 
 - *Default*: ['UNSET']
+
+users_allow_hiera_merge
+-----------------------
+Boolean to control merges of all found instances of vas::users_allow_entries in Hiera. This is useful for specifying users.allow entries at different levels of the hierarchy and having them all included in the catalog.
+
+This will default to 'true' in future versions.
+
+- *Default*: false
 
 user_override_entries
 ---------------------
@@ -171,6 +183,12 @@ Integer for number of seconds to set value of auto-ticket-renew-interval in [vas
 
 - *Default*: 32400
 
+vas_conf_vasd_lazy_cache_update_interval
+----------------------------------------
+Integer for number of minutes for the value of lazy-cache-update-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 10
+
 vas_conf_vasd_timesync_interval
 -------------------------------
 Integer for number of seconds to set value of timesync-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
@@ -196,6 +214,48 @@ Integer for number of seconds to set value of password-change-script-timelimit i
 
 - *Default*: 'UNSET'
 
+vas_conf_vasd_workstation_mode
+------------------------------
+Boolean to control whether or not vasd operates in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_workstation_mode
+------------------------------
+Boolean to control whether or not vasd operates in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_workstation_mode_users_preload
+--------------------------------------------
+Comma separated list of groups for preloading users in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_workstation_mode_group_do_member
+----------------------------------------------
+Boolean to control if vasd should process group memberships in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_workstation_mode_groups_skip_update
+-------------------------------------------------
+Boolean that can be used to reduce the number of updates by vasd in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_vasd_ws_resolve_uid
+----------------------------
+Boolean to control whether vasd will resolve unknown UIDs when in Workstation mode. See VAS.CONF(5) for more info.
+
+- *Default*: false
+
+vas_conf_prompt_vas_ad_pw
+-------------------------
+prompt-vas-ad-pw option in vas.conf. Sets the password prompt for logins.
+
+- *Default*: '"Enter Windows password: "'
+
 vas_conf_pam_vas_prompt_ad_lockout_msg
 --------------------------------------
 prompt-ad-lockout-msg option in vas.conf. See VAS.CONF(5) for more info.
@@ -219,6 +279,18 @@ vas_conf_libvas_auth_helper_timeout
 Integer for number of seconds to set value of auth-helper-timeout in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 10
+
+vas_conf_libvas_mscldap_timeout
+-------------------------------
+Integer to control the timeout when performing a MSCLDAP ping against AD Domain Controllers. See VAS.CONF(5) for more info.
+
+- *Default*: 1
+
+vas_conf_libvas_site_only_servers
+---------------------------------
+Boolean to set valut of site-only-servers in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: false
 
 vas_conf_libvas_use_dns_srv
 ---------------------------
@@ -337,3 +409,21 @@ solaris_adminpath
 solaris_responsepattern
 -----------------------
 - *Default*: 'UNSET'
+
+vastool_binary
+-------------
+Path to vastool binary to create symlink from
+
+- *Default*: '/opt/quest/bin/vastool'
+
+symlink_vastool_binary_target
+----------------------------
+Path to where the symlink should be created
+
+- *Default*: '/usr/bin/vastool'
+
+symlink_vastool_binary
+---------------------
+Boolean for ensuring a symlink for vastool_binary to symlink_vastool_binary_target. This is useful since /opt/quest/bin is a non-standard location that is not in your $PATH.
+
+- *Default*: false

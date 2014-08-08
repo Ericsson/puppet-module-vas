@@ -1,78 +1,90 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
- <%= @vas_fqdn %> = <%= realm.upcase %>
+ <%= @vas_fqdn %> = <%= @realm.upcase %>
 
 [libdefaults]
- default_realm = <%= realm.upcase %>
+ default_realm = <%= @realm.upcase %>
  default_tgs_enctypes = arcfour-hmac-md5
  default_tkt_enctypes = arcfour-hmac-md5
  default_etypes_des = des-cbc-crc
  default_etypes = arcfour-hmac-md5
- forwardable = <%= vas_conf_libdefaults_forwardable_real %>
+ forwardable = <%= @vas_conf_libdefaults_forwardable_real %>
  renew_lifetime = 604800
 
  ticket_lifetime = 36000
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
-<% if sitenameoverride != 'UNSET' -%>
- site-name-override = <%= sitenameoverride %>
+ vascache-ipc-timeout = 15
+ use-server-referrals = true
+<% if @sitenameoverride != 'UNSET' -%>
+ site-name-override = <%= @sitenameoverride %>
 <% end -%>
+ mscldap-timeout = <%= @vas_conf_libvas_mscldap_timeout %>
  use-dns-srv = <%= @vas_conf_libvas_use_dns_srv_real %>
  use-tcp-only = <%= @vas_conf_libvas_use_tcp_only_real %>
  auth-helper-timeout = <%= @vas_conf_libvas_auth_helper_timeout %>
- use-server-referrals = true
- vascache-ipc-timeout = 15
+ site-only-servers = <%= @vas_conf_libvas_site_only_servers_real %>
 
 [pam_vas]
- prompt-vas-ad-pw = "Enter Windows password: "
-<% if vas_conf_pam_vas_prompt_ad_lockout_msg != 'UNSET' -%>
- prompt-ad-lockout-msg = "<%= vas_conf_pam_vas_prompt_ad_lockout_msg %>"
+ prompt-vas-ad-pw = <%= @vas_conf_prompt_vas_ad_pw %>
+<% if @vas_conf_pam_vas_prompt_ad_lockout_msg != 'UNSET' -%>
+ prompt-ad-lockout-msg = "<%= @vas_conf_pam_vas_prompt_ad_lockout_msg %>"
 <% end -%>
 
 [vasypd]
- search-base = <%= nismaps_ou %>
+ search-base = <%= @nismaps_ou %>
  split-groups = true
  update-interval = 1800
- domainname-override = <%= my_nisdomainname %>
-<% if !vas_conf_update_process.empty? -%>
- update-process = <%= vas_conf_update_process %>
+ domainname-override = <%= @my_nisdomainname %>
+<% if !@vas_conf_update_process.empty? -%>
+ update-process = <%= @vas_conf_update_process %>
 <% end -%>
-<% if vas_conf_client_addrs != 'UNSET' -%>
- client-addrs = <%= vas_conf_client_addrs %>
+<% if @vas_conf_client_addrs != 'UNSET' -%>
+ client-addrs = <%= @vas_conf_client_addrs %>
 <% end -%>
 
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
- upm-search-path = <%= users_ou %>
- workstation-mode = false
- auto-ticket-renew-interval = <%= vas_conf_vasd_auto_ticket_renew_interval %>
- lazy-cache-update-interval = 10
-<% if vas_conf_vasd_cross_domain_user_groups_member_search != 'UNSET' -%>
- cross-domain-user-groups-member-search = <%= vas_conf_vasd_cross_domain_user_groups_member_search %>
+ upm-search-path = <%= @users_ou %>
+ workstation-mode = <%= @vas_conf_vasd_workstation_mode_real %>
+<% if @vas_conf_vasd_workstation_mode_real -%>
+<% if @vas_conf_vasd_workstation_mode_users_preload != 'UNSET' -%>
+ workstation-mode-users-preload = <%= @vas_conf_vasd_workstation_mode_users_preload %>
 <% end -%>
-<% if vas_conf_vasd_timesync_interval != 'UNSET' -%>
- timesync-interval = <%= vas_conf_vasd_timesync_interval %>
+ workstation-mode-group-do-member = <%= @vas_conf_vasd_workstation_mode_group_do_member_real %>
+ workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update_real %>
+ ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
 <% end -%>
-<% if vas_conf_preload_nested_memberships != 'UNSET' -%>
- preload-nested-memberships = <%= vas_conf_preload_nested_memberships %>
+ auto-ticket-renew-interval = <%= @vas_conf_vasd_auto_ticket_renew_interval %>
+ lazy-cache-update-interval = <%= @vas_conf_vasd_lazy_cache_update_interval %>
+<% if @vas_conf_vasd_cross_domain_user_groups_member_search != 'UNSET' -%>
+ cross-domain-user-groups-member-search = <%= @vas_conf_vasd_cross_domain_user_groups_member_search %>
 <% end -%>
-<% if !vas_conf_upm_computerou_attr.empty?-%>
- upm-computerou-attr = <%= vas_conf_upm_computerou_attr %>
+<% if @vas_conf_vasd_timesync_interval_real != 'UNSET' -%>
+ timesync-interval = <%= @vas_conf_vasd_timesync_interval_real %>
 <% end -%>
-<% if vas_conf_vasd_password_change_script != 'UNSET' -%>
- password-change-script = <%= vas_conf_vasd_password_change_script %>
+<% if @vas_conf_preload_nested_memberships != 'UNSET' -%>
+ preload-nested-memberships = <%= @vas_conf_preload_nested_memberships %>
 <% end -%>
-<% if vas_conf_vasd_password_change_script_timelimit != 'UNSET' -%>
- password-change-script-timelimit = <%= vas_conf_vasd_password_change_script_timelimit %>
+<% if !@vas_conf_upm_computerou_attr.empty?-%>
+ upm-computerou-attr = <%= @vas_conf_upm_computerou_attr %>
+<% end -%>
+<% if @vas_conf_vasd_password_change_script != 'UNSET' -%>
+ password-change-script = <%= @vas_conf_vasd_password_change_script %>
+<% end -%>
+<% if @vas_conf_vasd_password_change_script_timelimit != 'UNSET' -%>
+ password-change-script-timelimit = <%= @vas_conf_vasd_password_change_script_timelimit %>
 <% end -%>
 
 [nss_vas]
  group-update-mode = none
  root-update-mode = none
 
+<% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
 [vas_auth]
-<% if vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
- uid-check-limit = <%= vas_conf_vas_auth_uid_check_limit %>
+ uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
+<% else -%>
+#[vas_auth]
 <% end -%>

@@ -5,6 +5,7 @@
 class vas (
   $package_version                                      = undef,
   $users_allow_entries                                  = ['UNSET'],
+  $users_allow_hiera_merge                              = false,
   $user_override_entries                                = ['UNSET'],
   $username                                             = 'username',
   $keytab_path                                          = '/etc/vasinst.key',
@@ -25,14 +26,23 @@ class vas (
   $vas_conf_upm_computerou_attr                         = 'department',
   $vas_conf_vasd_update_interval                        = '600',
   $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
-  $vas_conf_vasd_timesync_interval                      = 'UNSET',
+  $vas_conf_vasd_lazy_cache_update_interval             = '10',
+  $vas_conf_vasd_timesync_interval                      = 'USE_DEFAULTS',
   $vas_conf_vasd_cross_domain_user_groups_member_search = 'UNSET',
   $vas_conf_vasd_password_change_script                 = 'UNSET',
   $vas_conf_vasd_password_change_script_timelimit       = 'UNSET',
+  $vas_conf_vasd_workstation_mode                       = false,
+  $vas_conf_vasd_workstation_mode_users_preload         = 'UNSET',
+  $vas_conf_vasd_workstation_mode_group_do_member       = false,
+  $vas_conf_vasd_workstation_mode_groups_skip_update    = false,
+  $vas_conf_vasd_ws_resolve_uid                         = false,
+  $vas_conf_prompt_vas_ad_pw                             = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_libvas_auth_helper_timeout                  = 10,
+  $vas_conf_libvas_mscldap_timeout                      = 1,
+  $vas_conf_libvas_site_only_servers                    = false,
   $vas_conf_libvas_use_dns_srv                          = true,
   $vas_conf_libvas_use_tcp_only                         = true,
   $vas_config_path                                      = '/etc/opt/quest/vas/vas.conf',
@@ -53,16 +63,27 @@ class vas (
   $solaris_vasgppath                                    = 'UNSET',
   $solaris_adminpath                                    = 'UNSET',
   $solaris_responsepattern                              = 'UNSET',
+  $vastool_binary                                       = '/opt/quest/bin/vastool',
+  $symlink_vastool_binary_target                        = '/usr/bin/vastool',
+  $symlink_vastool_binary                               = false,
 ) {
 
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
+  validate_string($vas_conf_prompt_vas_ad_pw)
 
   if !is_domain_name($vas_fqdn) {
     fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
   }
+
+  if type($users_allow_hiera_merge) == 'string' {
+    $users_allow_hiera_merge_real = str2bool($users_allow_hiera_merge)
+  } else {
+    $users_allow_hiera_merge_real = $users_allow_hiera_merge
+  }
+  validate_bool($users_allow_hiera_merge_real)
 
   if type($vas_conf_libdefaults_forwardable) == 'string' {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
@@ -82,8 +103,50 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
   }
 
-  if $::virtual == 'zone' {
-    $vas_conf_vasd_timesync_interval = 0
+  if type($vas_conf_libvas_site_only_servers) == 'string' {
+    $vas_conf_libvas_site_only_servers_real = str2bool($vas_conf_libvas_site_only_servers)
+  } else {
+    $vas_conf_libvas_site_only_servers_real = $vas_conf_libvas_site_only_servers
+  }
+
+  if type($vas_conf_vasd_workstation_mode) == 'string' {
+    $vas_conf_vasd_workstation_mode_real = str2bool($vas_conf_vasd_workstation_mode)
+  } else {
+    $vas_conf_vasd_workstation_mode_real = $vas_conf_vasd_workstation_mode
+  }
+
+  if type($vas_conf_vasd_workstation_mode_group_do_member) == 'string' {
+    $vas_conf_vasd_workstation_mode_group_do_member_real = str2bool($vas_conf_vasd_workstation_mode_group_do_member)
+  } else {
+    $vas_conf_vasd_workstation_mode_group_do_member_real = $vas_conf_vasd_workstation_mode_group_do_member
+  }
+
+  if type($vas_conf_vasd_workstation_mode_groups_skip_update) == 'string' {
+    $vas_conf_vasd_workstation_mode_groups_skip_update_real = str2bool($vas_conf_vasd_workstation_mode_groups_skip_update)
+  } else {
+    $vas_conf_vasd_workstation_mode_groups_skip_update_real = $vas_conf_vasd_workstation_mode_groups_skip_update
+  }
+  if type($vas_conf_vasd_ws_resolve_uid) == 'string' {
+    $vas_conf_vasd_ws_resolve_uid_real = str2bool($vas_conf_vasd_ws_resolve_uid)
+  } else {
+    $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
+  }
+
+
+  case $::virtual {
+    'zone': {
+      $default_vas_conf_vasd_timesync_interval = 0
+    }
+    default: {
+      $default_vas_conf_vasd_timesync_interval = 'UNSET'
+    }
+  }
+
+  # Use defaults if a value was not specified in Hiera.
+  if $vas_conf_vasd_timesync_interval == 'USE_DEFAULTS' {
+    $vas_conf_vasd_timesync_interval_real = $default_vas_conf_vasd_timesync_interval
+  } else {
+    $vas_conf_vasd_timesync_interval_real = $vas_conf_vasd_timesync_interval
   }
 
   case $::kernel {
@@ -118,6 +181,12 @@ class vas (
     $package_ensure = 'installed'
   } else {
     $package_ensure = $package_version
+  }
+
+  if $users_allow_hiera_merge_real == true {
+    $users_allow_entries_real = hiera_array('vas::users_allow_entries')
+  } else {
+    $users_allow_entries_real = $users_allow_entries
   }
 
   package { 'vasclnt':
@@ -199,5 +268,25 @@ class vas (
     timeout => 1800,
     creates => $once_file,
     require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
+  }
+
+  if type($symlink_vastool_binary) == 'string' {
+    $symlink_vastool_binary_bool = str2bool($symlink_vastool_binary)
+  } else {
+    $symlink_vastool_binary_bool = $symlink_vastool_binary
+  }
+  validate_bool($symlink_vastool_binary_bool)
+
+  # optionally create symlinks to vastool binary
+  if $symlink_vastool_binary_bool == true {
+    # validate params
+    validate_absolute_path($symlink_vastool_binary_target)
+    validate_absolute_path($vastool_binary)
+
+    file { 'vastool_symlink':
+      ensure => link,
+      path   => $symlink_vastool_binary_target,
+      target => $vastool_binary,
+    }
   }
 }
