@@ -332,7 +332,7 @@ vas_user_override_path
 ----------------------
 Path to user-override file.
 
-- *Default*: '/etc/opt/quest/vas/user-override'
+- *Default*: undef
 
 vas_user_override_owner
 -----------------------
@@ -356,7 +356,7 @@ vas_users_allow_path
 --------------------
 Path to users.allow file.
 
-- *Default*: '/etc/opt/quest/vas/users.allow'
+- *Default*: undef
 
 vas_users_allow_owner
 ---------------------
@@ -375,6 +375,31 @@ vas_users_allow_mode
 users.allow's mode.
 
 - *Default*: '0644'
+
+vas_group_override_path
+----------------------
+Path to user-override file.
+
+- *Default*: undef
+
+vas_group_override_owner
+-----------------------
+group-override's owner.
+
+- *Default*: 'root'
+
+vas_group_override_group
+-----------------------
+group-override's group.
+
+- *Default*: 'root'
+
+vas_group_override_mode
+----------------------
+group-override's mode.
+
+- *Default*: '0644'
+
 
 vasjoin_logfile
 ---------------
