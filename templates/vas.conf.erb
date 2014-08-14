@@ -57,6 +57,12 @@
  workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update_real %>
  ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
 <% end -%>
+<% if @vas_user_override_path != 'UNSET' %>
+ user-override-file = <%= @vas_user_override_path %>
+<% end -%>
+<% if @vas_group_override_path != 'UNSET' %>
+ group-override-file = <%= @vas_group_override_path %>
+<% end -%>
  auto-ticket-renew-interval = <%= @vas_conf_vasd_auto_ticket_renew_interval %>
  lazy-cache-update-interval = <%= @vas_conf_vasd_lazy_cache_update_interval %>
 <% if @vas_conf_vasd_cross_domain_user_groups_member_search != 'UNSET' -%>
@@ -82,9 +88,10 @@
  group-update-mode = none
  root-update-mode = none
 
-<% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
 [vas_auth]
+<% if @vas_users_allow_path != 'UNSET' -%>
+ users-allow-file = <%= @vas_users_allow_path %>
+<% end -%>
+<% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
-<% else -%>
-#[vas_auth]
 <% end -%>
