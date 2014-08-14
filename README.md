@@ -332,7 +332,7 @@ vas_user_override_path
 ----------------------
 Path to user-override file.
 
-- *Default*: undef
+- *Default*: 'UNSET'
 
 vas_user_override_owner
 -----------------------
@@ -356,7 +356,7 @@ vas_users_allow_path
 --------------------
 Path to users.allow file.
 
-- *Default*: undef
+- *Default*: 'UNSET'
 
 vas_users_allow_owner
 ---------------------
@@ -380,7 +380,7 @@ vas_group_override_path
 ----------------------
 Path to user-override file.
 
-- *Default*: undef
+- *Default*: 'UNSET'
 
 vas_group_override_owner
 -----------------------

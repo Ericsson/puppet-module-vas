@@ -50,15 +50,15 @@ class vas (
   $vas_config_owner                                     = 'root',
   $vas_config_group                                     = 'root',
   $vas_config_mode                                      = '0644',
-  $vas_user_override_path                               = undef,
+  $vas_user_override_path                               = 'UNSET',
   $vas_user_override_owner                              = 'root',
   $vas_user_override_group                              = 'root',
   $vas_user_override_mode                               = '0644',
-  $vas_group_override_path                              = undef,
+  $vas_group_override_path                              = 'UNSET',
   $vas_group_override_owner                             = 'root',
   $vas_group_override_group                             = 'root',
   $vas_group_override_mode                              = '0644',
-  $vas_users_allow_path                                 = undef,
+  $vas_users_allow_path                                 = 'UNSET',
   $vas_users_allow_owner                                = 'root',
   $vas_users_allow_group                                = 'root',
   $vas_users_allow_mode                                 = '0644',
@@ -83,16 +83,14 @@ class vas (
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
   validate_string($vas_conf_prompt_vas_ad_pw)
 
-  if $vas_config_path {
-    validate_absolute_path($vas_config_path)
-  }
-  if $vas_users_allow_path {
+  validate_absolute_path($vas_config_path)
+  if $vas_users_allow_path != 'UNSET' {
     validate_absolute_path($vas_users_allow_path)
   }
-  if $vas_user_override_path {
+  if $vas_user_override_path != 'UNSET' {
     validate_absolute_path($vas_user_override_path)
   }
-  if $vas_group_override_path {
+  if $vas_group_override_path != 'UNSET' {
     validate_absolute_path($vas_group_override_path)
   }
 
@@ -235,7 +233,7 @@ class vas (
   file { 'vas_users_allow':
     ensure  => present,
     path    => $vas_users_allow_path ? {
-    	         undef   => $vas_users_allow_path_default,
+    	         'UNSET' => $vas_users_allow_path_default,
 		 default => $vas_users_allow_path,
                },
     owner   => $vas_users_allow_owner,
@@ -248,7 +246,7 @@ class vas (
   file { 'vas_user_override':
     ensure  => present,
     path    => $vas_user_override_path ? {
-    	         undef   =>  $vas_user_override_path_default,
+    	         'UNSET' =>  $vas_user_override_path_default,
 		 default => $vas_user_override_path,
 	       },
     owner   => $vas_user_override_owner,
@@ -262,7 +260,7 @@ class vas (
   file { 'vas_group_override':
     ensure  => present,
     path    => $vas_group_override_path ? {
-                 undef   => $vas_group_override_path_default,
+                 'UNSET' => $vas_group_override_path_default,
 		 default => $vas_group_override_path,
 	       },
     owner   => $vas_group_override_owner,
