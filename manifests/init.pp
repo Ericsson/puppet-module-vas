@@ -233,9 +233,9 @@ class vas (
   file { 'vas_users_allow':
     ensure  => present,
     path    => $vas_users_allow_path ? {
-    	         'UNSET' => $vas_users_allow_path_default,
-		 default => $vas_users_allow_path,
-               },
+      'UNSET' => $vas_users_allow_path_default,
+      default => $vas_users_allow_path,
+    },
     owner   => $vas_users_allow_owner,
     group   => $vas_users_allow_group,
     mode    => $vas_users_allow_mode,
@@ -246,9 +246,9 @@ class vas (
   file { 'vas_user_override':
     ensure  => present,
     path    => $vas_user_override_path ? {
-    	         'UNSET' =>  $vas_user_override_path_default,
-		 default => $vas_user_override_path,
-	       },
+      'UNSET' => $vas_user_override_path_default,
+      default => $vas_user_override_path,
+    },
     owner   => $vas_user_override_owner,
     group   => $vas_user_override_group,
     mode    => $vas_user_override_mode,
@@ -260,9 +260,9 @@ class vas (
   file { 'vas_group_override':
     ensure  => present,
     path    => $vas_group_override_path ? {
-                 'UNSET' => $vas_group_override_path_default,
-		 default => $vas_group_override_path,
-	       },
+      'UNSET' => $vas_group_override_path_default,
+      default => $vas_group_override_path,
+    },
     owner   => $vas_group_override_owner,
     group   => $vas_group_override_group,
     mode    => $vas_group_override_mode,
@@ -270,7 +270,7 @@ class vas (
     require => Package['vasclnt','vasyp','vasgp'],
     before  => Service['vasd','vasypd'],
   }
-  
+
   file { 'keytab':
     ensure  => 'present',
     name    => $keytab_path,
