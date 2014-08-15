@@ -73,9 +73,9 @@ class vas (
   $symlink_vastool_binary                               = false,
 ) {
 
-  $vas_users_allow_path_default                         = '/etc/opt/quest/vas/users.allow'
-  $vas_user_override_path_default                       = '/etc/opt/quest/vas/user-override'
-  $vas_group_override_path_default                      = '/etc/opt/quest/vas/group-override'
+  $_vas_users_allow_path_default                         = '/etc/opt/quest/vas/users.allow'
+  $_vas_user_override_path_default                       = '/etc/opt/quest/vas/user-override'
+  $_vas_group_override_path_default                      = '/etc/opt/quest/vas/group-override'
 
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
@@ -230,12 +230,13 @@ class vas (
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
+  $_vas_users_allow_path = $vas_users_allow_path ? {
+    'UNSET' => $_vas_users_allow_path_default,
+    default => $vas_users_allow_path,
+  }
   file { 'vas_users_allow':
     ensure  => present,
-    path    => $vas_users_allow_path ? {
-      'UNSET' => $vas_users_allow_path_default,
-      default => $vas_users_allow_path,
-    },
+    path    => $_vas_users_allow_path,
     owner   => $vas_users_allow_owner,
     group   => $vas_users_allow_group,
     mode    => $vas_users_allow_mode,
@@ -243,12 +244,13 @@ class vas (
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
+  $_vas_user_override_path = $vas_user_override_path ? {
+    'UNSET' => $_vas_user_override_path_default,
+    default => $vas_user_override_path,
+  },
   file { 'vas_user_override':
     ensure  => present,
-    path    => $vas_user_override_path ? {
-      'UNSET' => $vas_user_override_path_default,
-      default => $vas_user_override_path,
-    },
+    path    => $_vas_user_override_path,
     owner   => $vas_user_override_owner,
     group   => $vas_user_override_group,
     mode    => $vas_user_override_mode,
@@ -257,12 +259,13 @@ class vas (
     before  => Service['vasd','vasypd'],
   }
 
+  $_vas_group_override_path = $vas_group_override_path ? {
+    'UNSET' => $_vas_group_override_path_default,
+    default => $vas_group_override_path,
+  },
   file { 'vas_group_override':
     ensure  => present,
-    path    => $vas_group_override_path ? {
-      'UNSET' => $vas_group_override_path_default,
-      default => $vas_group_override_path,
-    },
+    path    => $_vas_group_override_path,
     owner   => $vas_group_override_owner,
     group   => $vas_group_override_group,
     mode    => $vas_group_override_mode,
