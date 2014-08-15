@@ -247,7 +247,7 @@ class vas (
   $_vas_user_override_path = $vas_user_override_path ? {
     'UNSET' => $_vas_user_override_path_default,
     default => $vas_user_override_path,
-  },
+  }
   file { 'vas_user_override':
     ensure  => present,
     path    => $_vas_user_override_path,
@@ -262,7 +262,7 @@ class vas (
   $_vas_group_override_path = $vas_group_override_path ? {
     'UNSET' => $_vas_group_override_path_default,
     default => $vas_group_override_path,
-  },
+  }
   file { 'vas_group_override':
     ensure  => present,
     path    => $_vas_group_override_path,
