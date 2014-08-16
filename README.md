@@ -376,6 +376,30 @@ users.allow's mode.
 
 - *Default*: '0644'
 
+vas_users_deny_path
+--------------------
+Path to users.deny file.
+
+- *Default*: 'UNSET'
+
+vas_users_deny_owner
+---------------------
+users.deny's owner.
+
+- *Default*: 'root'
+
+vas_users_deny_group
+---------------------
+users.deny's group.
+
+- *Default*: 'root'
+
+vas_users_deny_mode
+--------------------
+users.deny's mode.
+
+- *Default*: '0644'
+
 vas_group_override_path
 ----------------------
 Path to user-override file.
