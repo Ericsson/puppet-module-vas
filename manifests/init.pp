@@ -7,6 +7,7 @@ class vas (
   $users_allow_entries                                  = ['UNSET'],
   $users_allow_hiera_merge                              = false,
   $user_override_entries                                = ['UNSET'],
+  $group_override_entries                               = ['UNSET'],
   $username                                             = 'username',
   $keytab_path                                          = '/etc/vasinst.key',
   $keytab_source                                        = undef,
@@ -49,11 +50,15 @@ class vas (
   $vas_config_owner                                     = 'root',
   $vas_config_group                                     = 'root',
   $vas_config_mode                                      = '0644',
-  $vas_user_override_path                               = '/etc/opt/quest/vas/user-override',
+  $vas_user_override_path                               = 'UNSET',
   $vas_user_override_owner                              = 'root',
   $vas_user_override_group                              = 'root',
   $vas_user_override_mode                               = '0644',
-  $vas_users_allow_path                                 = '/etc/opt/quest/vas/users.allow',
+  $vas_group_override_path                              = 'UNSET',
+  $vas_group_override_owner                             = 'root',
+  $vas_group_override_group                             = 'root',
+  $vas_group_override_mode                              = '0644',
+  $vas_users_allow_path                                 = 'UNSET',
   $vas_users_allow_owner                                = 'root',
   $vas_users_allow_group                                = 'root',
   $vas_users_allow_mode                                 = '0644',
@@ -68,11 +73,26 @@ class vas (
   $symlink_vastool_binary                               = false,
 ) {
 
+  $_vas_users_allow_path_default    = '/etc/opt/quest/vas/users.allow'
+  $_vas_user_override_path_default  = '/etc/opt/quest/vas/user-override'
+  $_vas_group_override_path_default = '/etc/opt/quest/vas/group-override'
+
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
   validate_string($vas_conf_prompt_vas_ad_pw)
+
+  validate_absolute_path($vas_config_path)
+  if $vas_users_allow_path != 'UNSET' {
+    validate_absolute_path($vas_users_allow_path)
+  }
+  if $vas_user_override_path != 'UNSET' {
+    validate_absolute_path($vas_user_override_path)
+  }
+  if $vas_group_override_path != 'UNSET' {
+    validate_absolute_path($vas_group_override_path)
+  }
 
   if !is_domain_name($vas_fqdn) {
     fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
@@ -131,7 +151,6 @@ class vas (
   } else {
     $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
   }
-
 
   case $::virtual {
     'zone': {
@@ -211,9 +230,13 @@ class vas (
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
+  $_vas_users_allow_path = $vas_users_allow_path ? {
+    'UNSET' => $_vas_users_allow_path_default,
+    default => $vas_users_allow_path,
+  }
   file { 'vas_users_allow':
     ensure  => present,
-    path    => $vas_users_allow_path,
+    path    => $_vas_users_allow_path,
     owner   => $vas_users_allow_owner,
     group   => $vas_users_allow_group,
     mode    => $vas_users_allow_mode,
@@ -221,13 +244,32 @@ class vas (
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
+  $_vas_user_override_path = $vas_user_override_path ? {
+    'UNSET' => $_vas_user_override_path_default,
+    default => $vas_user_override_path,
+  }
   file { 'vas_user_override':
     ensure  => present,
-    path    => $vas_user_override_path,
+    path    => $_vas_user_override_path,
     owner   => $vas_user_override_owner,
     group   => $vas_user_override_group,
     mode    => $vas_user_override_mode,
     content => template('vas/user-override.erb'),
+    require => Package['vasclnt','vasyp','vasgp'],
+    before  => Service['vasd','vasypd'],
+  }
+
+  $_vas_group_override_path = $vas_group_override_path ? {
+    'UNSET' => $_vas_group_override_path_default,
+    default => $vas_group_override_path,
+  }
+  file { 'vas_group_override':
+    ensure  => present,
+    path    => $_vas_group_override_path,
+    owner   => $vas_group_override_owner,
+    group   => $vas_group_override_group,
+    mode    => $vas_group_override_mode,
+    content => template('vas/group-override.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
     before  => Service['vasd','vasypd'],
   }

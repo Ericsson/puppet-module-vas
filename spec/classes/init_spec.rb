@@ -139,7 +139,7 @@ describe 'vas' do
  group-update-mode = none
  root-update-mode = none
 
-#[vas_auth]
+[vas_auth]
 })
       end
       it do
@@ -151,6 +151,19 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_user_override').with_content(
+%{# This file is being maintained by Puppet.
+# DO NOT EDIT
+})
+      end
+      it do
+        should contain_file('vas_group_override').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/group-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_group_override').with_content(
 %{# This file is being maintained by Puppet.
 # DO NOT EDIT
 })
@@ -506,13 +519,14 @@ DOMAIN\\adgroup
       let :params do
         {
           :user_override_entries => ['jdoe@example.com::::::/bin/sh'],
+          :vas_user_override_path => '/path/to/user-override',
         }
       end
 
       it do
         should contain_file('vas_user_override').with({
           'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/user-override',
+          'path'    => '/path/to/user-override',
           'owner'   => 'root',
           'group'   => 'root',
           'mode'    => '0644',
@@ -521,6 +535,39 @@ DOMAIN\\adgroup
 %{# This file is being maintained by Puppet.
 # DO NOT EDIT
 jdoe@example.com::::::/bin/sh
+})
+      end
+    end
+
+    context 'with group_override_entries specified on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :group_override_entries => ['DOMAIN\adgroup:group::'],
+          :vas_group_override_path => '/path/to/group-override',
+        }
+      end
+
+      it do
+        should contain_file('vas_group_override').with({
+          'ensure'  => 'present',
+          'path'    => '/path/to/group-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_group_override').with_content(
+%{# This file is being maintained by Puppet.
+# DO NOT EDIT
+DOMAIN\\adgroup:group::
 })
       end
     end
