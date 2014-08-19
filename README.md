@@ -377,29 +377,28 @@ users.allow's mode.
 - *Default*: '0644'
 
 vas_group_override_path
-----------------------
+-----------------------
 Path to user-override file.
 
 - *Default*: 'UNSET'
 
 vas_group_override_owner
------------------------
+------------------------
 group-override's owner.
 
 - *Default*: 'root'
 
 vas_group_override_group
------------------------
+------------------------
 group-override's group.
 
 - *Default*: 'root'
 
 vas_group_override_mode
-----------------------
+-----------------------
 group-override's mode.
 
 - *Default*: '0644'
-
 
 vasjoin_logfile
 ---------------

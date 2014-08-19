@@ -73,9 +73,9 @@ class vas (
   $symlink_vastool_binary                               = false,
 ) {
 
-  $_vas_users_allow_path_default                         = '/etc/opt/quest/vas/users.allow'
-  $_vas_user_override_path_default                       = '/etc/opt/quest/vas/user-override'
-  $_vas_group_override_path_default                      = '/etc/opt/quest/vas/group-override'
+  $_vas_users_allow_path_default = '/etc/opt/quest/vas/users.allow'
+  $_vas_user_override_path_default = '/etc/opt/quest/vas/user-override'
+  $_vas_group_override_path_default = '/etc/opt/quest/vas/group-override'
 
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
