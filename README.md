@@ -63,6 +63,20 @@ This will default to 'true' in future versions.
 
 - *Default*: false
 
+users_deny_entries
+-------------------
+List of users.deny entries. No users are denied by default.
+
+- *Default*: ['UNSET']
+
+users_deny_hiera_merge
+-----------------------
+Boolean to control merges of all found instances of vas::users_deny_entries in Hiera. This is useful for specifying users.deny entries at different levels of the hierarchy and having them all included in the catalog.
+
+This will default to 'true' in future versions.
+
+- *Default*: false
+
 user_override_entries
 ---------------------
 List of user-override entries. Used to override specific user data fields; UID, GID, GECOS, HOME_DIR and SHELL.
