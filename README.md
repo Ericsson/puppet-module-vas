@@ -64,13 +64,13 @@ This will default to 'true' in future versions.
 - *Default*: false
 
 users_deny_entries
--------------------
+------------------
 List of users.deny entries. No users are denied by default.
 
 - *Default*: ['UNSET']
 
 users_deny_hiera_merge
------------------------
+----------------------
 Boolean to control merges of all found instances of vas::users_deny_entries in Hiera. This is useful for specifying users.deny entries at different levels of the hierarchy and having them all included in the catalog.
 
 This will default to 'true' in future versions.
@@ -119,7 +119,7 @@ keytab file's mode.
 - *Default*: '0400'
 
 vas_fqdn
-------------
+--------
 FQDN to join to VAS as.
 
 - *Default*: $::fqdn
@@ -391,53 +391,52 @@ users.allow's mode.
 - *Default*: '0644'
 
 vas_users_deny_path
---------------------
+-------------------
 Path to users.deny file.
 
 - *Default*: 'UNSET'
 
 vas_users_deny_owner
----------------------
+--------------------
 users.deny's owner.
 
 - *Default*: 'root'
 
 vas_users_deny_group
----------------------
+--------------------
 users.deny's group.
 
 - *Default*: 'root'
 
 vas_users_deny_mode
---------------------
+-------------------
 users.deny's mode.
 
 - *Default*: '0644'
 
 vas_group_override_path
-----------------------
-Path to user-override file.
+-----------------------
+Path to group-override file.
 
 - *Default*: 'UNSET'
 
 vas_group_override_owner
------------------------
+------------------------
 group-override's owner.
 
 - *Default*: 'root'
 
 vas_group_override_group
------------------------
+------------------------
 group-override's group.
 
 - *Default*: 'root'
 
 vas_group_override_mode
-----------------------
+-----------------------
 group-override's mode.
 
 - *Default*: '0644'
-
 
 vasjoin_logfile
 ---------------
@@ -480,13 +479,13 @@ Path to vastool binary to create symlink from
 - *Default*: '/opt/quest/bin/vastool'
 
 symlink_vastool_binary_target
-----------------------------
+-----------------------------
 Path to where the symlink should be created
 
 - *Default*: '/usr/bin/vastool'
 
 symlink_vastool_binary
----------------------
+----------------------
 Boolean for ensuring a symlink for vastool_binary to symlink_vastool_binary_target. This is useful since /opt/quest/bin is a non-standard location that is not in your $PATH.
 
 - *Default*: false
