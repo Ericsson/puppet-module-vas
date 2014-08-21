@@ -1,0 +1,7 @@
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+<% @users_deny_entries_real.each do |denyentry| -%>
+<% if denyentry != 'UNSET' -%>
+<%= denyentry %>
+<% end -%>
+<% end -%>

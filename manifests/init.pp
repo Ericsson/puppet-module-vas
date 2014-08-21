@@ -6,6 +6,8 @@ class vas (
   $package_version                                      = undef,
   $users_allow_entries                                  = ['UNSET'],
   $users_allow_hiera_merge                              = false,
+  $users_deny_entries                                   = ['UNSET'],
+  $users_deny_hiera_merge                               = false,
   $user_override_entries                                = ['UNSET'],
   $group_override_entries                               = ['UNSET'],
   $username                                             = 'username',
@@ -62,6 +64,10 @@ class vas (
   $vas_users_allow_owner                                = 'root',
   $vas_users_allow_group                                = 'root',
   $vas_users_allow_mode                                 = '0644',
+  $vas_users_deny_path                                  = 'UNSET',
+  $vas_users_deny_owner                                 = 'root',
+  $vas_users_deny_group                                 = 'root',
+  $vas_users_deny_mode                                  = '0644',
   $vasjoin_logfile                                      = '/var/tmp/vasjoin.log',
   $solaris_vasclntpath                                  = 'UNSET',
   $solaris_vasyppath                                    = 'UNSET',
@@ -73,9 +79,10 @@ class vas (
   $symlink_vastool_binary                               = false,
 ) {
 
-  $_vas_users_allow_path_default = '/etc/opt/quest/vas/users.allow'
-  $_vas_user_override_path_default = '/etc/opt/quest/vas/user-override'
-  $_vas_group_override_path_default = '/etc/opt/quest/vas/group-override'
+  $_vas_users_allow_path_default                         = '/etc/opt/quest/vas/users.allow'
+  $_vas_users_deny_path_default                          = '/etc/opt/quest/vas/users.deny'
+  $_vas_user_override_path_default                       = '/etc/opt/quest/vas/user-override'
+  $_vas_group_override_path_default                      = '/etc/opt/quest/vas/group-override'
 
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
@@ -85,6 +92,9 @@ class vas (
 
   validate_absolute_path($vas_config_path)
   if $vas_users_allow_path != 'UNSET' {
+    validate_absolute_path($vas_users_allow_path)
+  }
+  if $vas_users_deny_path != 'UNSET' {
     validate_absolute_path($vas_users_allow_path)
   }
   if $vas_user_override_path != 'UNSET' {
@@ -104,6 +114,13 @@ class vas (
     $users_allow_hiera_merge_real = $users_allow_hiera_merge
   }
   validate_bool($users_allow_hiera_merge_real)
+
+  if type($users_deny_hiera_merge) == 'string' {
+    $users_deny_hiera_merge_real = str2bool($users_deny_hiera_merge)
+  } else {
+    $users_deny_hiera_merge_real = $users_deny_hiera_merge
+  }
+  validate_bool($users_deny_hiera_merge_real)
 
   if type($vas_conf_libdefaults_forwardable) == 'string' {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
@@ -208,6 +225,12 @@ class vas (
     $users_allow_entries_real = $users_allow_entries
   }
 
+  if $users_deny_hiera_merge_real == true {
+    $users_deny_entries_real = hiera_array('vas::users_deny_entries')
+  } else {
+    $users_deny_entries_real = $users_deny_entries
+  }
+
   package { 'vasclnt':
     ensure => $package_ensure,
   }
@@ -241,6 +264,20 @@ class vas (
     group   => $vas_users_allow_group,
     mode    => $vas_users_allow_mode,
     content => template('vas/users.allow.erb'),
+    require => Package['vasclnt','vasyp','vasgp'],
+  }
+
+  $_vas_users_deny_path = $vas_users_deny_path ? {
+    'UNSET' => $_vas_users_deny_path_default,
+    default => $vas_users_deny_path,
+  }
+  file { 'vas_users_deny':
+    ensure  => present,
+    path    => $_vas_users_deny_path,
+    owner   => $vas_users_deny_owner,
+    group   => $vas_users_deny_group,
+    mode    => $vas_users_deny_mode,
+    content => template('vas/users.deny.erb'),
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
