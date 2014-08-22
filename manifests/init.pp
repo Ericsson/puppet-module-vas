@@ -95,7 +95,7 @@ class vas (
     validate_absolute_path($vas_users_allow_path)
   }
   if $vas_users_deny_path != 'UNSET' {
-    validate_absolute_path($vas_users_allow_path)
+    validate_absolute_path($vas_users_deny_path)
   }
   if $vas_user_override_path != 'UNSET' {
     validate_absolute_path($vas_user_override_path)
