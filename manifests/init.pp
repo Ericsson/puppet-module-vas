@@ -24,6 +24,8 @@ class vas (
   $realm                                                = 'realm.example.com',
   $sitenameoverride                                     = 'UNSET',
   $vas_conf_client_addrs                                = 'UNSET',
+  $vas_conf_disabled_user_pwhash                        = undef,
+  $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',
   $vas_conf_update_process                              = '/opt/quest/libexec/vas/mapupdate_2307',
   $vas_conf_upm_computerou_attr                         = 'department',
@@ -102,6 +104,14 @@ class vas (
   }
   if $vas_group_override_path != 'UNSET' {
     validate_absolute_path($vas_group_override_path)
+  }
+
+  if $vas_conf_disabled_user_pwhash != undef {
+    validate_string($vas_conf_disabled_user_pwhash)
+  }
+
+  if $vas_conf_locked_out_pwhash != undef {
+    validate_string($vas_conf_locked_out_pwhash)
   }
 
   if !is_domain_name($vas_fqdn) {
