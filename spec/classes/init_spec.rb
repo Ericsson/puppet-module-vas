@@ -67,6 +67,23 @@ describe 'vas' do
       it { should contain_package('vasgp').with({'ensure' => '4.0.3-206'}) }
     end
 
+    context 'with enable_group_policies set to false' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6'
+        }
+      end
+      let :params do
+        {
+          :enable_group_policies => 'false',
+        }
+      end
+
+      it { should contain_package('vasgp').with({'ensure' => 'absent'}) }
+    end
+
   end
 
   describe 'config' do
@@ -340,6 +357,28 @@ describe 'vas' do
         expect {
           should include_class('vas')
         }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
+      end
+    end
+
+
+    context 'with enable_group_policies to invalid type (not bool or string)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :enable_group_policies => '600invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/Unknown type of boolean given/)
       end
     end
 

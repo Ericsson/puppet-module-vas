@@ -49,6 +49,12 @@ package_version
 
 - *Default*: 'UNSET'
 
+enable_group_policies
+---------------------
+Boolean to control if vas should manage group policies. Manages the vasgp package. Version is controlled by package_version.
+
+- *Default*: true
+
 users_allow_entries
 -------------------
 List of users.allow entries. All users are allowed by default.

@@ -4,6 +4,7 @@
 #
 class vas (
   $package_version                                      = undef,
+  $enable_group_policies                                = true,
   $users_allow_entries                                  = ['UNSET'],
   $users_allow_hiera_merge                              = false,
   $users_deny_entries                                   = ['UNSET'],
@@ -179,6 +180,12 @@ class vas (
     $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
   }
 
+  if type($enable_group_policies) == 'string' {
+    $enable_group_policies_real = str2bool($enable_group_policies)
+  } else {
+    $enable_group_policies_real = $enable_group_policies
+  }
+
   case $::virtual {
     'zone': {
       $default_vas_conf_vasd_timesync_interval = 0
@@ -229,6 +236,12 @@ class vas (
     $package_ensure = $package_version
   }
 
+  if $enable_group_policies_real == true {
+    $gp_package_ensure = $package_ensure
+  } else {
+    $gp_package_ensure = 'absent'
+  }
+
   if $users_allow_hiera_merge_real == true {
     $users_allow_entries_real = hiera_array('vas::users_allow_entries')
   } else {
@@ -250,7 +263,7 @@ class vas (
   }
 
   package { 'vasgp':
-    ensure => $package_ensure,
+    ensure => $gp_package_ensure,
   }
 
   file { 'vas_config':
