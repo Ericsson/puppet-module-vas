@@ -349,10 +349,16 @@ class vas (
     $s_opts = "-s ${sitenameoverride}"
   }
 
+  if $vas_conf_vasd_workstation_mode_real == true {
+    $workstation_flag = "-w"
+  } else {
+    $workstation_flag = ""
+  }
+
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
