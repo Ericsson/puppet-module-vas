@@ -101,3 +101,12 @@
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
 <% end -%>
+<% if @vas_conf_vas_auth_password_cache_age != 'UNSET' -%>
+ password-cache-age = <%= @vas_conf_vas_auth_password_cache_age %>
+<% end -%>
+<% if @vas_conf_vas_auth_enable_nonroot_disconnected_cache != 'UNSET' -%>
+ enable-nonroot-disconnected-cache = <%= @vas_conf_vas_auth_enable_nonroot_disconnected_cache %>
+<% end -%>
+<% if @vas_conf_vas_auth_homedir_creation_script != 'UNSET' -%>
+ homedir-creation-script = <%= @vas_conf_vas_auth_homedir_creation_script %>
+<% end -%>
