@@ -46,7 +46,7 @@ class vas (
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_vas_auth_password_cache_age                 = 'UNSET',
-  $vas_conf_vas_auth_enable_nonroot_disconnected_cache  = 'UNSET',
+  $vas_conf_vas_auth_enable_nonroot_disconnected_cache  = false,
   $vas_conf_vas_auth_homedir_creation_script            = 'UNSET',
   $vas_conf_libvas_auth_helper_timeout                  = 10,
   $vas_conf_libvas_mscldap_timeout                      = 1,
