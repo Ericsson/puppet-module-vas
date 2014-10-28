@@ -811,4 +811,62 @@ DOMAIN\\adgroup:group::
     end
   end
 
+  describe 'licensefiles' do
+    context 'with defaults on osfamily RedHat' do
+      let :facts do
+      {
+        :kernel            => 'Linux',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '6'
+      }
+      end
+      let :params do
+      {
+        :license_files => {
+          'VAS_license' => {
+            'content' => 'VAS license file contents',
+          }
+        }
+      }
+      end
+
+      it {
+        should contain_file('VAS_license').with({
+          'ensure' => 'file',
+          'path'   => '/etc/opt/quest/vas/.licenses/VAS_license',
+          'content' => 'VAS license file contents',
+        })
+      }
+    end
+
+    context 'with custom parameters on osfamily RedHat' do
+      let :facts do
+      {
+        :kernel            => 'Linux',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '6'
+      }
+      end
+      let :params do
+      {
+        :license_files => {
+          'VAS_license' => {
+            'ensure' => 'present',
+            'path' => '/tmp/vas_license',
+            'content' => 'VAS license file',
+          }
+        }
+      }
+      end
+
+      it {
+        should contain_file('VAS_license').with({
+          'ensure' => 'present',
+          'path'   => '/tmp/vas_license',
+          'content' => 'VAS license file',
+        })
+      }
+    end
+
+  end
 end

@@ -80,6 +80,7 @@ class vas (
   $vastool_binary                                       = '/opt/quest/bin/vastool',
   $symlink_vastool_binary_target                        = '/usr/bin/vastool',
   $symlink_vastool_binary                               = false,
+  $license_files                                        = undef,
 ) {
 
   $_vas_users_allow_path_default = '/etc/opt/quest/vas/users.allow'
@@ -113,6 +114,18 @@ class vas (
 
   if $vas_conf_locked_out_pwhash != undef {
     validate_string($vas_conf_locked_out_pwhash)
+  }
+
+  if $license_files != undef {
+    validate_hash($license_files)
+
+    $license_files_defaults = {
+      'ensure' => 'file',
+      'path' => '/etc/opt/quest/vas/.licenses/VAS_license',
+      'require' => Package['vasclnt'],
+    }
+
+    create_resources(file, $license_files, $license_files_defaults)
   }
 
   if !is_domain_name($vas_fqdn) {

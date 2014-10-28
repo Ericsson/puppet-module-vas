@@ -507,3 +507,9 @@ symlink_vastool_binary
 Boolean for ensuring a symlink for vastool_binary to symlink_vastool_binary_target. This is useful since /opt/quest/bin is a non-standard location that is not in your $PATH.
 
 - *Default*: false
+
+license_files
+-------------
+Hash of license files
+
+- *Default*: undef
