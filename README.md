@@ -354,6 +354,12 @@ vas.conf's mode.
 
 - *Default*: '0644'
 
+vas_config_template
+-------------------
+Template used for vas.conf.
+
+' *Default*: 'vas/vas.conf.erb'
+
 vas_user_override_path
 ----------------------
 Path to user-override file.
