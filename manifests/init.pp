@@ -41,7 +41,7 @@ class vas (
   $vas_conf_vasd_workstation_mode_group_do_member       = false,
   $vas_conf_vasd_workstation_mode_groups_skip_update    = false,
   $vas_conf_vasd_ws_resolve_uid                         = false,
-  $vas_conf_prompt_vas_ad_pw                             = '"Enter Windows password: "',
+  $vas_conf_prompt_vas_ad_pw                            = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
@@ -54,6 +54,7 @@ class vas (
   $vas_config_owner                                     = 'root',
   $vas_config_group                                     = 'root',
   $vas_config_mode                                      = '0644',
+  $vas_config_template                                  = 'vas/vas.conf.erb',
   $vas_user_override_path                               = 'UNSET',
   $vas_user_override_owner                              = 'root',
   $vas_user_override_group                              = 'root',
@@ -259,7 +260,7 @@ class vas (
     owner   => $vas_config_owner,
     group   => $vas_config_group,
     mode    => $vas_config_mode,
-    content => template('vas/vas.conf.erb'),
+    content => template($vas_config_template),
     require => Package['vasclnt','vasyp','vasgp'],
   }
 
