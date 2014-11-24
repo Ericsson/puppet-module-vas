@@ -79,6 +79,7 @@ class vas (
   $vastool_binary                                       = '/opt/quest/bin/vastool',
   $symlink_vastool_binary_target                        = '/usr/bin/vastool',
   $symlink_vastool_binary                               = false,
+  $always_restart_vasypd                                = false,
 ) {
 
   $_vas_users_allow_path_default = '/etc/opt/quest/vas/users.allow'
@@ -178,6 +179,12 @@ class vas (
   } else {
     $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
   }
+  if type($always_restart_vasypd) == 'string' {
+    $always_restart_vasypd_bool = str2bool($always_restart_vasypd)
+  } else {
+    $always_restart_vasypd_bool = $always_restart_vasypd
+  }
+  validate_bool($always_restart_vasypd_bool)
 
   case $::virtual {
     'zone': {
@@ -382,6 +389,17 @@ class vas (
       ensure => link,
       path   => $symlink_vastool_binary_target,
       target => $vastool_binary,
+    }
+  }
+
+  # optionally restart vasypd and flush nismap cache on vas.conf changes
+  # useful for nismap ou migrations
+  if $always_restart_vasypd_bool == true {
+    exec { 'vasypd-restart':
+      command     => '/opt/quest/sbin/vasypd -x',
+      refreshonly => true,
+      subscribe   => File['vas_config'],
+      notify      => Service['vasypd'],
     }
   }
 }
