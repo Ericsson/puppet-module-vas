@@ -772,4 +772,39 @@ DOMAIN\\adgroup:group::
     end
   end
 
+  describe 'with always_restart_vasypd' do
+    ['true',true].each do |value|
+      context "set to #{value}" do
+        let(:facts) { { :kernel            => 'Linux',
+                        :osfamily          => 'Redhat',
+                        :lsbmajdistrelease => 6,
+                    } }
+        let(:params) do
+          { :always_restart_vasypd => value, }
+        end
+
+        it {
+          should contain_exec('vasypd-restart').with({
+            'command'   => '/opt/quest/sbin/vasypd -x',
+            'subscribe' => 'File[vas_config]',
+            'notify'    => 'Service[vasypd]',
+          })
+        }
+      end
+    end
+
+    ['false',false].each do |value|
+      context "set to #{value} (default)" do
+        let(:facts) { { :kernel            => 'Linux',
+                        :osfamily          => 'Redhat',
+                        :lsbmajdistrelease => 6,
+                    } }
+        let(:params) do
+          { :always_restart_vasypd => value, }
+        end
+
+        it { should_not contain_exec('vasypd-restart') }
+      end
+    end
+  end
 end
