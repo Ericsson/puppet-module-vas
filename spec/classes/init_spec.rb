@@ -67,6 +67,23 @@ describe 'vas' do
       it { should contain_package('vasgp').with({'ensure' => '4.0.3-206'}) }
     end
 
+    context 'with enable_group_policies set to false' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6'
+        }
+      end
+      let :params do
+        {
+          :enable_group_policies => 'false',
+        }
+      end
+
+      it { should contain_package('vasgp').with({'ensure' => 'absent'}) }
+    end
+
   end
 
   describe 'config' do
@@ -340,6 +357,28 @@ describe 'vas' do
         expect {
           should include_class('vas')
         }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
+      end
+    end
+
+
+    context 'with enable_group_policies to invalid type (not bool or string)' do
+      let :facts do
+        {
+          :kernel            => 'Linux',
+          :osfamily          => 'RedHat',
+          :lsbmajdistrelease => '6',
+          :fqdn              => 'host.example.com',
+          :domain            => 'example.com',
+        }
+      end
+      let :params do
+        { :enable_group_policies => '600invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error,/Unknown type of boolean given/)
       end
     end
 
@@ -772,4 +811,62 @@ DOMAIN\\adgroup:group::
     end
   end
 
+  describe 'licensefiles' do
+    context 'with defaults on osfamily RedHat' do
+      let :facts do
+      {
+        :kernel            => 'Linux',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '6'
+      }
+      end
+      let :params do
+      {
+        :license_files => {
+          'VAS_license' => {
+            'content' => 'VAS license file contents',
+          }
+        }
+      }
+      end
+
+      it {
+        should contain_file('VAS_license').with({
+          'ensure' => 'file',
+          'path'   => '/etc/opt/quest/vas/.licenses/VAS_license',
+          'content' => 'VAS license file contents',
+        })
+      }
+    end
+
+    context 'with custom parameters on osfamily RedHat' do
+      let :facts do
+      {
+        :kernel            => 'Linux',
+        :osfamily          => 'RedHat',
+        :lsbmajdistrelease => '6'
+      }
+      end
+      let :params do
+      {
+        :license_files => {
+          'VAS_license' => {
+            'ensure' => 'present',
+            'path' => '/tmp/vas_license',
+            'content' => 'VAS license file',
+          }
+        }
+      }
+      end
+
+      it {
+        should contain_file('VAS_license').with({
+          'ensure' => 'present',
+          'path'   => '/tmp/vas_license',
+          'content' => 'VAS license file',
+        })
+      }
+    end
+
+  end
 end

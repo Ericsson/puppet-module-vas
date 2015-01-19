@@ -49,6 +49,12 @@ package_version
 
 - *Default*: 'UNSET'
 
+enable_group_policies
+---------------------
+Boolean to control if vas should manage group policies. Manages the vasgp package. Version is controlled by package_version.
+
+- *Default*: true
+
 users_allow_entries
 -------------------
 List of users.allow entries. All users are allowed by default.
@@ -531,3 +537,9 @@ symlink_vastool_binary
 Boolean for ensuring a symlink for vastool_binary to symlink_vastool_binary_target. This is useful since /opt/quest/bin is a non-standard location that is not in your $PATH.
 
 - *Default*: false
+
+license_files
+-------------
+Hash of license files
+
+- *Default*: undef
