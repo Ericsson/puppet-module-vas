@@ -41,10 +41,15 @@ class vas (
   $vas_conf_vasd_workstation_mode_group_do_member       = false,
   $vas_conf_vasd_workstation_mode_groups_skip_update    = false,
   $vas_conf_vasd_ws_resolve_uid                         = false,
-  $vas_conf_prompt_vas_ad_pw                             = '"Enter Windows password: "',
+  $vas_conf_vasd_deluser_check_timelimit                = 'UNSET',
+  $vas_conf_vasd_delusercheck_interval                  = 'UNSET',
+  $vas_conf_vasd_delusercheck_script                    = 'UNSET',
+  $vas_conf_prompt_vas_ad_pw                            = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
+  $vas_conf_libvas_vascache_ipc_timeout                 = 15,
+  $vas_conf_libvas_use_server_referrals                 = true,
   $vas_conf_libvas_auth_helper_timeout                  = 10,
   $vas_conf_libvas_mscldap_timeout                      = 1,
   $vas_conf_libvas_site_only_servers                    = false,
@@ -89,10 +94,20 @@ class vas (
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
   validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
+  if $vas_conf_vasd_deluser_check_timelimit != 'UNSET' {
+    validate_re($vas_conf_vasd_deluser_check_timelimit, '^\d+$', "vas::vas_conf_vasd_deluser_check_timelimit must be an integer. Detected value is <${vas_conf_vasd_deluser_check_timelimit}>.")
+  }
+  if $vas_conf_vasd_delusercheck_interval != 'UNSET' {
+    validate_re($vas_conf_vasd_delusercheck_interval, '^\d+$', "vas::vas_conf_vasd_delusercheck_interval must be an integer. Detected value is <${vas_conf_vasd_delusercheck_interval}>.")
+  }
+  validate_re($vas_conf_libvas_vascache_ipc_timeout, '^\d+$', "vas::vas_conf_libvas_vascache_ipc_timeout must be an integer. Detected value is <${vas_conf_libvas_vascache_ipc_timeout}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
   validate_string($vas_conf_prompt_vas_ad_pw)
 
   validate_absolute_path($vas_config_path)
+  if $vas_conf_vasd_delusercheck_script != 'UNSET' {
+    validate_absolute_path($vas_conf_vasd_delusercheck_script)
+  }
   if $vas_users_allow_path != 'UNSET' {
     validate_absolute_path($vas_users_allow_path)
   }
@@ -136,6 +151,12 @@ class vas (
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
   } else {
     $vas_conf_libdefaults_forwardable_real = $vas_conf_libdefaults_forwardable
+  }
+
+  if type($vas_conf_libvas_use_server_referrals) == 'string' {
+    $vas_conf_libvas_use_server_referrals_real = str2bool($vas_conf_libvas_use_server_referrals)
+  } else {
+    $vas_conf_libvas_use_server_referrals_real = $vas_conf_libvas_use_server_referrals
   }
 
   if type($vas_conf_libvas_use_dns_srv) == 'string' {

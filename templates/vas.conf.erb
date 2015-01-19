@@ -16,8 +16,8 @@
  default_keytab_name = /etc/opt/quest/vas/host.keytab
 
 [libvas]
- vascache-ipc-timeout = 15
- use-server-referrals = true
+ vascache-ipc-timeout = <%= @vas_conf_libvas_vascache_ipc_timeout %>
+ use-server-referrals = <%= @vas_conf_libvas_use_server_referrals_real %>
 <% if @sitenameoverride != 'UNSET' -%>
  site-name-override = <%= @sitenameoverride %>
 <% end -%>
@@ -50,9 +50,9 @@
  upm-search-path = <%= @users_ou %>
  workstation-mode = <%= @vas_conf_vasd_workstation_mode_real %>
 <% if @vas_conf_vasd_workstation_mode_real -%>
-<% if @vas_conf_vasd_workstation_mode_users_preload != 'UNSET' -%>
+<%   if @vas_conf_vasd_workstation_mode_users_preload != 'UNSET' -%>
  workstation-mode-users-preload = <%= @vas_conf_vasd_workstation_mode_users_preload %>
-<% end -%>
+<%   end -%>
  workstation-mode-group-do-member = <%= @vas_conf_vasd_workstation_mode_group_do_member_real %>
  workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update_real %>
  ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
@@ -82,6 +82,15 @@
 <% end -%>
 <% if @vas_conf_vasd_password_change_script_timelimit != 'UNSET' -%>
  password-change-script-timelimit = <%= @vas_conf_vasd_password_change_script_timelimit %>
+<% end -%>
+<% if @vas_conf_vasd_deluser_check_timelimit != 'UNSET' -%>
+ deluser-check-timelimit = <%= @vas_conf_vasd_deluser_check_timelimit %>
+<% end -%>
+<% if @vas_conf_vasd_delusercheck_interval != 'UNSET' -%>
+ delusercheck-interval = <%= @vas_conf_vasd_delusercheck_interval %>
+<% end -%>
+<% if @vas_conf_vasd_delusercheck_script != 'UNSET' -%>
+ delusercheck-script = <%= @vas_conf_vasd_delusercheck_script %>
 <% end -%>
 
 [nss_vas]

@@ -276,6 +276,24 @@ Boolean to control whether vasd will resolve unknown UIDs when in Workstation mo
 
 - *Default*: false
 
+vas_conf_vasd_deluser_check_timelimit
+-------------------------------------
+Integer for number of seconds to set value of deluser-check-timelimit in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_delusercheck_interval
+-----------------------------------
+Integer for number of minutes to set value of delusercheck-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_delusercheck_script
+---------------------------------
+Path for script to set value of delusercheck-script in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
 vas_conf_prompt_vas_ad_pw
 -------------------------
 prompt-vas-ad-pw option in vas.conf. Sets the password prompt for logins.
@@ -299,6 +317,18 @@ vas_conf_vas_auth_uid_check_limit
 Integer for uid-check-limit option in vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 'UNSET'
+
+vas_conf_libvas_vascache_ipc_timeout
+------------------------------------
+Integer for number of seconds to set value of vascache-ipc-timeout in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 15
+
+vas_conf_libvas_use_server_referrals
+------------------------------------
+Boolean to set valut of use-server-referrals in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: true
 
 vas_conf_libvas_auth_helper_timeout
 -----------------------------------
