@@ -7,9 +7,10 @@ describe 'vas' do
     context 'defaults on osfamily RedHat with lsbmajdistrelease 6' do
       let :facts do
       {
-        :kernel            => 'Linux',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6'
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
       }
       end
 
@@ -51,9 +52,10 @@ describe 'vas' do
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6'
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
         }
       end
       let :params do
@@ -70,9 +72,10 @@ describe 'vas' do
     context 'with enable_group_policies set to false' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6'
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
         }
       end
       let :params do
@@ -91,11 +94,12 @@ describe 'vas' do
     context 'defaults on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
 
@@ -216,11 +220,12 @@ describe 'vas' do
     context 'with parameters for vas.conf specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -342,11 +347,12 @@ describe 'vas' do
     context 'with vas_fqdn to invalid domainname' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -364,11 +370,12 @@ describe 'vas' do
     context 'with enable_group_policies to invalid type (not bool or string)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -385,11 +392,12 @@ describe 'vas' do
     context 'with vas_conf_vasd_auto_ticket_renew_interval to invalid string (non-integer)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -406,11 +414,12 @@ describe 'vas' do
     context 'with vas_conf_vasd_update_interval set to invalid string (non-integer)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -427,11 +436,12 @@ describe 'vas' do
     context 'with vas_conf_prompt_vas_ad_pw set to invalid type (non-string)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -448,11 +458,12 @@ describe 'vas' do
     context 'with vas_conf_disabled_user_pwhash set to invalid type (non-string)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -469,11 +480,12 @@ describe 'vas' do
     context 'with vas_conf_locked_out_pwhash set to invalid type (non-string)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -490,11 +502,12 @@ describe 'vas' do
     context 'with vas_conf_libvas_use_dns_srv set to invalid non-boolean string' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -511,11 +524,12 @@ describe 'vas' do
     context 'with vas_conf_libvas_use_tcp_only set to invalid non-boolean string' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -532,11 +546,12 @@ describe 'vas' do
     context 'with vas_conf_libvas_site_only_servers set to invalid non-boolean string' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -553,11 +568,12 @@ describe 'vas' do
     context 'with vas_conf_libvas_auth_helper_timeout set to invalid string (non-integer)' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -574,11 +590,12 @@ describe 'vas' do
     context 'with users_allow_entries specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -607,11 +624,12 @@ DOMAIN\\adgroup
     context 'with users_deny_entries specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -640,11 +658,12 @@ DOMAIN\\adgroup
     context 'with user_override_entries specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -673,11 +692,12 @@ jdoe@example.com::::::/bin/sh
     context 'with group_override_entries specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
-          :kernel            => 'Linux',
-          :osfamily          => 'RedHat',
-          :lsbmajdistrelease => '6',
-          :fqdn              => 'host.example.com',
-          :domain            => 'example.com',
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
         }
       end
       let :params do
@@ -739,9 +759,10 @@ DOMAIN\\adgroup:group::
   describe 'with symlink_vastool_binary' do
     ['true',true].each do |value|
       context "set to #{value} (default)" do
-        let(:facts) { { :kernel            => 'Linux',
-                        :osfamily          => 'Redhat',
-                        :lsbmajdistrelease => 6,
+        let(:facts) { { :kernel                    => 'Linux',
+                        :osfamily                  => 'Redhat',
+                        :lsbmajdistrelease         => '6',
+                        :operatingsystemmajrelease => '6',
                     } }
         let(:params) do
           { :symlink_vastool_binary => value, }
@@ -759,9 +780,10 @@ DOMAIN\\adgroup:group::
 
     ['false',false].each do |value|
       context "set to #{value} (default)" do
-        let(:facts) { { :kernel            => 'Linux',
-                        :osfamily          => 'Redhat',
-                        :lsbmajdistrelease => 6,
+        let(:facts) { { :kernel                    => 'Linux',
+                        :osfamily                  => 'Redhat',
+                        :lsbmajdistrelease         => '6',
+                        :operatingsystemmajrelease => '6',
                     } }
         let(:params) do
           { :symlink_vastool_binary => value, }
@@ -772,9 +794,10 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with all params specified' do
-      let(:facts) { { :kernel            => 'Linux',
-                      :osfamily          => 'Redhat',
-                      :lsbmajdistrelease => 6,
+      let(:facts) { { :kernel                    => 'Linux',
+                      :osfamily                  => 'Redhat',
+                      :lsbmajdistrelease         => '6',
+                      :operatingsystemmajrelease => '6',
                   } }
       let(:params) do
         { :symlink_vastool_binary        => true,
@@ -815,9 +838,10 @@ DOMAIN\\adgroup:group::
     context 'with defaults on osfamily RedHat' do
       let :facts do
       {
-        :kernel            => 'Linux',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6'
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
       }
       end
       let :params do
@@ -842,9 +866,10 @@ DOMAIN\\adgroup:group::
     context 'with custom parameters on osfamily RedHat' do
       let :facts do
       {
-        :kernel            => 'Linux',
-        :osfamily          => 'RedHat',
-        :lsbmajdistrelease => '6'
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
       }
       end
       let :params do
