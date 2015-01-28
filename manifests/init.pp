@@ -51,6 +51,7 @@ class vas (
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_libvas_vascache_ipc_timeout                 = 15,
   $vas_conf_libvas_use_server_referrals                 = true,
+  $vas_conf_libvas_use_server_referrals_version_switch  = '4.1.0.21518',
   $vas_conf_libvas_auth_helper_timeout                  = 10,
   $vas_conf_libvas_mscldap_timeout                      = 1,
   $vas_conf_libvas_site_only_servers                    = false,
@@ -92,6 +93,15 @@ class vas (
   $_vas_users_deny_path_default = '/etc/opt/quest/vas/users.deny'
   $_vas_user_override_path_default = '/etc/opt/quest/vas/user-override'
   $_vas_group_override_path_default = '/etc/opt/quest/vas/group-override'
+
+  case versioncmp($::vas_version, $vas_conf_libvas_use_server_referrals_version) {
+    '0','1': {
+      $vas_conf_libvas_use_server_referrals_default = false
+    }
+    default: {
+      $vas_conf_libvas_use_server_referrals_default = true
+    }
+  }
 
   # validate params
   validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
@@ -167,10 +177,13 @@ class vas (
     $vas_conf_libdefaults_forwardable_real = $vas_conf_libdefaults_forwardable
   }
 
-  if type($vas_conf_libvas_use_server_referrals) == 'string' {
-    $vas_conf_libvas_use_server_referrals_real = str2bool($vas_conf_libvas_use_server_referrals)
-  } else {
+  if type($vas_conf_libvas_use_server_referrals) == 'boolean' {
     $vas_conf_libvas_use_server_referrals_real = $vas_conf_libvas_use_server_referrals
+  } else {
+    $vas_conf_libvas_use_server_referrals_real = $vas_conf_libvas_use_server_referrals ? {
+      'USE_DEFAULTS' => $vas_conf_libvas_use_server_referrals_default,
+      default        => str2bool($vas_conf_libvas_use_server_referrals)
+    }
   }
 
   if type($vas_conf_libvas_use_dns_srv) == 'string' {
