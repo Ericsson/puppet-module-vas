@@ -586,8 +586,8 @@ describe 'vas' do
         }.to raise_error(Puppet::Error,/vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <10invalid>./)
       end
     end
-    
-    context 'with users_allow_entries specified on osfamily redhat with lsbmajdistrelease 6' do
+
+    context 'with users_allow_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
           :kernel                    => 'Linux',
@@ -621,7 +621,40 @@ DOMAIN\\adgroup
       end
     end
 
-    context 'with users_deny_entries specified on osfamily redhat with lsbmajdistrelease 6' do
+    context 'with users_allow_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :users_allow_entries => 'DOMAIN\adgroup',
+        }
+      end
+
+      it do
+        should contain_file('vas_users_allow').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/users.allow',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_users_allow').with_content(
+%{# This file is being maintained by Puppet.
+# DO NOT EDIT
+DOMAIN\\adgroup
+})
+      end
+    end
+
+    context 'with users_deny_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
           :kernel                    => 'Linux',
@@ -650,6 +683,39 @@ DOMAIN\\adgroup
 %{# This file is being maintained by Puppet.
 # DO NOT EDIT
 user@realm.com
+DOMAIN\\adgroup
+})
+      end
+    end
+
+    context 'with users_deny_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :users_deny_entries => 'DOMAIN\adgroup',
+        }
+      end
+
+      it do
+        should contain_file('vas_users_deny').with({
+          'ensure'  => 'present',
+          'path'    => '/etc/opt/quest/vas/users.deny',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_users_deny').with_content(
+%{# This file is being maintained by Puppet.
+# DO NOT EDIT
 DOMAIN\\adgroup
 })
       end
