@@ -1,7 +1,13 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
+<% if @users_allow_entries_real -%>
+<% if @users_allow_entries_real.is_a?(Array) -%>
 <% @users_allow_entries_real.each do |allowentry| -%>
 <% if allowentry != 'UNSET' -%>
 <%= allowentry %>
+<% end -%>
+<% end -%>
+<% else -%>
+<%= @users_allow_entries_real %>
 <% end -%>
 <% end -%>
