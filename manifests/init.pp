@@ -25,6 +25,7 @@ class vas (
   $realm                                                = 'realm.example.com',
   $sitenameoverride                                     = 'UNSET',
   $vas_conf_client_addrs                                = 'UNSET',
+  $vas_conf_full_update_interval                        = 'UNSET',
   $vas_conf_disabled_user_pwhash                        = undef,
   $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',

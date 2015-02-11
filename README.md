@@ -203,6 +203,12 @@ upm-computerou-attr option in vas.conf. Changed to 'department' to work in a mul
 
 - *Default*: 'department'
 
+vas_conf_full_update_interval
+-----------------------------
+Integer for number of seconds vasypd will wait until it fully reloads all the NIS maps. See VAS.CONF(5)
+
+- *Default*: 'UNSET' (keep default value from VAS)
+
 vas_conf_vasd_update_interval
 -----------------------------
 Integer for number of seconds to set value of update-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
