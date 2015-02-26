@@ -887,8 +887,8 @@ DOMAIN\\adgroup:group::
       let(:params) { { :symlink_vastool_binary        => true,
                        :vastool_binary                => 'true',
                        :symlink_vastool_binary_target => '/bar' } }
-      it do
-        expect { should }.to raise_error(Puppet::Error)
+      it 'should fail' do
+        expect { should }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
       end
     end
 
@@ -896,8 +896,8 @@ DOMAIN\\adgroup:group::
       let(:params) { { :symlink_vastool_binary        => true,
                        :vastool_binary                => '/foo/bar',
                        :symlink_vastool_binary_target => 'undef' } }
-      it do
-        expect { should }.to raise_error(Puppet::Error)
+      it 'should fail' do
+        expect { should }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
       end
     end
   end
