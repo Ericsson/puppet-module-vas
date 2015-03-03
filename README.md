@@ -10,8 +10,9 @@ Puppet module to manage VAS - Quest Authentication Services
 
 This module has been tested to work on the following systems using Puppet v3 and Ruby 1.8.7
 
- * EL 5
- * EL 6
+ * Rhel 5
+ * Rhel 6
+ * Rhel 7
  * Suse 10
  * Suse 11
  * Ubuntu 12.04
