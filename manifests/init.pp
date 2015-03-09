@@ -21,11 +21,16 @@ class vas (
   $computers_ou                                         = 'ou=computers,dc=example,dc=com',
   $users_ou                                             = 'ou=users,dc=example,dc=com',
   $nismaps_ou                                           = 'ou=nismaps,dc=example,dc=com',
+  $user_search_path                                     = undef,
+  $group_search_path                                    = undef,
+  $upm_search_path                                      = undef,
   $nisdomainname                                        = undef,
   $realm                                                = 'realm.example.com',
   $sitenameoverride                                     = 'UNSET',
   $vas_conf_client_addrs                                = 'UNSET',
   $vas_conf_full_update_interval                        = 'UNSET',
+  $vas_conf_group_update_mode                           = 'none',
+  $vas_conf_root_update_mode                            = 'none',
   $vas_conf_disabled_user_pwhash                        = undef,
   $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',
@@ -132,6 +137,14 @@ class vas (
     validate_string($vas_conf_locked_out_pwhash)
   }
 
+  if $vas_conf_group_update_mode != undef {
+    validate_string($vas_conf_group_update_mode)
+  }
+
+  if $vas_conf_root_update_mode != undef {
+    validate_string($vas_conf_root_update_mode)
+  }
+
   if $license_files != undef {
     validate_hash($license_files)
 
@@ -235,6 +248,17 @@ class vas (
     $vas_conf_vasd_timesync_interval_real = $default_vas_conf_vasd_timesync_interval
   } else {
     $vas_conf_vasd_timesync_interval_real = $vas_conf_vasd_timesync_interval
+  }
+
+  # Define search paths
+  if $upm_search_path == undef {
+    if $users_ou != undef {
+      $upm_search_path_real = $users_ou
+    } else {
+      $upm_search_path_real = undef
+    }
+  } else {
+    $upm_search_path_real = $upm_search_path
   }
 
   case $::kernel {
@@ -403,10 +427,26 @@ class vas (
     $workstation_flag = ""
   }
 
+  if $user_search_path_real != undef {
+    $user_search_path_parm = "-u ${user_search_path_real}"
+  } else {
+    $user_search_path_parm = ""
+  }
+  if $group_search_path_real != undef {
+    $group_search_path_parm = "-u ${group_search_path_real}"
+  } else {
+    $group_search_path_parm = ""
+  }
+  if $upm_search_path_real != undef {
+    $upm_search_path_parm = "-u ${upm_search_path_real}"
+  } else {
+    $upm_search_path_parm = ""
+  }
+
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,

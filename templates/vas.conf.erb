@@ -50,7 +50,9 @@
 
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
- upm-search-path = <%= @users_ou %>
+<% if @upm_search_path_real -%>
+ upm-search-path = <%= @upm_search_path %>
+<% end -%>
  workstation-mode = <%= @vas_conf_vasd_workstation_mode_real %>
 <% if @vas_conf_vasd_workstation_mode_real -%>
 <%   if @vas_conf_vasd_workstation_mode_users_preload != 'UNSET' -%>
@@ -59,6 +61,12 @@
  workstation-mode-group-do-member = <%= @vas_conf_vasd_workstation_mode_group_do_member_real %>
  workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update_real %>
  ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
+<% end -%>
+<% if @user_search_path -%>
+  user-search-path = <%= @user_search_path %>
+<% end -%>
+<% if @group_search_path -%>
+  group-search-path = <%= @group_search_path %>
 <% end -%>
 <% if @vas_user_override_path != 'UNSET' %>
  user-override-file = <%= @vas_user_override_path %>
@@ -97,8 +105,12 @@
 <% end -%>
 
 [nss_vas]
- group-update-mode = none
- root-update-mode = none
+<% if @vas_conf_group_update_mode != nil -%>
+ group-update-mode = <%= @vas_conf_group_update_mode %>
+<% end -%>
+<% if @vas_conf_root_update_mode != nil -%>
+ root-update-mode = <%= @vas_conf_root_update_mode %>
+<% end -%>
 <% if @vas_conf_disabled_user_pwhash != nil -%>
  disabled-user-pwhash = <%= @vas_conf_disabled_user_pwhash  %>
 <% end -%>
