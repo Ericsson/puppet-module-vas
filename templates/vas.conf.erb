@@ -51,7 +51,7 @@
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
 <% if @upm_search_path_real -%>
- upm-search-path = <%= @upm_search_path %>
+ upm-search-path = <%= @upm_search_path_real %>
 <% end -%>
  workstation-mode = <%= @vas_conf_vasd_workstation_mode_real %>
 <% if @vas_conf_vasd_workstation_mode_real -%>
@@ -62,11 +62,11 @@
  workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update_real %>
  ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
 <% end -%>
-<% if @user_search_path -%>
-  user-search-path = <%= @user_search_path %>
+<% if @user_search_path_real -%>
+ user-search-path = <%= @user_search_path_real %>
 <% end -%>
-<% if @group_search_path -%>
-  group-search-path = <%= @group_search_path %>
+<% if @group_search_path_real -%>
+ group-search-path = <%= @group_search_path_real %>
 <% end -%>
 <% if @vas_user_override_path != 'UNSET' %>
  user-override-file = <%= @vas_user_override_path %>

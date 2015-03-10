@@ -150,7 +150,6 @@ describe 'vas' do
 
 [vasd]
  update-interval = 600
- upm-search-path = ou=users,dc=example,dc=com
  workstation-mode = false
  auto-ticket-renew-interval = 32400
  lazy-cache-update-interval = 10
@@ -860,6 +859,96 @@ DOMAIN\\adgroup:group::
 })
       end
     end
+
+    context 'with non-UPM configuration' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :user_search_path           => 'OU=Users,DC=example,DC=com',
+          :group_search_path          => 'OU=Groups,DC=example,DC=com',
+          :computers_ou               => 'OU=Computers,DC=example,DC=com',
+          :vas_conf_root_update_mode  => 'force-if-needed',
+          :vas_conf_group_update_mode => 'force-if-needed',
+        }
+      end
+      it { should contain_file('vas_config').with_content(/^\s*user-search-path = OU=Users,DC=example,DC=com$/) }
+      it { should contain_file('vas_config').with_content(/^\s*group-search-path = OU=Groups,DC=example,DC=com$/) }
+      it { should contain_file('vas_config').with_content(/^\s*root-update-mode = force-if-needed$/) }
+      it { should contain_file('vas_config').with_content(/^\s*group-update-mode = force-if-needed$/) }
+      it { should contain_exec('vasinst').with_command(/-u OU=Users,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-g OU=Groups,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
+      it { should_not contain_file('vas_config').with_content(/^\s*upm-search-path/) }
+      it { should_not contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+    end
+
+  end
+  context 'new UPM configuration' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :upm_search_path  => 'OU=UPM,DC=example,DC=com',
+          :computers_ou     => 'OU=Computers,DC=example,DC=com',
+        }
+      end
+
+      it { should contain_file('vas_config').with_content(/^\s*upm-search-path = OU=UPM,DC=example,DC=com$/) }
+      it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
+      it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
+
+      it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
+      it { should_not contain_exec('vasinst').with_command(/-g/) }
+
+  end
+
+  context 'old UPM-mode parameters' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :users_ou      => 'OU=UPM,DC=example,DC=com',
+          :computers_ou  => 'OU=Computers,DC=example,DC=com',
+        }
+      end
+
+      it { should contain_file('vas_config').with_content(/^\s*upm-search-path = OU=UPM,DC=example,DC=com$/) }
+      it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
+      it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
+
+      it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
+      it { should_not contain_exec('vasinst').with_command(/-g/) }
+
 
   end
 

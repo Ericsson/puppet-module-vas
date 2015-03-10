@@ -18,12 +18,12 @@ class vas (
   $keytab_group                                         = 'root',
   $keytab_mode                                          = '0400',
   $vas_fqdn                                             = $::fqdn,
-  $computers_ou                                         = 'ou=computers,dc=example,dc=com',
-  $users_ou                                             = 'ou=users,dc=example,dc=com',
+  $computers_ou                                         = 'UNSET',
+  $users_ou                                             = 'UNSET',
   $nismaps_ou                                           = 'ou=nismaps,dc=example,dc=com',
-  $user_search_path                                     = undef,
-  $group_search_path                                    = undef,
-  $upm_search_path                                      = undef,
+  $user_search_path                                     = 'UNSET',
+  $group_search_path                                    = 'UNSET',
+  $upm_search_path                                      = 'UNSET',
   $nisdomainname                                        = undef,
   $realm                                                = 'realm.example.com',
   $sitenameoverride                                     = 'UNSET',
@@ -111,6 +111,13 @@ class vas (
   validate_re($vas_conf_libvas_vascache_ipc_timeout, '^\d+$', "vas::vas_conf_libvas_vascache_ipc_timeout must be an integer. Detected value is <${vas_conf_libvas_vascache_ipc_timeout}>.")
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
   validate_string($vas_conf_prompt_vas_ad_pw)
+
+  validate_string($user_search_path)
+  validate_string($group_search_path)
+  validate_string($upm_search_path)
+  validate_string($users_ou)
+  validate_string($computers_ou)
+  validate_string($nismaps_ou)
 
   validate_absolute_path($vas_config_path)
   if $vas_conf_vasd_delusercheck_script != 'UNSET' {
@@ -251,8 +258,8 @@ class vas (
   }
 
   # Define search paths
-  if $upm_search_path == undef {
-    if $users_ou != undef {
+  if $upm_search_path == 'UNSET' {
+    if $users_ou != 'UNSET' {
       $upm_search_path_real = $users_ou
     } else {
       $upm_search_path_real = undef
@@ -260,6 +267,19 @@ class vas (
   } else {
     $upm_search_path_real = $upm_search_path
   }
+
+  if $user_search_path == 'UNSET' {
+    $user_search_path_real = undef
+  } else {
+    $user_search_path_real = $user_search_path
+  }
+
+  if $group_search_path == 'UNSET' {
+    $group_search_path_real = undef
+  } else {
+    $group_search_path_real = $group_search_path
+  }
+
 
   case $::kernel {
     'Linux': {
@@ -433,12 +453,12 @@ class vas (
     $user_search_path_parm = ""
   }
   if $group_search_path_real != undef {
-    $group_search_path_parm = "-u ${group_search_path_real}"
+    $group_search_path_parm = "-g ${group_search_path_real}"
   } else {
     $group_search_path_parm = ""
   }
   if $upm_search_path_real != undef {
-    $upm_search_path_parm = "-u ${upm_search_path_real}"
+    $upm_search_path_parm = "-p ${upm_search_path_real}"
   } else {
     $upm_search_path_parm = ""
   }
