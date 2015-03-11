@@ -1,6 +1,6 @@
 # puppet-module-vas
 
-Puppet module to manage VAS - Quest Authentication Services
+Puppet module to manage DELL Authentication Services previously known as VAS or Quest Authentication Services
 
 [![Build Status](https://api.travis-ci.org/Ericsson/puppet-module-vas.png)](https://travis-ci.org/Ericsson/puppet-module-vas)
 
@@ -10,8 +10,9 @@ Puppet module to manage VAS - Quest Authentication Services
 
 This module has been tested to work on the following systems using Puppet v3 and Ruby 1.8.7
 
- * EL 5
- * EL 6
+ * RHEL 5
+ * RHEL 6
+ * RHEL 7
  * Suse 10
  * Suse 11
  * Ubuntu 12.04
