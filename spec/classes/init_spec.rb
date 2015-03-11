@@ -243,6 +243,7 @@ describe 'vas' do
           :vas_conf_disabled_user_pwhash                        => 'disabled',
           :vas_conf_locked_out_pwhash                           => 'locked',
           :vas_conf_update_process                              => '/opt/quest/libexec/vas/mapupdate',
+          :vas_conf_full_update_interval                        => '3600',
           :vas_conf_vasd_update_interval                        => '1200',
           :vas_conf_upm_computerou_attr                         => 'managedBy',
           :vas_conf_preload_nested_memberships                  => 'false',
@@ -313,6 +314,7 @@ describe 'vas' do
  update-interval = 1800
  domainname-override = nis.domain
  update-process = /opt/quest/libexec/vas/mapupdate
+ full-update-interval = 3600
  client-addrs = 10.10.0.0/24 10.50.0.0/24
 
 [vasd]
@@ -885,8 +887,8 @@ DOMAIN\\adgroup:group::
       let(:params) { { :symlink_vastool_binary        => true,
                        :vastool_binary                => 'true',
                        :symlink_vastool_binary_target => '/bar' } }
-      it do
-        expect { should }.to raise_error(Puppet::Error)
+      it 'should fail' do
+        expect { should }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
       end
     end
 
@@ -894,8 +896,8 @@ DOMAIN\\adgroup:group::
       let(:params) { { :symlink_vastool_binary        => true,
                        :vastool_binary                => '/foo/bar',
                        :symlink_vastool_binary_target => 'undef' } }
-      it do
-        expect { should }.to raise_error(Puppet::Error)
+      it 'should fail' do
+        expect { should }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
       end
     end
   end
