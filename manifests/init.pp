@@ -148,74 +148,74 @@ class vas (
     fail("vas::vas_fqdn is not a valid FQDN. Detected value is <${vas_fqdn}>.")
   }
 
-  if type($users_allow_hiera_merge) == 'string' {
+  if is_string($users_allow_hiera_merge) {
     $users_allow_hiera_merge_real = str2bool($users_allow_hiera_merge)
   } else {
     $users_allow_hiera_merge_real = $users_allow_hiera_merge
   }
   validate_bool($users_allow_hiera_merge_real)
 
-  if type($users_deny_hiera_merge) == 'string' {
+  if is_string($users_deny_hiera_merge) {
     $users_deny_hiera_merge_real = str2bool($users_deny_hiera_merge)
   } else {
     $users_deny_hiera_merge_real = $users_deny_hiera_merge
   }
   validate_bool($users_deny_hiera_merge_real)
 
-  if type($vas_conf_libdefaults_forwardable) == 'string' {
+  if is_string($vas_conf_libdefaults_forwardable) {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
   } else {
     $vas_conf_libdefaults_forwardable_real = $vas_conf_libdefaults_forwardable
   }
 
-  if type($vas_conf_libvas_use_server_referrals) == 'string' {
+  if is_string($vas_conf_libvas_use_server_referrals) {
     $vas_conf_libvas_use_server_referrals_real = str2bool($vas_conf_libvas_use_server_referrals)
   } else {
     $vas_conf_libvas_use_server_referrals_real = $vas_conf_libvas_use_server_referrals
   }
 
-  if type($vas_conf_libvas_use_dns_srv) == 'string' {
+  if is_string($vas_conf_libvas_use_dns_srv) {
     $vas_conf_libvas_use_dns_srv_real = str2bool($vas_conf_libvas_use_dns_srv)
   } else {
     $vas_conf_libvas_use_dns_srv_real = $vas_conf_libvas_use_dns_srv
   }
 
-  if type($vas_conf_libvas_use_tcp_only) == 'string' {
+  if is_string($vas_conf_libvas_use_tcp_only) {
     $vas_conf_libvas_use_tcp_only_real = str2bool($vas_conf_libvas_use_tcp_only)
   } else {
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
   }
 
-  if type($vas_conf_libvas_site_only_servers) == 'string' {
+  if is_string($vas_conf_libvas_site_only_servers) {
     $vas_conf_libvas_site_only_servers_real = str2bool($vas_conf_libvas_site_only_servers)
   } else {
     $vas_conf_libvas_site_only_servers_real = $vas_conf_libvas_site_only_servers
   }
 
-  if type($vas_conf_vasd_workstation_mode) == 'string' {
+  if is_string($vas_conf_vasd_workstation_mode) {
     $vas_conf_vasd_workstation_mode_real = str2bool($vas_conf_vasd_workstation_mode)
   } else {
     $vas_conf_vasd_workstation_mode_real = $vas_conf_vasd_workstation_mode
   }
 
-  if type($vas_conf_vasd_workstation_mode_group_do_member) == 'string' {
+  if is_string($vas_conf_vasd_workstation_mode_group_do_member) {
     $vas_conf_vasd_workstation_mode_group_do_member_real = str2bool($vas_conf_vasd_workstation_mode_group_do_member)
   } else {
     $vas_conf_vasd_workstation_mode_group_do_member_real = $vas_conf_vasd_workstation_mode_group_do_member
   }
 
-  if type($vas_conf_vasd_workstation_mode_groups_skip_update) == 'string' {
+  if is_string($vas_conf_vasd_workstation_mode_groups_skip_update) {
     $vas_conf_vasd_workstation_mode_groups_skip_update_real = str2bool($vas_conf_vasd_workstation_mode_groups_skip_update)
   } else {
     $vas_conf_vasd_workstation_mode_groups_skip_update_real = $vas_conf_vasd_workstation_mode_groups_skip_update
   }
-  if type($vas_conf_vasd_ws_resolve_uid) == 'string' {
+  if is_string($vas_conf_vasd_ws_resolve_uid) {
     $vas_conf_vasd_ws_resolve_uid_real = str2bool($vas_conf_vasd_ws_resolve_uid)
   } else {
     $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
   }
 
-  if type($enable_group_policies) == 'string' {
+  if is_string($enable_group_policies) {
     $enable_group_policies_real = str2bool($enable_group_policies)
   } else {
     $enable_group_policies_real = $enable_group_policies
@@ -413,7 +413,7 @@ class vas (
     require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
   }
 
-  if type($symlink_vastool_binary) == 'string' {
+  if is_string($symlink_vastool_binary) {
     $symlink_vastool_binary_bool = str2bool($symlink_vastool_binary)
   } else {
     $symlink_vastool_binary_bool = $symlink_vastool_binary
