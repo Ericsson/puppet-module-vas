@@ -406,7 +406,7 @@ class vas (
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    command => "vastool -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
