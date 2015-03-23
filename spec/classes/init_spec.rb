@@ -723,7 +723,7 @@ DOMAIN\\adgroup
       end
     end
 
-    context 'with user_override_entries specified on osfamily redhat with lsbmajdistrelease 6' do
+    context 'with user_override_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
           :kernel                    => 'Linux',
@@ -736,7 +736,7 @@ DOMAIN\\adgroup
       end
       let :params do
         {
-          :user_override_entries => ['jdoe@example.com::::::/bin/sh'],
+          :user_override_entries => ['jdoe@example.com::::::/bin/sh','jane@example.com:::::/local/home/jane:'],
           :vas_user_override_path => '/path/to/user-override',
         }
       end
@@ -753,11 +753,12 @@ DOMAIN\\adgroup
 %{# This file is being maintained by Puppet.
 # DO NOT EDIT
 jdoe@example.com::::::/bin/sh
+jane@example.com:::::/local/home/jane:
 })
       end
     end
 
-    context 'with group_override_entries specified on osfamily redhat with lsbmajdistrelease 6' do
+    context 'with user_override_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
           :kernel                    => 'Linux',
@@ -770,7 +771,76 @@ jdoe@example.com::::::/bin/sh
       end
       let :params do
         {
-          :group_override_entries => ['DOMAIN\adgroup:group::'],
+          :user_override_entries => 'jdoestring@example.com::::::/bin/sh',
+          :vas_user_override_path => '/path/to/user-override',
+        }
+      end
+
+      it do
+        should contain_file('vas_user_override').with({
+          'ensure'  => 'present',
+          'path'    => '/path/to/user-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_user_override').with_content(
+%{# This file is being maintained by Puppet.
+# DO NOT EDIT
+jdoestring@example.com::::::/bin/sh
+})
+      end
+    end
+
+    context 'with group_override_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :group_override_entries => ['DOMAIN\adgroup:group::','DOMAIN\adgroup2:group2::'],
+          :vas_group_override_path => '/path/to/group-override',
+        }
+      end
+
+      it do
+        should contain_file('vas_group_override').with({
+          'ensure'  => 'present',
+          'path'    => '/path/to/group-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+        })
+        should contain_file('vas_group_override').with_content(
+%{# This file is being maintained by Puppet.
+# DO NOT EDIT
+DOMAIN\\adgroup:group::
+DOMAIN\\adgroup2:group2::
+})
+      end
+    end
+
+    context 'with group_override_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        {
+          :group_override_entries  => 'DOMAIN\adgroup:group::',
           :vas_group_override_path => '/path/to/group-override',
         }
       end
