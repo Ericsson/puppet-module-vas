@@ -425,12 +425,12 @@ class vas (
   }
 
   file { 'keytab':
-    ensure  => 'present',
-    name    => $keytab_path,
-    source  => $keytab_source,
-    owner   => $keytab_owner,
-    group   => $keytab_group,
-    mode    => $keytab_mode,
+    ensure => 'present',
+    name   => $keytab_path,
+    source => $keytab_source,
+    owner  => $keytab_owner,
+    group  => $keytab_group,
+    mode   => $keytab_mode,
   }
 
   service { 'vasd':
@@ -459,9 +459,9 @@ class vas (
   # No vasgpd service in VAS 4
   if $::vas_version =~ /^3/ and $upgrade == false {
     service { 'vasgpd':
-      ensure   => 'running',
-      enable   => true,
-      require  => Service['vasd'],
+      ensure  => 'running',
+      enable  => true,
+      require => Service['vasd'],
     }
     if $::kernel == 'SunOS' {
       Service['vasgpd'] {
@@ -477,9 +477,9 @@ class vas (
   }
 
   if $vas_conf_vasd_workstation_mode_real == true {
-    $workstation_flag = "-w"
+    $workstation_flag = '-w'
   } else {
-    $workstation_flag = ""
+    $workstation_flag = ''
   }
 
   $once_file = '/etc/opt/quest/vas/puppet_joined'
