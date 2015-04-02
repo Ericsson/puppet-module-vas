@@ -239,10 +239,27 @@ class vas (
 
   case $::kernel {
     'Linux': {
-      include vas::linux
+      case $::osfamily {
+        'Debian','Suse','RedHat': { }
+        default: {
+          fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${::osfamily}>")
+        }
+      }
     }
     'SunOS': {
-      include vas::solaris
+      case $::kernelrelease {
+        '5.9': {
+          $service_deps = ['rpc']
+          $service_deps_hasstatus = false
+        }
+        '5.10','5.11': {
+          $service_deps = ['rpc/bind']
+          $service_deps_hasstatus = true
+        }
+        default: {
+          fail("Vas supports Solaris kernelrelease 5.9, 5.10 and 5.11. Detected kernelrelease is <${::kernelrelease}>")
+        }
+      }
     }
     default: {
       fail("Vas module support Linux and SunOS kernels. Detected kernel is <${::kernel}>")
@@ -268,7 +285,18 @@ class vas (
   if $package_version == undef {
     $package_ensure = 'installed'
   } else {
-    $package_ensure = $package_version
+    if $::kernel == 'SunOS' {
+      $package_ensure = 'installed'
+    } else {
+      $package_ensure = $package_version
+    }
+
+    $vasver = regsubst($package_version, '-', '.')
+    if ($::vas_version and $vasver > $::vas_version and $package_version) {
+      $upgrade = true
+    } else {
+      $upgrade = false
+    }
   }
 
   if $enable_group_policies_real == true {
@@ -299,6 +327,33 @@ class vas (
 
   package { 'vasgp':
     ensure => $gp_package_ensure,
+  }
+
+  if $::kernel == 'SunOS' {
+    file { '/tmp/generic-pkg-response':
+      content => 'CLASSES= run\n',
+    }
+
+    Package['vasclnt'] {
+      source       => $solaris_vasclntpath,
+      adminfile    => $solaris_adminpath,
+      responsefile => "${solaris_responsepattern}.vasclnt",
+      provider     => 'sun',
+    }
+
+    Package['vasyp'] {
+      source       => $solaris_vasyppath,
+      adminfile    => $solaris_adminpath,
+      responsefile => "${solaris_responsepattern}.vasyp",
+      provider     => 'sun',
+    }
+
+    Package['vasgp'] {
+      source       => $solaris_vasgppath,
+      adminfile    => $solaris_adminpath,
+      responsefile => "${solaris_responsepattern}.vasgp",
+      provider     => 'sun',
+    }
   }
 
   file { 'vas_config':
@@ -389,6 +444,30 @@ class vas (
     enable  => true,
     require => Service['vasd'],
     before  => Class['nisclient'],
+  }
+
+  if $::kernel == 'SunOS' {
+    service { 'vas_deps':
+      ensure    => 'running',
+      name      => $service_deps,
+      enable    => true,
+      hasstatus => $service_deps_hasstatus,
+      notify    => Service['vasypd'],
+    }
+  }
+
+  # No vasgpd service in VAS 4
+  if $::vas_version =~ /^3/ and $upgrade == false {
+    service { 'vasgpd':
+      ensure   => 'running',
+      enable   => true,
+      require  => Service['vasd'],
+    }
+    if $::kernel == 'SunOS' {
+      Service['vasgpd'] {
+        provider => 'init',
+      }
+    }
   }
 
   if $sitenameoverride == 'UNSET' {
