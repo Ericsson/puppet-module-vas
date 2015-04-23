@@ -18,14 +18,19 @@ class vas (
   $keytab_group                                         = 'root',
   $keytab_mode                                          = '0400',
   $vas_fqdn                                             = $::fqdn,
-  $computers_ou                                         = 'ou=computers,dc=example,dc=com',
-  $users_ou                                             = 'ou=users,dc=example,dc=com',
+  $computers_ou                                         = 'UNSET',
+  $users_ou                                             = 'UNSET',
   $nismaps_ou                                           = 'ou=nismaps,dc=example,dc=com',
+  $user_search_path                                     = 'UNSET',
+  $group_search_path                                    = 'UNSET',
+  $upm_search_path                                      = 'UNSET',
   $nisdomainname                                        = undef,
   $realm                                                = 'realm.example.com',
   $sitenameoverride                                     = 'UNSET',
   $vas_conf_client_addrs                                = 'UNSET',
   $vas_conf_full_update_interval                        = 'UNSET',
+  $vas_conf_group_update_mode                           = 'none',
+  $vas_conf_root_update_mode                            = 'none',
   $vas_conf_disabled_user_pwhash                        = undef,
   $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',
@@ -107,6 +112,13 @@ class vas (
   validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
   validate_string($vas_conf_prompt_vas_ad_pw)
 
+  validate_string($user_search_path)
+  validate_string($group_search_path)
+  validate_string($upm_search_path)
+  validate_string($users_ou)
+  validate_string($computers_ou)
+  validate_string($nismaps_ou)
+
   validate_absolute_path($vas_config_path)
   if $vas_conf_vasd_delusercheck_script != 'UNSET' {
     validate_absolute_path($vas_conf_vasd_delusercheck_script)
@@ -130,6 +142,14 @@ class vas (
 
   if $vas_conf_locked_out_pwhash != undef {
     validate_string($vas_conf_locked_out_pwhash)
+  }
+
+  if $vas_conf_group_update_mode != undef {
+    validate_string($vas_conf_group_update_mode)
+  }
+
+  if $vas_conf_root_update_mode != undef {
+    validate_string($vas_conf_root_update_mode)
   }
 
   if $license_files != undef {
@@ -236,6 +256,30 @@ class vas (
   } else {
     $vas_conf_vasd_timesync_interval_real = $vas_conf_vasd_timesync_interval
   }
+
+  # Define search paths
+  if $upm_search_path == 'UNSET' {
+    if $users_ou != 'UNSET' {
+      $upm_search_path_real = $users_ou
+    } else {
+      $upm_search_path_real = undef
+    }
+  } else {
+    $upm_search_path_real = $upm_search_path
+  }
+
+  if $user_search_path == 'UNSET' {
+    $user_search_path_real = undef
+  } else {
+    $user_search_path_real = $user_search_path
+  }
+
+  if $group_search_path == 'UNSET' {
+    $group_search_path_real = undef
+  } else {
+    $group_search_path_real = $group_search_path
+  }
+
 
   case $::kernel {
     'Linux': {
@@ -403,10 +447,26 @@ class vas (
     $workstation_flag = ""
   }
 
+  if $user_search_path_real != undef {
+    $user_search_path_parm = "-u ${user_search_path_real}"
+  } else {
+    $user_search_path_parm = ""
+  }
+  if $group_search_path_real != undef {
+    $group_search_path_parm = "-g ${group_search_path_real}"
+  } else {
+    $group_search_path_parm = ""
+  }
+  if $upm_search_path_real != undef {
+    $upm_search_path_parm = "-p ${upm_search_path_real}"
+  } else {
+    $upm_search_path_parm = ""
+  }
+
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
-    command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} -p ${users_ou} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+    command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
     path    => '/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,

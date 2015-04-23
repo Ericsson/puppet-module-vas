@@ -135,19 +135,37 @@ computers_ou
 ------------
 Path to OU where to store computer object.
 
-- *Default*: 'ou=computers,dc=example,dc=com'
+- *Default*: 'UNSET'
 
 users_ou
 --------
-Path to OU where to load users initially.
+Deprecated, this parameter is the same as upm_search_path. Path to OU where to load UPM user profiles.
 
-- *Default*: 'ou=users,dc=example,dc=com'
+- *Default*: 'UNSET'
 
 nismaps_ou
 ----------
 Path to OU where to load nismaps initially.
 
-- *Default*: 'ou=nismaps,dc=example,dc=com'
+- *Default*: 'UNSET'
+
+upm_search_path
+---------------
+LDAP search path for UPM user profiles. Setting this parameter will cause QAS to run in UPM mode.
+
+- *Default*: 'UNSET'
+
+user_search_path
+----------------
+LDAP search path for user profiles. This will limit the scope where QAS will search for users when operating in RFC2307 mode.
+
+- *Default*: 'UNSET'
+
+group_search_path
+-----------------
+LDAP search path for groups. This will limit the scope where QAS will search for groups when operating in RFC2307 mode.
+
+- *Default*: 'UNSET'
 
 realm
 -----
@@ -172,6 +190,22 @@ vas_conf_client_addrs
 client-addrs option in vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 'UNSET'
+
+vas_conf_root_update_mode
+-------------------------
+The value of root-update-mode in the [nss_vas] configuration section. This controls how directory searches will be performed when calling nss functions. See VAS.CONF(5) for more info.
+
+Possible values: force | force-if-missing | none
+
+- *Default*: 'none'
+
+vas_conf_group_update_mode
+--------------------------
+The value of group-update-mode in the [nss_vas] configuration section. This controls how directory searches will be handeled for group nss functions. See VAS.CONF(5) for more info.
+
+Possible values: force | force-if-missing | none
+
+- *Default*: 'none'
 
 vas_conf_disabled_user_pwhash
 -----------------------------
