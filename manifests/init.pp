@@ -467,7 +467,7 @@ class vas (
 
   exec { 'vasinst':
     command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
-    path    => '/bin:/usr/bin:/opt/quest/bin',
+    path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
     require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
