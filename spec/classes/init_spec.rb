@@ -345,6 +345,70 @@ describe 'vas' do
       end
     end
 
+    context 'with use_server_referrals enabled by vas version' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_use_server_referrals => 'USE_DEFAULTS' }
+      end
+
+      it do
+        should contain_file('vas_config').with_content(/use-server-referrals = false/)
+      end
+    end
+
+    context 'with use_server_referrals disabled by vas version' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21517',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_use_server_referrals => 'USE_DEFAULTS' }
+      end
+
+      it do
+        should contain_file('vas_config').with_content(/use-server-referrals = true/)
+      end
+    end
+
+    context 'with use_server_referrals set to invalid value' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_libvas_use_server_referrals => 42 }
+      end
+
+      it 'should fail' do
+        expect {
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/.*\"42\" is not a boolean.*/)
+      end
+    end
+
     context 'with vas_fqdn to invalid domainname' do
       let :facts do
         {
