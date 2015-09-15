@@ -1,7 +1,7 @@
 {
   "name": "ericsson-vas",
   "author": "ericsson",
-  "license": "Apache License, Version 2.0",
+  "license": "Apache-2.0",
   "summary": "Manage VAS",
   "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
   "source": "https://github.com/Ericsson/puppet-module-vas.git",
@@ -79,9 +79,6 @@
         "14.04"
       ]
     }
-  ],
-  "types": [
-
   ],
   "dependencies": [
     { "version_requirement": ">= 0.1.0", "name": "ericsson/nisclient" },

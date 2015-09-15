@@ -429,12 +429,12 @@ class vas (
   }
 
   file { 'keytab':
-    ensure  => 'present',
-    name    => $keytab_path,
-    source  => $keytab_source,
-    owner   => $keytab_owner,
-    group   => $keytab_group,
-    mode    => $keytab_mode,
+    ensure => 'present',
+    name   => $keytab_path,
+    source => $keytab_source,
+    owner  => $keytab_owner,
+    group  => $keytab_group,
+    mode   => $keytab_mode,
   }
 
   service { 'vasd':
@@ -457,25 +457,25 @@ class vas (
   }
 
   if $vas_conf_vasd_workstation_mode_real == true {
-    $workstation_flag = "-w"
+    $workstation_flag = '-w'
   } else {
-    $workstation_flag = ""
+    $workstation_flag = ''
   }
 
   if $user_search_path_real != undef {
     $user_search_path_parm = "-u ${user_search_path_real}"
   } else {
-    $user_search_path_parm = ""
+    $user_search_path_parm = ''
   }
   if $group_search_path_real != undef {
     $group_search_path_parm = "-g ${group_search_path_real}"
   } else {
-    $group_search_path_parm = ""
+    $group_search_path_parm = ''
   }
   if $upm_search_path_real != undef {
     $upm_search_path_parm = "-p ${upm_search_path_real}"
   } else {
-    $upm_search_path_parm = ""
+    $upm_search_path_parm = ''
   }
 
   $once_file = '/etc/opt/quest/vas/puppet_joined'
