@@ -375,8 +375,16 @@ Integer for number of seconds to set value of vascache-ipc-timeout in [libvas] s
 vas_conf_libvas_use_server_referrals
 ------------------------------------
 Boolean to set valut of use-server-referrals in [libvas] section of vas.conf. See VAS.CONF(5) for more info.
+Set to 'USE_DEFAULTS' for automagically switching depending on running $vas_version. Also see $vas_conf_libvas_use_server_referrals_version_switch.
 
 - *Default*: true
+
+vas_conf_libvas_use_server_referrals_version_switch
+---------------------------------------------------
+String with version number to set use-server-referrals to false when $vas_conf_libvas_use_server_referrals is set to 'USE_DEFAULTS'.
+Equal or higher version numbers will pull the trigger.
+
+- *Default*: '4.1.0.21518'
 
 vas_conf_libvas_auth_helper_timeout
 -----------------------------------
