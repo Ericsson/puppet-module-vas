@@ -117,6 +117,12 @@
 <% if @vas_conf_locked_out_pwhash != nil -%>
  locked-out-pwhash = <%= @vas_conf_locked_out_pwhash %>
 <% end -%>
+<% if @vas_conf_lowercase_names_real != nil -%>
+ lowercase-names = <%= @vas_conf_lowercase_names_real %>
+<% end -%>
+<% if @vas_conf_lowercase_homedirs_real != nil -%>
+ lowercase-homedirs = <%= @vas_conf_lowercase_homedirs_real %>
+<% end -%>
 
 [vas_auth]
 <% if @vas_users_allow_path != 'UNSET' -%>

@@ -416,6 +416,18 @@ Boolean to set value of use-tcp-only in [libvas] section of vas.conf. See VAS.CO
 
 - *Default*: true
 
+vas_conf_lowercase_names
+------------------------
+Boolean to set value of lowercase-names in [nss_vas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_lowercase_homedirs
+------------------------
+Boolean to set value of lowercase-homedirs in [nss_vas] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
 vas_config_path
 ---------------
 Path to VAS config file.

@@ -63,6 +63,8 @@ class vas (
   $vas_conf_libvas_site_only_servers                    = false,
   $vas_conf_libvas_use_dns_srv                          = true,
   $vas_conf_libvas_use_tcp_only                         = true,
+  $vas_conf_lowercase_names                             = 'UNSET',
+  $vas_conf_lowercase_homedirs                          = 'UNSET',
   $vas_config_path                                      = '/etc/opt/quest/vas/vas.conf',
   $vas_config_owner                                     = 'root',
   $vas_config_group                                     = 'root',
@@ -219,6 +221,22 @@ class vas (
     $vas_conf_libvas_use_tcp_only_real = str2bool($vas_conf_libvas_use_tcp_only)
   } else {
     $vas_conf_libvas_use_tcp_only_real = $vas_conf_libvas_use_tcp_only
+  }
+
+  if $vas_conf_lowercase_names != 'UNSET' {
+    if is_string($vas_conf_lowercase_names) {
+      $vas_conf_lowercase_names_real = str2bool($vas_conf_lowercase_names)
+    } else {
+      $vas_conf_lowercase_names_real = $vas_conf_lowercase_names
+    }
+  }
+
+  if $vas_conf_lowercase_homedirs != 'UNSET' {
+    if is_string($vas_conf_lowercase_homedirs) {
+      $vas_conf_lowercase_homedirs_real = str2bool($vas_conf_lowercase_homedirs)
+    } else {
+      $vas_conf_lowercase_homedirs_real = $vas_conf_lowercase_homedirs
+    }
   }
 
   if is_string($vas_conf_libvas_site_only_servers) {
