@@ -264,6 +264,8 @@ describe 'vas' do
           :vas_conf_libvas_mscldap_timeout                      => '10',
           :vas_conf_libvas_site_only_servers                    => 'false',
           :vas_conf_vas_auth_uid_check_limit                    => '100000',
+          :vas_conf_lowercase_names                             => true,
+          :vas_conf_lowercase_homedirs                          => true,
         }
       end
 
@@ -338,6 +340,8 @@ describe 'vas' do
  root-update-mode = none
  disabled-user-pwhash = disabled
  locked-out-pwhash = locked
+ lowercase-names = true
+ lowercase-homedirs = true
 
 [vas_auth]
  uid-check-limit = 100000
@@ -599,6 +603,50 @@ describe 'vas' do
       end
       let :params do
         { :vas_conf_libvas_use_tcp_only => 'invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'with vas_conf_lowercase_homedirs set to invalid non-boolean string' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_lowercase_homedirs => 'invalid' }
+      end
+
+      it 'should fail' do
+        expect {
+          should include_class('vas')
+        }.to raise_error(Puppet::Error)
+      end
+    end
+
+    context 'with vas_conf_lowercase_names set to invalid non-boolean string' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+        }
+      end
+      let :params do
+        { :vas_conf_lowercase_names => 'invalid' }
       end
 
       it 'should fail' do
