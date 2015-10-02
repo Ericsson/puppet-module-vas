@@ -11,6 +11,7 @@ describe 'vas' do
         :osfamily                  => 'RedHat',
         :lsbmajdistrelease         => '6',
         :operatingsystemmajrelease => '6',
+        :vas_version               => '4.1.0.21518',
       }
       end
 
@@ -56,6 +57,7 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -76,6 +78,7 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -100,6 +103,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
 
@@ -225,6 +229,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -400,6 +405,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -422,6 +428,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -445,6 +452,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -467,6 +475,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -489,6 +498,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -511,6 +521,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -533,6 +544,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -555,6 +567,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -577,6 +590,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -599,6 +613,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -621,6 +636,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -643,6 +659,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -665,6 +682,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -687,6 +705,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -709,6 +728,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -743,6 +763,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -776,6 +797,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -810,6 +832,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -843,6 +866,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -878,6 +902,7 @@ jane@example.com:::::/local/home/jane:
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -912,6 +937,7 @@ jdoestring@example.com::::::/bin/sh
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -947,6 +973,7 @@ DOMAIN\\adgroup2:group2::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -981,6 +1008,7 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -1014,6 +1042,7 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -1043,6 +1072,7 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -1098,11 +1128,15 @@ DOMAIN\\adgroup:group::
   describe 'with symlink_vastool_binary' do
     ['true',true].each do |value|
       context "set to #{value} (default)" do
-        let(:facts) { { :kernel                    => 'Linux',
-                        :osfamily                  => 'Redhat',
-                        :lsbmajdistrelease         => '6',
-                        :operatingsystemmajrelease => '6',
-                    } }
+        let :facts do
+          {
+            :kernel                    => 'Linux',
+            :osfamily                  => 'RedHat',
+            :lsbmajdistrelease         => '6',
+            :operatingsystemmajrelease => '6',
+            :vas_version               => '4.1.0.21518',
+          }
+        end
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
@@ -1119,11 +1153,15 @@ DOMAIN\\adgroup:group::
 
     ['false',false].each do |value|
       context "set to #{value} (default)" do
-        let(:facts) { { :kernel                    => 'Linux',
-                        :osfamily                  => 'Redhat',
-                        :lsbmajdistrelease         => '6',
-                        :operatingsystemmajrelease => '6',
-                    } }
+        let :facts do
+          {
+            :kernel                    => 'Linux',
+            :osfamily                  => 'RedHat',
+            :lsbmajdistrelease         => '6',
+            :operatingsystemmajrelease => '6',
+            :vas_version               => '4.1.0.21518',
+          }
+        end
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
@@ -1133,11 +1171,15 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with all params specified' do
-      let(:facts) { { :kernel                    => 'Linux',
-                      :osfamily                  => 'Redhat',
-                      :lsbmajdistrelease         => '6',
-                      :operatingsystemmajrelease => '6',
-                  } }
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
+        }
+      end
       let(:params) do
         { :symlink_vastool_binary        => true,
           :vastool_binary                => '/foo/bar',
@@ -1185,6 +1227,7 @@ DOMAIN\\adgroup:group::
         :osfamily                  => 'RedHat',
         :lsbmajdistrelease         => '6',
         :operatingsystemmajrelease => '6',
+        :vas_version               => '4.1.0.21518',
       }
       end
       let :params do
@@ -1213,6 +1256,7 @@ DOMAIN\\adgroup:group::
         :osfamily                  => 'RedHat',
         :lsbmajdistrelease         => '6',
         :operatingsystemmajrelease => '6',
+        :vas_version               => '4.1.0.21518',
       }
       end
       let :params do
