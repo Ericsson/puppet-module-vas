@@ -476,7 +476,7 @@ describe 'vas' do
       it 'should fail' do
         expect {
           should contain_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <600invalid>./)
+        }.to raise_error(Puppet::Error,/validate_integer/)
       end
     end
 
@@ -498,7 +498,7 @@ describe 'vas' do
       it 'should fail' do
         expect {
           should contain_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_update_interval must be an integer. Detected value is <600invalid>./)
+        }.to raise_error(Puppet::Error,/validate_integer/)
       end
     end
 
@@ -696,7 +696,7 @@ describe 'vas' do
       it 'should fail' do
         expect {
           should contain_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <10invalid>./)
+        }.to raise_error(Puppet::Error,/validate_integer/)
       end
     end
 

@@ -112,16 +112,16 @@ class vas (
   }
 
   # validate params
-  validate_re($vas_conf_vasd_auto_ticket_renew_interval, '^\d+$', "vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <${vas_conf_vasd_auto_ticket_renew_interval}>.")
-  validate_re($vas_conf_vasd_update_interval, '^\d+$', "vas::vas_conf_vasd_update_interval must be an integer. Detected value is <${vas_conf_vasd_update_interval}>.")
+  validate_integer($vas_conf_vasd_update_interval)
+  validate_integer($vas_conf_vasd_auto_ticket_renew_interval)
   if $vas_conf_vasd_deluser_check_timelimit != 'UNSET' {
-    validate_re($vas_conf_vasd_deluser_check_timelimit, '^\d+$', "vas::vas_conf_vasd_deluser_check_timelimit must be an integer. Detected value is <${vas_conf_vasd_deluser_check_timelimit}>.")
+    validate_integer($vas_conf_vasd_deluser_check_timelimit)
   }
   if $vas_conf_vasd_delusercheck_interval != 'UNSET' {
-    validate_re($vas_conf_vasd_delusercheck_interval, '^\d+$', "vas::vas_conf_vasd_delusercheck_interval must be an integer. Detected value is <${vas_conf_vasd_delusercheck_interval}>.")
+    validate_integer($vas_conf_vasd_delusercheck_interval)
   }
-  validate_re($vas_conf_libvas_vascache_ipc_timeout, '^\d+$', "vas::vas_conf_libvas_vascache_ipc_timeout must be an integer. Detected value is <${vas_conf_libvas_vascache_ipc_timeout}>.")
-  validate_re($vas_conf_libvas_auth_helper_timeout, '^\d+$', "vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <${vas_conf_libvas_auth_helper_timeout}>.")
+  validate_integer($vas_conf_libvas_vascache_ipc_timeout)
+  validate_integer($vas_conf_libvas_auth_helper_timeout)
   validate_string($vas_conf_prompt_vas_ad_pw)
 
   validate_string($user_search_path)
