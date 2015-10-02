@@ -415,7 +415,7 @@ describe 'vas' do
       it 'should fail' do
         expect {
           should contain_class('vas')
-        }.to raise_error(Puppet::Error,/.*\"42\" is not a boolean.*/)
+        }.to raise_error(Puppet::Error,/is not a boolean/)
       end
     end
 
