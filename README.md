@@ -91,6 +91,12 @@ List of user-override entries. Used to override specific user data fields; UID, 
 
 - *Default*: ['UNSET']
 
+group_override_entries
+---------------------
+List of group-override entries. Used to override specific group data fields; GROUP_NAME, GID and GROUP_MEMBERSHIP.
+
+- *Default*: ['UNSET']
+
 username
 --------
 Name of user account used to join Active Directory.
