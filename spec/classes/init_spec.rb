@@ -11,6 +11,7 @@ describe 'vas' do
         :osfamily                  => 'RedHat',
         :lsbmajdistrelease         => '6',
         :operatingsystemmajrelease => '6',
+        :vas_version               => '4.1.0.21518',
       }
       end
 
@@ -56,6 +57,7 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -76,6 +78,7 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -100,6 +103,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
 
@@ -225,6 +229,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -400,6 +405,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -409,7 +415,7 @@ describe 'vas' do
       it 'should fail' do
         expect {
           should contain_class('vas')
-        }.to raise_error(Puppet::Error,/.*\"42\" is not a boolean.*/)
+        }.to raise_error(Puppet::Error,/is not a boolean/)
       end
     end
 
@@ -422,6 +428,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -430,7 +437,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
       end
     end
@@ -445,6 +452,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -453,7 +461,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error,/Unknown type of boolean given/)
       end
     end
@@ -467,6 +475,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -475,8 +484,8 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_auto_ticket_renew_interval must be an integer. Detected value is <600invalid>./)
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/validate_integer/)
       end
     end
 
@@ -489,6 +498,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -497,8 +507,8 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_conf_vasd_update_interval must be an integer. Detected value is <600invalid>./)
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/validate_integer/)
       end
     end
 
@@ -511,6 +521,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -519,7 +530,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error,/is not a string/)
       end
     end
@@ -533,6 +544,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -541,7 +553,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error,/is not a string/)
       end
     end
@@ -555,6 +567,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -563,7 +576,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error,/is not a string/)
       end
     end
@@ -577,6 +590,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -585,7 +599,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error)
       end
     end
@@ -599,6 +613,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -607,7 +622,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error)
       end
     end
@@ -621,6 +636,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -629,7 +645,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error)
       end
     end
@@ -643,6 +659,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -651,7 +668,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error)
       end
     end
@@ -665,6 +682,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -673,7 +691,7 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
+          should contain_class('vas')
         }.to raise_error(Puppet::Error)
       end
     end
@@ -687,6 +705,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -695,8 +714,8 @@ describe 'vas' do
 
       it 'should fail' do
         expect {
-          should include_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_conf_libvas_auth_helper_timeout must be an integer. Detected value is <10invalid>./)
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/validate_integer/)
       end
     end
 
@@ -709,6 +728,7 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -743,6 +763,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -776,6 +797,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -810,6 +832,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -843,6 +866,7 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -878,6 +902,7 @@ jane@example.com:::::/local/home/jane:
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -912,6 +937,7 @@ jdoestring@example.com::::::/bin/sh
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -947,6 +973,7 @@ DOMAIN\\adgroup2:group2::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -981,6 +1008,7 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -1014,6 +1042,7 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -1043,6 +1072,7 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
         }
       end
       let :params do
@@ -1072,10 +1102,10 @@ DOMAIN\\adgroup:group::
           :kernel => 'AIX',
         }
       end
-      it do
+      it 'should fail' do
         expect {
-          should include_class('vas')
-        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels./)
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels\./)
       end
     end
 
@@ -1086,10 +1116,10 @@ DOMAIN\\adgroup:group::
           :osfamily => 'Gentoo',
         }
       end
-      it do
+      it 'should fail' do
         expect {
-          should include_class('vas')
-        }.to raise_error(Puppet::Error,/Vas supports Debian, Suse, and RedHat./)
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/Vas supports Debian, Suse, and RedHat\./)
       end
     end
 
@@ -1098,11 +1128,15 @@ DOMAIN\\adgroup:group::
   describe 'with symlink_vastool_binary' do
     ['true',true].each do |value|
       context "set to #{value} (default)" do
-        let(:facts) { { :kernel                    => 'Linux',
-                        :osfamily                  => 'Redhat',
-                        :lsbmajdistrelease         => '6',
-                        :operatingsystemmajrelease => '6',
-                    } }
+        let :facts do
+          {
+            :kernel                    => 'Linux',
+            :osfamily                  => 'RedHat',
+            :lsbmajdistrelease         => '6',
+            :operatingsystemmajrelease => '6',
+            :vas_version               => '4.1.0.21518',
+          }
+        end
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
@@ -1119,11 +1153,15 @@ DOMAIN\\adgroup:group::
 
     ['false',false].each do |value|
       context "set to #{value} (default)" do
-        let(:facts) { { :kernel                    => 'Linux',
-                        :osfamily                  => 'Redhat',
-                        :lsbmajdistrelease         => '6',
-                        :operatingsystemmajrelease => '6',
-                    } }
+        let :facts do
+          {
+            :kernel                    => 'Linux',
+            :osfamily                  => 'RedHat',
+            :lsbmajdistrelease         => '6',
+            :operatingsystemmajrelease => '6',
+            :vas_version               => '4.1.0.21518',
+          }
+        end
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
@@ -1133,11 +1171,15 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with all params specified' do
-      let(:facts) { { :kernel                    => 'Linux',
-                      :osfamily                  => 'Redhat',
-                      :lsbmajdistrelease         => '6',
-                      :operatingsystemmajrelease => '6',
-                  } }
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
+        }
+      end
       let(:params) do
         { :symlink_vastool_binary        => true,
           :vastool_binary                => '/foo/bar',
@@ -1159,7 +1201,9 @@ DOMAIN\\adgroup:group::
                        :vastool_binary                => 'true',
                        :symlink_vastool_binary_target => '/bar' } }
       it 'should fail' do
-        expect { should }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
+        expect {
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels. Detected kernel is <>/)
       end
     end
 
@@ -1168,7 +1212,9 @@ DOMAIN\\adgroup:group::
                        :vastool_binary                => '/foo/bar',
                        :symlink_vastool_binary_target => 'undef' } }
       it 'should fail' do
-        expect { should }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
+        expect {
+          should contain_class('vas')
+        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels\. Detected kernel is <>/)
       end
     end
   end
@@ -1181,6 +1227,7 @@ DOMAIN\\adgroup:group::
         :osfamily                  => 'RedHat',
         :lsbmajdistrelease         => '6',
         :operatingsystemmajrelease => '6',
+        :vas_version               => '4.1.0.21518',
       }
       end
       let :params do
@@ -1209,6 +1256,7 @@ DOMAIN\\adgroup:group::
         :osfamily                  => 'RedHat',
         :lsbmajdistrelease         => '6',
         :operatingsystemmajrelease => '6',
+        :vas_version               => '4.1.0.21518',
       }
       end
       let :params do

@@ -8,7 +8,12 @@ class vas::linux inherits vas {
     }
 
     'Debian','Suse','RedHat': {
-      $vasver = regsubst($vas::package_version, '-', '.')
+      if $vas::package_version != undef {
+        $vasver = regsubst($vas::package_version, '-', '.')
+      } else {
+        $vasver = ''
+      }
+
       if ($::vas_version and $vasver > $::vas_version and $vas::package_version != 'UNSET') {
         $upgrade = true
       } else {
