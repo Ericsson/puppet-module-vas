@@ -300,12 +300,6 @@ Boolean to control whether or not vasd operates in Workstation mode. See VAS.CON
 
 - *Default*: false
 
-vas_conf_vasd_workstation_mode
-------------------------------
-Boolean to control whether or not vasd operates in Workstation mode. See VAS.CONF(5) for more info.
-
-- *Default*: false
-
 vas_conf_vasd_workstation_mode_users_preload
 --------------------------------------------
 Comma separated list of groups for preloading users in Workstation mode. See VAS.CONF(5) for more info.
