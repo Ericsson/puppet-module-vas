@@ -10,7 +10,9 @@ class vas (
   $users_deny_entries                                   = ['UNSET'],
   $users_deny_hiera_merge                               = false,
   $user_override_entries                                = ['UNSET'],
+  $user_override_hiera_merge                            = false,
   $group_override_entries                               = ['UNSET'],
+  $group_override_hiera_merge                           = false,
   $username                                             = 'username',
   $keytab_path                                          = '/etc/vasinst.key',
   $keytab_source                                        = undef,
@@ -191,6 +193,20 @@ class vas (
   }
   validate_bool($users_deny_hiera_merge_real)
 
+  if is_string($user_override_hiera_merge) {
+    $user_override_hiera_merge_real = str2bool($user_override_hiera_merge)
+  } else {
+    $user_override_hiera_merge_real = $user_override_hiera_merge
+  }
+  validate_bool($user_override_hiera_merge_real)
+
+  if is_string($group_override_hiera_merge) {
+    $group_override_hiera_merge_real = str2bool($group_override_hiera_merge)
+  } else {
+    $group_override_hiera_merge_real = $group_override_hiera_merge
+  }
+  validate_bool($group_override_hiera_merge_real)
+
   if is_string($vas_conf_libdefaults_forwardable) {
     $vas_conf_libdefaults_forwardable_real = str2bool($vas_conf_libdefaults_forwardable)
   } else {
@@ -361,6 +377,18 @@ class vas (
     $users_deny_entries_real = hiera_array('vas::users_deny_entries')
   } else {
     $users_deny_entries_real = $users_deny_entries
+  }
+
+  if $user_override_hiera_merge_real == true {
+    $user_override_entries_real = hiera_array('vas::user_override_entries')
+  } else {
+    $user_override_entries_real = $user_override_entries
+  }
+
+  if $group_override_hiera_merge_real == true {
+    $group_override_entries_real = hiera_array('vas::group_override_entries')
+  } else {
+    $group_override_entries_real = $group_override_entries
   }
 
   package { 'vasclnt':

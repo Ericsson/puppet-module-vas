@@ -1,0 +1,5 @@
+---
+vas::user_override_entries:
+  - 'user@example.com:1234:12345::::/bin/ksh'
+vas::group_override_entries:
+  - 'EXAMPLE\dbadmins:::localuser,bob'
