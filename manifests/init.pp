@@ -500,6 +500,7 @@ class vas (
     path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
+    before  => Class['pam'],
     require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
   }
 
