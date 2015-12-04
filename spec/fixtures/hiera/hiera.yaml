@@ -5,4 +5,4 @@
   :datadir: 'spec/fixtures/hiera'
 :hierarchy:
   - fqdn/%{fqdn}
-  - spectest/%{spectest}
+  - parameter_tests/%{parameter_tests}
