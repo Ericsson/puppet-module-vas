@@ -102,7 +102,7 @@ class vas (
   $_vas_user_override_path_default = '/etc/opt/quest/vas/user-override'
   $_vas_group_override_path_default = '/etc/opt/quest/vas/group-override'
 
-  if versioncmp($::vas_version, $vas_conf_libvas_use_server_referrals_version_switch) >= 0 {
+  if versioncmp("${::vas_version}", $vas_conf_libvas_use_server_referrals_version_switch) >= 0 { # lint:ignore:only_variable_string
     $vas_conf_libvas_use_server_referrals_default = false
   } else {
     $vas_conf_libvas_use_server_referrals_default = true
@@ -500,6 +500,7 @@ class vas (
     path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
     timeout => 1800,
     creates => $once_file,
+    before  => Class['pam'],
     require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
   }
 
