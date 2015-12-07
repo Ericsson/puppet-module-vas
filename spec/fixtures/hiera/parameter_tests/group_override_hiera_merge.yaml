@@ -1,0 +1,3 @@
+---
+vas::group_override_entries:
+  - 'EXAMPLE\dbadmins:::localuser,bob'

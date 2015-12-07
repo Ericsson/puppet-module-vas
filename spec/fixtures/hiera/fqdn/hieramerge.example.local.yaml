@@ -1,0 +1,10 @@
+---
+# Collection of FQDN specific values for
+# - hiera merge / hiera_array() tests
+# - variable type and content validations
+
+vas::user_override_entries:
+  - 'user2@example.com:1235:12346::::/bin/bash'
+
+vas::group_override_entries:
+  - 'EXAMPLE\Engineering_Group:enggrp::'
