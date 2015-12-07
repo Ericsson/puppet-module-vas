@@ -1024,6 +1024,9 @@ DOMAIN\\adgroup:group::
       it { should contain_file('vas_config').with_content(/^\s*group-search-path = OU=Groups,DC=example,DC=com$/) }
       it { should contain_file('vas_config').with_content(/^\s*root-update-mode = force-if-needed$/) }
       it { should contain_file('vas_config').with_content(/^\s*group-update-mode = force-if-needed$/) }
+
+      it { should contain_class('pam') }
+      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
       it { should contain_exec('vasinst').with_command(/-u OU=Users,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-g OU=Groups,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
@@ -1056,6 +1059,7 @@ DOMAIN\\adgroup:group::
       it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
       it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
 
+      it { should contain_class('pam') }
       it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
@@ -1086,7 +1090,9 @@ DOMAIN\\adgroup:group::
       it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
       it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
 
+      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
       it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
       it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
       it { should_not contain_exec('vasinst').with_command(/-g/) }
