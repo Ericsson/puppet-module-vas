@@ -1091,6 +1091,59 @@ DOMAIN\\adgroup:group::
       it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
       it { should_not contain_exec('vasinst').with_command(/-g/) }
 
+  end
+
+  describe 'hiera merge parameter' do
+
+    hiera_merge_parameters = {
+      'user_override_entries' =>
+        {
+          :mergeparameter => 'user_override_hiera_merge',
+          :mergetitle     => 'vas_user_override',
+        },
+      'group_override_entries' =>
+        {
+          :mergeparameter => 'group_override_hiera_merge',
+          :mergetitle     => 'vas_group_override',
+        },
+    }
+
+    let :facts do
+      {
+        :kernel                     => 'Linux',
+        :osfamily                   => 'RedHat',
+        :lsbmajdistrelease          => '6',
+        :operatingsystemmajrelease  => '6',
+        :fqdn                       => 'hieramerge.example.local',
+        :vas_version                => '4.1.0.21518',
+        :spectest                   => 'hieramerge',
+      }
+    end
+
+    hiera_merge_parameters.each do |parameter,v|
+
+      context "#{parameter} set to true" do
+        let :params do
+          {
+            :"#{v[:mergeparameter]}" => true,
+          }
+        end
+        truefixture = File.read(fixtures("files/hieramerge-#{parameter}.true"))
+        it { should contain_file("#{v[:mergetitle]}").with_content(truefixture) }
+      end
+
+      context "#{parameter} set to false" do
+        let :params do
+          {
+            :"#{v[:mergeparameter]}" => false,
+          }
+        end
+
+        falsefixture = File.read(fixtures("files/hieramerge-#{parameter}.false"))
+        it { should contain_file("#{v[:mergetitle]}").with_content(falsefixture) }
+      end
+
+    end
 
   end
 
