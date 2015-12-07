@@ -26,6 +26,7 @@ class vas (
   $upm_search_path                                      = 'UNSET',
   $nisdomainname                                        = undef,
   $realm                                                = 'realm.example.com',
+  $domain_change                                        = false,
   $sitenameoverride                                     = 'UNSET',
   $vas_conf_client_addrs                                = 'UNSET',
   $vas_conf_full_update_interval                        = 'UNSET',
@@ -102,7 +103,7 @@ class vas (
   $_vas_user_override_path_default = '/etc/opt/quest/vas/user-override'
   $_vas_group_override_path_default = '/etc/opt/quest/vas/group-override'
 
-  if versioncmp($::vas_version, $vas_conf_libvas_use_server_referrals_version_switch) >= 0 {
+  if versioncmp("${::vas_version}", $vas_conf_libvas_use_server_referrals_version_switch) >= 0 { # lint:ignore:only_variable_string
     $vas_conf_libvas_use_server_referrals_default = false
   } else {
     $vas_conf_libvas_use_server_referrals_default = true
@@ -127,6 +128,13 @@ class vas (
   validate_string($users_ou)
   validate_string($computers_ou)
   validate_string($nismaps_ou)
+
+  if is_string($domain_change) {
+    $domain_change_real = str2bool($domain_change)
+  } else {
+    $domain_change_real = $domain_change
+  }
+  validate_bool($domain_change_real)
 
   validate_absolute_path($vas_config_path)
   if $vas_conf_vasd_delusercheck_script != 'UNSET' {
@@ -375,6 +383,52 @@ class vas (
     ensure => $gp_package_ensure,
   }
 
+  $once_file = '/etc/opt/quest/vas/puppet_joined'
+
+  # no run if undef!
+  # We should probably have better sanity checks for $realm parameter instead of this.
+  if $realm != undef {
+    # So we use the fact vas_domain to identify if vas is already joined to a AD
+    # server. It will make sure and check that ::vas_domain is not undef before doing this
+    # to prevent something from happening at first run.
+    # If the vas_domain fact is not the same as the realm specified in hiera it
+    # will then check if the domain_change_real parameter is set to true. If it is
+    # it will join the domain with help of the lastjoin file.
+    # If the domain_change_real fact is false, it will fail the compilation and warn
+    # of the mismatching realm.
+    if $::vas_domain != $realm and $::vas_domain != undef  {
+      if $domain_change_real == true {
+        exec { 'vas_change_domain':
+          # This command executes the result of the sed command, puts the log from
+          # the unjoin command into a log file and removes the once file to allow
+          # the  vas_inst command to join the new AD server.
+          # This is how the join command is built up by the vas module.
+          # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
+          # The sed regex will save everything up to but not including the join part.
+          # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
+          # It will save the part above and add to the end of it unjoin.
+          # The result would be ${vastool_binary} -u ${username} -k ${keytab_path} -d3 unjoin
+          #
+          # This sed command is required because we need to use the old credentials
+          # and old username to unjoin the currently joined AD.
+          # It could be that you need to use a newly created keytab file for perhaps
+          # the same/new user required to join the new AD Server. So to join the
+          # new AD server we would need updated hiera information for that. Preventing
+          # us from using the new hiera data to unjoin the current AD Server.
+          command  => "$(sed 's/\(.*\)join.*/\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
+          onlyif   => "/usr/bin/test -f ${keytab_path} || /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+          provider => 'shell',
+          path     => '/bin:/usr/bin:/opt/quest/bin',
+          timeout  => 1800,
+          before   => [File['vas_config'], Exec['vasinst']],
+          require  => [Package['vasclnt','vasyp','vasgp']]
+        }
+      } else {
+        fail('VAS domain missmatch!')
+      }
+    }
+  }
+
   file { 'vas_config':
     ensure  => present,
     path    => $vas_config_path,
@@ -492,8 +546,6 @@ class vas (
   } else {
     $upm_search_path_parm = ''
   }
-
-  $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   exec { 'vasinst':
     command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
