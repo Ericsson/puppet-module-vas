@@ -1024,6 +1024,9 @@ DOMAIN\\adgroup:group::
       it { should contain_file('vas_config').with_content(/^\s*group-search-path = OU=Groups,DC=example,DC=com$/) }
       it { should contain_file('vas_config').with_content(/^\s*root-update-mode = force-if-needed$/) }
       it { should contain_file('vas_config').with_content(/^\s*group-update-mode = force-if-needed$/) }
+
+      it { should contain_class('pam') }
+      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
       it { should contain_exec('vasinst').with_command(/-u OU=Users,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-g OU=Groups,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
@@ -1056,6 +1059,7 @@ DOMAIN\\adgroup:group::
       it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
       it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
 
+      it { should contain_class('pam') }
       it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
@@ -1086,12 +1090,58 @@ DOMAIN\\adgroup:group::
       it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
       it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
 
+      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
       it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
       it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
       it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
       it { should_not contain_exec('vasinst').with_command(/-g/) }
 
+  end
 
+  hiera_merge_parameters = {
+    'user_override_hiera_merge' =>
+      {
+        :filename      => 'vas_user_override',
+        :true_content  => "user2@example.com:1235:12346::::/bin/bash\nuser@example.com:1234:12345::::/bin/ksh\n",
+        :false_content => "user2@example.com:1235:12346::::/bin/bash\n",
+      },
+    'group_override_hiera_merge' =>
+      {
+        :filename      => 'vas_group_override',
+        :true_content  => "EXAMPLE\\Engineering_Group:enggrp::\nEXAMPLE\\dbadmins:::localuser,bob\n",
+        :false_content => "EXAMPLE\\Engineering_Group:enggrp::\n",
+      },
+  }
+
+  file_header = "# This file is being maintained by Puppet\.\n# DO NOT EDIT\n"
+
+  hiera_merge_parameters.each do |parameter,v|
+    describe 'hiera merge parameters' do
+      let :facts do
+        {
+          :kernel                     => 'Linux',
+          :osfamily                   => 'RedHat',
+          :lsbmajdistrelease          => '6',
+          :operatingsystemmajrelease  => '6',
+          :fqdn                       => 'hieramerge.example.local',
+          :vas_version                => '4.1.0.21518',
+          :parameter_tests            => "#{parameter}",
+        }
+      end
+
+      [true,false,'true','false'].each do |value|
+        context "when #{parameter} is set to #{value} (as #{value.class})" do
+          let :params do
+            {
+              :"#{parameter}" => value,
+            }
+          end
+          content = "#{Regexp.escape(file_header)}#{Regexp.escape(v[:"#{value}_content"])}"
+          it { should contain_file("#{v[:filename]}").with_content(/^#{content}/) }
+        end
+      end
+    end
   end
 
   describe "other" do
@@ -1281,4 +1331,52 @@ DOMAIN\\adgroup:group::
     end
 
   end
+
+  describe 'variable type and content validations' do
+    # set needed custom facts and variables
+    let(:facts) { {
+      :kernel                     => 'Linux',
+      :osfamily                   => 'RedHat',
+      :lsbmajdistrelease          => '6',
+      :operatingsystemmajrelease  => '6',
+      :fqdn                       => 'hieramerge.example.local',
+      :vas_version                => '4.1.0.21518',
+    } }
+    let(:validation_params) { {
+#      :param => 'value',
+    } }
+
+    validations = {
+      'boolean' => {
+        :name    => ['user_override_hiera_merge','group_override_hiera_merge'],
+        :valid   => [true,false,'true','false'],
+        :invalid => ['string',['array'],a={'ha'=>'sh'},3,2.42,nil],
+        :message => '(is not a boolean|Unknown type of boolean)',
+      },
+    }
+
+    validations.sort.each do |type,var|
+      var[:name].each do |var_name|
+
+        var[:valid].each do |valid|
+          context "with #{var_name} (#{type}) set to valid #{valid} (as #{valid.class})" do
+            let(:params) { validation_params.merge({:"#{var_name}" => valid, }) }
+            it { should compile }
+          end
+        end
+
+        var[:invalid].each do |invalid|
+          context "with #{var_name} (#{type}) set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { validation_params.merge({:"#{var_name}" => invalid, }) }
+            it 'should fail' do
+              expect {
+                should contain_class(subject)
+              }.to raise_error(Puppet::Error,/#{var[:message]}/)
+            end
+          end
+        end
+
+      end # var[:name].each
+    end # validations.sort.each
+  end # describe 'variable type and content validations'
 end
