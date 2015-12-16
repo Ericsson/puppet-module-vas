@@ -182,6 +182,12 @@ Name of the realm.
 
 - *Default*: 'realm.example.com'
 
+domain_realms
+-----
+Hash of domains that should be mapped to correct realm.
+
+- *Default*: {}
+
 nisdomainname
 -------------
 Name of the NIS domain.

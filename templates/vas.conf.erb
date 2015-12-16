@@ -1,7 +1,9 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
- <%= @vas_fqdn %> = <%= @realm.upcase %>
+<% @domain_realms_real.sort.each do | fqdn, realm | -%>
+ <%= fqdn %> = <%= realm.upcase %>
+<% end -%>
 
 [libdefaults]
  default_realm = <%= @realm.upcase %>
