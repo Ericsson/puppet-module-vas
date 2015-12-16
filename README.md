@@ -182,6 +182,29 @@ Name of the realm.
 
 - *Default*: 'realm.example.com'
 
+domain_realms
+-------------
+Hash of domains that should be mapped to correct realm.
+
+- *Default*: {}
+
+#### Hiera Example
+Assume the hostname of the node is: host2.example.com and realm is REALM2.EXAMPLE.COM.
+```
+vas::domain_realms:
+  fqdn.example.se:
+    'example.se'
+```
+
+#### Vas.conf Result
+```
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+[domain_realm]
+ fqdn.example.se = EXAMPLE.SE
+ host2.example.com = REALM2.EXAMPLE.COM
+```
+
 nisdomainname
 -------------
 Name of the NIS domain.
