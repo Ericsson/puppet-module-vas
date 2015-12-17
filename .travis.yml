@@ -26,7 +26,10 @@ env:
 
 sudo: false
 
-script: 'bundle exec metadata-json-lint metadata.json && bundle exec rake validate && bundle exec rake lint && SPEC_OPTS="--format documentation" bundle exec rake spec'
+script: 'bundle exec metadata-json-lint metadata.json && bundle exec rake validate && bundle exec rake rubocop && bundle exec rake lint && SPEC_OPTS="--format documentation" bundle exec rake spec'
+
+before_install:
+  - 'echo ''gem: --no-ri --no-rdoc'' > ~/.gemrc'
 
 matrix:
   fast_finish: true

@@ -6,7 +6,7 @@ Facter.add('vas_version') do
     if Facter::Util::Resolution.exec(test_installed) == '0'
       cmd = '/opt/quest/bin/vastool -v | grep "^vastool"'
       response = Facter::Util::Resolution.exec(cmd)
-      response.split(" ")[3]
+      response.split(' ')[3]
     end
   end
 end
