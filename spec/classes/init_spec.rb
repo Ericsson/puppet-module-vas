@@ -1,54 +1,52 @@
 require 'spec_helper'
 
 describe 'vas' do
-
   describe 'packages' do
-
     context 'defaults on osfamily RedHat with lsbmajdistrelease 6' do
       let :facts do
-      {
-        :kernel                    => 'Linux',
-        :osfamily                  => 'RedHat',
-        :lsbmajdistrelease         => '6',
-        :operatingsystemmajrelease => '6',
-        :vas_version               => '4.1.0.21518',
-      }
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
+        }
       end
 
-      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasclnt').with({ 'ensure' => 'installed' }) }
+      it { should contain_package('vasyp').with({ 'ensure' => 'installed' }) }
+      it { should contain_package('vasgp').with({ 'ensure' => 'installed' }) }
     end
 
-# pam module does not support Suse yet
-#    context 'defaults on osfamily Suse with lsbmajdistrelease 11' do
-#      let :facts do
-#      {
-#        :kernel            => 'Linux',
-#        :osfamily          => 'Suse',
-#        :lsbmajdistrelease => '11'
-#      }
-#      end
-#
-#      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-#      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-#      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
-#    end
+    # pam module does not support Suse yet
+    #    context 'defaults on osfamily Suse with lsbmajdistrelease 11' do
+    #      let :facts do
+    #      {
+    #        :kernel            => 'Linux',
+    #        :osfamily          => 'Suse',
+    #        :lsbmajdistrelease => '11'
+    #      }
+    #      end
+    #
+    #      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+    #      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+    #      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+    #    end
 
-# pam module does not support Solaris yet
-#    context 'defaults on osfamily Solaris with kernelrelease 5.10' do
-#      let :facts do
-#      {
-#        :kernel        => 'SunOS',
-#        :osfamily      => 'Solaris',
-#        :kernelrelease => '5.10'
-#      }
-#      end
-#
-#      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-#      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-#      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
-#    end
+    # pam module does not support Solaris yet
+    #    context 'defaults on osfamily Solaris with kernelrelease 5.10' do
+    #      let :facts do
+    #      {
+    #        :kernel        => 'SunOS',
+    #        :osfamily      => 'Solaris',
+    #        :kernelrelease => '5.10'
+    #      }
+    #      end
+    #
+    #      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+    #      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+    #      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+    #    end
 
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
       let :facts do
@@ -66,9 +64,9 @@ describe 'vas' do
         }
       end
 
-      it { should contain_package('vasclnt').with({'ensure' => '4.0.3-206'}) }
-      it { should contain_package('vasyp').with({'ensure' => '4.0.3-206'}) }
-      it { should contain_package('vasgp').with({'ensure' => '4.0.3-206'}) }
+      it { should contain_package('vasclnt').with({ 'ensure' => '4.0.3-206' }) }
+      it { should contain_package('vasyp').with({ 'ensure' => '4.0.3-206' }) }
+      it { should contain_package('vasgp').with({ 'ensure' => '4.0.3-206' }) }
     end
 
     context 'with enable_group_policies set to false' do
@@ -87,13 +85,11 @@ describe 'vas' do
         }
       end
 
-      it { should contain_package('vasgp').with({'ensure' => 'absent'}) }
+      it { should contain_package('vasgp').with({ 'ensure' => 'absent' }) }
     end
-
   end
 
   describe 'config' do
-
     context 'defaults on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
         {
@@ -116,7 +112,7 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_config').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
  host.example.com = REALM.EXAMPLE.COM
@@ -164,7 +160,7 @@ describe 'vas' do
  root-update-mode = none
 
 [vas_auth]
-})
+))
       end
       it do
         should contain_file('vas_user_override').with({
@@ -175,9 +171,9 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_user_override').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
-})
+))
       end
       it do
         should contain_file('vas_group_override').with({
@@ -188,9 +184,9 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_group_override').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
-})
+))
       end
       it do
         should contain_file('vas_users_allow').with({
@@ -201,9 +197,9 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_users_allow').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
-})
+))
       end
       it do
         should contain_file('vas_users_deny').with({
@@ -214,9 +210,9 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_users_deny').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
-})
+))
       end
     end
 
@@ -239,6 +235,7 @@ describe 'vas' do
           :nismaps_ou                                           => 'ou=site,ou=nismaps,dc=example,dc=com',
           :users_ou                                             => 'ou=site,ou=users,dc=example,dc=com',
           :realm                                                => 'realm2.example.com',
+          :domain_realms                                        => { 'fqdn.example.se' => 'example.se' },
           :nisdomainname                                        => 'nis.domain',
           :vas_conf_prompt_vas_ad_pw                            => 'Enter pw',
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
@@ -283,9 +280,10 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_config').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
+ fqdn.example.se = EXAMPLE.SE
  host2.example.com = REALM2.EXAMPLE.COM
 
 [libdefaults]
@@ -350,7 +348,7 @@ describe 'vas' do
 
 [vas_auth]
  uid-check-limit = 100000
-})
+))
       end
     end
 
@@ -413,9 +411,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/is not a boolean/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not a boolean/)
       end
     end
 
@@ -436,12 +432,9 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>./)
       end
     end
-
 
     context 'with enable_group_policies to invalid type (not bool or string)' do
       let :facts do
@@ -460,9 +453,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/Unknown type of boolean given/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Unknown type of boolean given/)
       end
     end
 
@@ -483,9 +474,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/validate_integer/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /validate_integer/)
       end
     end
 
@@ -506,9 +495,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/validate_integer/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /validate_integer/)
       end
     end
 
@@ -529,9 +516,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/is not a string/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
 
@@ -552,9 +537,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/is not a string/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
 
@@ -575,9 +558,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/is not a string/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
 
@@ -598,9 +579,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error)
       end
     end
 
@@ -621,9 +600,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error)
       end
     end
 
@@ -644,9 +621,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error)
       end
     end
 
@@ -667,9 +642,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error)
       end
     end
 
@@ -690,9 +663,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error)
       end
     end
 
@@ -713,9 +684,7 @@ describe 'vas' do
       end
 
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/validate_integer/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /validate_integer/)
       end
     end
 
@@ -733,7 +702,7 @@ describe 'vas' do
       end
       let :params do
         {
-          :users_allow_entries => ['user@realm.com','DOMAIN\adgroup'],
+          :users_allow_entries => ['user@realm.com', 'DOMAIN\adgroup'],
         }
       end
 
@@ -746,11 +715,11 @@ describe 'vas' do
           'mode'    => '0644',
         })
         should contain_file('vas_users_allow').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 user@realm.com
 DOMAIN\\adgroup
-})
+))
       end
     end
 
@@ -781,10 +750,10 @@ DOMAIN\\adgroup
           'mode'    => '0644',
         })
         should contain_file('vas_users_allow').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 DOMAIN\\adgroup
-})
+))
       end
     end
 
@@ -802,7 +771,7 @@ DOMAIN\\adgroup
       end
       let :params do
         {
-          :users_deny_entries => ['user@realm.com','DOMAIN\adgroup'],
+          :users_deny_entries => ['user@realm.com', 'DOMAIN\adgroup'],
         }
       end
 
@@ -815,11 +784,11 @@ DOMAIN\\adgroup
           'mode'    => '0644',
         })
         should contain_file('vas_users_deny').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 user@realm.com
 DOMAIN\\adgroup
-})
+))
       end
     end
 
@@ -850,10 +819,10 @@ DOMAIN\\adgroup
           'mode'    => '0644',
         })
         should contain_file('vas_users_deny').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 DOMAIN\\adgroup
-})
+))
       end
     end
 
@@ -871,7 +840,7 @@ DOMAIN\\adgroup
       end
       let :params do
         {
-          :user_override_entries => ['jdoe@example.com::::::/bin/sh','jane@example.com:::::/local/home/jane:'],
+          :user_override_entries => ['jdoe@example.com::::::/bin/sh', 'jane@example.com:::::/local/home/jane:'],
           :vas_user_override_path => '/path/to/user-override',
         }
       end
@@ -885,11 +854,11 @@ DOMAIN\\adgroup
           'mode'    => '0644',
         })
         should contain_file('vas_user_override').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 jdoe@example.com::::::/bin/sh
 jane@example.com:::::/local/home/jane:
-})
+))
       end
     end
 
@@ -921,10 +890,10 @@ jane@example.com:::::/local/home/jane:
           'mode'    => '0644',
         })
         should contain_file('vas_user_override').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 jdoestring@example.com::::::/bin/sh
-})
+))
       end
     end
 
@@ -942,7 +911,7 @@ jdoestring@example.com::::::/bin/sh
       end
       let :params do
         {
-          :group_override_entries => ['DOMAIN\adgroup:group::','DOMAIN\adgroup2:group2::'],
+          :group_override_entries => ['DOMAIN\adgroup:group::', 'DOMAIN\adgroup2:group2::'],
           :vas_group_override_path => '/path/to/group-override',
         }
       end
@@ -956,11 +925,11 @@ jdoestring@example.com::::::/bin/sh
           'mode'    => '0644',
         })
         should contain_file('vas_group_override').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 DOMAIN\\adgroup:group::
 DOMAIN\\adgroup2:group2::
-})
+))
       end
     end
 
@@ -992,10 +961,10 @@ DOMAIN\\adgroup2:group2::
           'mode'    => '0644',
         })
         should contain_file('vas_group_override').with_content(
-%{# This file is being maintained by Puppet.
+          %(# This file is being maintained by Puppet.
 # DO NOT EDIT
 DOMAIN\\adgroup:group::
-})
+))
       end
     end
 
@@ -1034,69 +1003,66 @@ DOMAIN\\adgroup:group::
       it { should_not contain_file('vas_config').with_content(/^\s*upm-search-path/) }
       it { should_not contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
     end
-
   end
   context 'new UPM configuration' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_version               => '4.1.0.21518',
-        }
-      end
-      let :params do
-        {
-          :upm_search_path  => 'OU=UPM,DC=example,DC=com',
-          :computers_ou     => 'OU=Computers,DC=example,DC=com',
-        }
-      end
+    let :facts do
+      {
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
+        :fqdn                      => 'host.example.com',
+        :domain                    => 'example.com',
+        :vas_version               => '4.1.0.21518',
+      }
+    end
+    let :params do
+      {
+        :upm_search_path  => 'OU=UPM,DC=example,DC=com',
+        :computers_ou     => 'OU=Computers,DC=example,DC=com',
+      }
+    end
 
-      it { should contain_file('vas_config').with_content(/^\s*upm-search-path = OU=UPM,DC=example,DC=com$/) }
-      it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
-      it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
+    it { should contain_file('vas_config').with_content(/^\s*upm-search-path = OU=UPM,DC=example,DC=com$/) }
+    it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
+    it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
 
-      it { should contain_class('pam') }
-      it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
-      it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
-      it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
-      it { should_not contain_exec('vasinst').with_command(/-g/) }
-
+    it { should contain_class('pam') }
+    it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+    it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
+    it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
+    it { should_not contain_exec('vasinst').with_command(/-g/) }
   end
 
   context 'old UPM-mode parameters' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_version               => '4.1.0.21518',
-        }
-      end
-      let :params do
-        {
-          :users_ou      => 'OU=UPM,DC=example,DC=com',
-          :computers_ou  => 'OU=Computers,DC=example,DC=com',
-        }
-      end
+    let :facts do
+      {
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
+        :fqdn                      => 'host.example.com',
+        :domain                    => 'example.com',
+        :vas_version               => '4.1.0.21518',
+      }
+    end
+    let :params do
+      {
+        :users_ou      => 'OU=UPM,DC=example,DC=com',
+        :computers_ou  => 'OU=Computers,DC=example,DC=com',
+      }
+    end
 
-      it { should contain_file('vas_config').with_content(/^\s*upm-search-path = OU=UPM,DC=example,DC=com$/) }
-      it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
-      it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
+    it { should contain_file('vas_config').with_content(/^\s*upm-search-path = OU=UPM,DC=example,DC=com$/) }
+    it { should_not contain_file('vas_config').with_content(/^\s*user-search-path/) }
+    it { should_not contain_file('vas_config').with_content(/^\s*group-search-path/) }
 
-      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
-      it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
-      it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
-      it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
-      it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
-      it { should_not contain_exec('vasinst').with_command(/-g/) }
-
+    it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
+    it { should contain_exec('vasinst').with_command(/-p OU=UPM,DC=example,DC=com/) }
+    it { should contain_exec('vasinst').that_comes_before('Class[pam]') }
+    it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
+    it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
+    it { should_not contain_exec('vasinst').with_command(/-g/) }
   end
 
   hiera_merge_parameters = {
@@ -1116,7 +1082,7 @@ DOMAIN\\adgroup:group::
 
   file_header = "# This file is being maintained by Puppet\.\n# DO NOT EDIT\n"
 
-  hiera_merge_parameters.each do |parameter,v|
+  hiera_merge_parameters.each do |parameter, v|
     describe 'hiera merge parameters' do
       let :facts do
         {
@@ -1130,7 +1096,7 @@ DOMAIN\\adgroup:group::
         }
       end
 
-      [true,false,'true','false'].each do |value|
+      [true, false, 'true', 'false'].each do |value|
         context "when #{parameter} is set to #{value} (as #{value.class})" do
           let :params do
             {
@@ -1144,8 +1110,7 @@ DOMAIN\\adgroup:group::
     end
   end
 
-  describe "other" do
-
+  describe 'other' do
     context 'fail on unsupported kernel' do
       let :facts do
         {
@@ -1153,9 +1118,7 @@ DOMAIN\\adgroup:group::
         }
       end
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels\./)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels\./)
       end
     end
 
@@ -1167,16 +1130,13 @@ DOMAIN\\adgroup:group::
         }
       end
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/Vas supports Debian, Suse, and RedHat\./)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas supports Debian, Suse, and RedHat\./)
       end
     end
-
   end
 
   describe 'with symlink_vastool_binary' do
-    ['true',true].each do |value|
+    ['true', true].each do |value|
       context "set to #{value} (default)" do
         let :facts do
           {
@@ -1190,19 +1150,18 @@ DOMAIN\\adgroup:group::
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
-
-        it {
+        it do
           should contain_file('vastool_symlink').with({
-            'path'    => '/usr/bin/vastool',
-            'target'  => '/opt/quest/bin/vastool',
-            'ensure'  => 'link',
+              'path'    => '/usr/bin/vastool',
+              'target'  => '/opt/quest/bin/vastool',
+              'ensure'  => 'link',
           })
-        }
+        end
       end
     end
 
-    ['false',false].each do |value|
-      context "set to #{value} (default)" do
+    ['false', false].each do |vvalue|
+      context "set to #{vvalue} (default)" do
         let :facts do
           {
             :kernel                    => 'Linux',
@@ -1213,7 +1172,7 @@ DOMAIN\\adgroup:group::
           }
         end
         let(:params) do
-          { :symlink_vastool_binary => value, }
+          { :symlink_vastool_binary => vvalue, }
         end
 
         it { should_not contain_file('vastool_symlink') }
@@ -1237,34 +1196,38 @@ DOMAIN\\adgroup:group::
         }
       end
 
-      it {
+      it do
         should contain_file('vastool_symlink').with({
-          'path'    => '/bar',
-          'target'  => '/foo/bar',
-          'ensure'  => 'link',
+            'path'    => '/bar',
+            'target'  => '/foo/bar',
+            'ensure'  => 'link',
         })
-      }
+      end
     end
 
     context 'enabled with invalid vastool_binary' do
-      let(:params) { { :symlink_vastool_binary        => true,
-                       :vastool_binary                => 'true',
-                       :symlink_vastool_binary_target => '/bar' } }
+      let(:params) do
+        {
+          :symlink_vastool_binary        => true,
+          :vastool_binary                => 'true',
+          :symlink_vastool_binary_target => '/bar'
+        }
+      end
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels. Detected kernel is <>/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
       end
     end
 
     context 'enabled with invalid symlink_vastool_binary_target' do
-      let(:params) { { :symlink_vastool_binary        => true,
-                       :vastool_binary                => '/foo/bar',
-                       :symlink_vastool_binary_target => 'undef' } }
+      let(:params) do
+        {
+          :symlink_vastool_binary        => true,
+          :vastool_binary                => '/foo/bar',
+          :symlink_vastool_binary_target => 'undef'
+        }
+      end
       it 'should fail' do
-        expect {
-          should contain_class('vas')
-        }.to raise_error(Puppet::Error,/Vas module support Linux and SunOS kernels\. Detected kernel is <>/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels\. Detected kernel is <>/)
       end
     end
   end
@@ -1272,110 +1235,108 @@ DOMAIN\\adgroup:group::
   describe 'licensefiles' do
     context 'with defaults on osfamily RedHat' do
       let :facts do
-      {
-        :kernel                    => 'Linux',
-        :osfamily                  => 'RedHat',
-        :lsbmajdistrelease         => '6',
-        :operatingsystemmajrelease => '6',
-        :vas_version               => '4.1.0.21518',
-      }
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
+        }
       end
       let :params do
-      {
-        :license_files => {
-          'VAS_license' => {
-            'content' => 'VAS license file contents',
+        {
+          :license_files => {
+            'VAS_license' => {
+              'content' => 'VAS license file contents',
+            }
           }
         }
-      }
       end
 
-      it {
+      it do
         should contain_file('VAS_license').with({
           'ensure' => 'file',
           'path'   => '/etc/opt/quest/vas/.licenses/VAS_license',
           'content' => 'VAS license file contents',
         })
-      }
+      end
     end
 
     context 'with custom parameters on osfamily RedHat' do
       let :facts do
-      {
-        :kernel                    => 'Linux',
-        :osfamily                  => 'RedHat',
-        :lsbmajdistrelease         => '6',
-        :operatingsystemmajrelease => '6',
-        :vas_version               => '4.1.0.21518',
-      }
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_version               => '4.1.0.21518',
+        }
       end
       let :params do
-      {
-        :license_files => {
-          'VAS_license' => {
-            'ensure' => 'present',
-            'path' => '/tmp/vas_license',
-            'content' => 'VAS license file',
+        {
+          :license_files => {
+            'VAS_license' => {
+              'ensure' => 'present',
+              'path' => '/tmp/vas_license',
+              'content' => 'VAS license file',
+            }
           }
         }
-      }
       end
-
-      it {
+      it do
         should contain_file('VAS_license').with({
           'ensure' => 'present',
           'path'   => '/tmp/vas_license',
           'content' => 'VAS license file',
         })
-      }
+      end
     end
-
   end
 
   describe 'variable type and content validations' do
     # set needed custom facts and variables
-    let(:facts) { {
-      :kernel                     => 'Linux',
-      :osfamily                   => 'RedHat',
-      :lsbmajdistrelease          => '6',
-      :operatingsystemmajrelease  => '6',
-      :fqdn                       => 'hieramerge.example.local',
-      :vas_version                => '4.1.0.21518',
-    } }
-    let(:validation_params) { {
-#      :param => 'value',
-    } }
+    let :facts do
+      {
+        :kernel                     => 'Linux',
+        :osfamily                   => 'RedHat',
+        :lsbmajdistrelease          => '6',
+        :operatingsystemmajrelease  => '6',
+        :fqdn                       => 'hieramerge.example.local',
+        :vas_version                => '4.1.0.21518',
+      }
+    end
+    let :validation_params do
+      {
+        # :param => 'value',
+      }
+    end
 
     validations = {
       'boolean' => {
-        :name    => ['user_override_hiera_merge','group_override_hiera_merge'],
-        :valid   => [true,false,'true','false'],
-        :invalid => ['string',['array'],a={'ha'=>'sh'},3,2.42,nil],
+        :name    => %w(user_override_hiera_merge group_override_hiera_merge),
+        :valid   => [true, false, 'true', 'false'],
+        :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
       },
     }
 
-    validations.sort.each do |type,var|
+    validations.sort.each do |type, var|
       var[:name].each do |var_name|
-
         var[:valid].each do |valid|
           context "with #{var_name} (#{type}) set to valid #{valid} (as #{valid.class})" do
-            let(:params) { validation_params.merge({:"#{var_name}" => valid, }) }
+            let(:params) { validation_params.merge({ :"#{var_name}" => valid, }) }
             it { should compile }
           end
         end
 
         var[:invalid].each do |invalid|
           context "with #{var_name} (#{type}) set to invalid #{invalid} (as #{invalid.class})" do
-            let(:params) { validation_params.merge({:"#{var_name}" => invalid, }) }
+            let(:params) { validation_params.merge({ :"#{var_name}" => invalid, }) }
             it 'should fail' do
-              expect {
-                should contain_class(subject)
-              }.to raise_error(Puppet::Error,/#{var[:message]}/)
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
             end
           end
         end
-
       end # var[:name].each
     end # validations.sort.each
   end # describe 'variable type and content validations'
