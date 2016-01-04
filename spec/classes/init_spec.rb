@@ -239,6 +239,7 @@ describe 'vas' do
           :nismaps_ou                                           => 'ou=site,ou=nismaps,dc=example,dc=com',
           :users_ou                                             => 'ou=site,ou=users,dc=example,dc=com',
           :realm                                                => 'realm2.example.com',
+          :domain_realms                                        => {'fqdn.example.se' => 'example.se'},
           :nisdomainname                                        => 'nis.domain',
           :vas_conf_prompt_vas_ad_pw                            => 'Enter pw',
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
@@ -286,6 +287,7 @@ describe 'vas' do
 %{# This file is being maintained by Puppet.
 # DO NOT EDIT
 [domain_realm]
+ fqdn.example.se = EXAMPLE.SE
  host2.example.com = REALM2.EXAMPLE.COM
 
 [libdefaults]

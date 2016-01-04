@@ -97,7 +97,10 @@ class vas (
   $symlink_vastool_binary_target                        = '/usr/bin/vastool',
   $symlink_vastool_binary                               = false,
   $license_files                                        = undef,
+  $domain_realms                                        = {},
 ) {
+
+  $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
 
   $_vas_users_allow_path_default = '/etc/opt/quest/vas/users.allow'
   $_vas_users_deny_path_default = '/etc/opt/quest/vas/users.deny'
