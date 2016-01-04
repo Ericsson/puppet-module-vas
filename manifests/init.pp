@@ -100,7 +100,8 @@ class vas (
   $domain_realms                                        = {},
 ) {
 
-  $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
+  $helper_hash = hash([$vas_fqdn, $realm])
+  $domain_realms_real = merge($helper_hash, $domain_realms)
 
   $_vas_users_allow_path_default = '/etc/opt/quest/vas/users.allow'
   $_vas_users_deny_path_default = '/etc/opt/quest/vas/users.deny'
