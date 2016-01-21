@@ -968,6 +968,108 @@ DOMAIN\\adgroup:group::
       end
     end
 
+    # Domain change spec tests
+    context 'with domain_change set to false and matching domains' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
+        }
+      end
+      let :params do
+        {
+          :domain_change  => false,
+          :realm          => 'example.com',
+        }
+      end
+      it { should contain_class('vas') }
+      it { should_not contain_exec('vas_change_domain') }
+    end
+
+    context 'with domain_change set to false and mismatching domains' do
+      let :facts do
+        {
+          :kernel                     => 'Linux',
+          :osfamily                   => 'RedHat',
+          :lsbmajdistrelease          => '6',
+          :operatingsystemmajrelease  => '6',
+          :fqdn                       => 'host.example.com',
+          :domain                     => 'example.com',
+          :vas_domain                 => 'example.com',
+          :vas_version                => '4.1.0.21518',
+        }
+      end
+      let :params do
+        {
+          :domain_change  => false,
+          :realm          => 'example.io',
+        }
+      end
+      it 'should fail' do
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /VAS domain missmatch!/)
+      end
+    end
+
+    context 'with domain_change set to true and matching domains' do
+      let :facts do
+        {
+          :kernel                     => 'Linux',
+          :osfamily                   => 'RedHat',
+          :lsbmajdistrelease          => '6',
+          :operatingsystemmajrelease  => '6',
+          :fqdn                       => 'host.example.com',
+          :domain                     => 'example.com',
+          :vas_domain                 => 'example.com',
+          :vas_version                => '4.1.0.21518',
+        }
+      end
+      let :params do
+        {
+          :domain_change  => true,
+          :realm          => 'example.com',
+        }
+      end
+      it { should_not contain_exec('vas_change_domain') }
+    end
+
+    context 'with domain_change set to true and mismatching domains' do
+      let :facts do
+        {
+          :kernel                     => 'Linux',
+          :osfamily                   => 'RedHat',
+          :lsbmajdistrelease          => '6',
+          :operatingsystemmajrelease  => '6',
+          :fqdn                       => 'host.example.com',
+          :domain                     => 'example.com',
+          :vas_domain                 => 'example.com',
+          :vas_version                => '4.1.0.21518',
+        }
+      end
+      let :params do
+        {
+          :domain_change  => true,
+          :realm          => 'example.io',
+        }
+      end
+      it { should contain_exec('vas_change_domain').with(
+        'command' => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
+        'onlyif'  => '/usr/bin/test -f /etc/vasinst.key || /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
+        'provider'  => 'shell',
+        'path'      => '/bin:/usr/bin:/opt/quest/bin',
+        'timeout'   => 1800,
+        'before'    => ['File[vas_config]', 'File[keytab]', 'Exec[vasinst]'],
+        'require'   => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]']
+      )}
+      it { should contain_exec('vasinst') }
+      it { should contain_exec('vasinst').that_requires('Exec[vas_change_domain]') }
+    end
+    # End Domain change spec tests
+
     context 'with non-UPM configuration' do
       let :facts do
         {
@@ -1313,7 +1415,7 @@ DOMAIN\\adgroup:group::
 
     validations = {
       'boolean' => {
-        :name    => %w(user_override_hiera_merge group_override_hiera_merge),
+        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change),
         :valid   => [true, false, 'true', 'false'],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
