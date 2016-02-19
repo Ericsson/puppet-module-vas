@@ -158,6 +158,12 @@ class vas (
     validate_absolute_path($vas_group_override_path)
   }
 
+  # client-addrs has a limit of 1024 and vasypd will fail completely
+  # if this limit is exceeded!!
+  if $vas_conf_client_addrs != 'UNSET' {
+    validate_slength($vas_conf_client_addrs,1024)
+  }
+
   if $vas_conf_disabled_user_pwhash != undef {
     validate_string($vas_conf_disabled_user_pwhash)
   }
