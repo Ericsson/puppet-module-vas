@@ -256,6 +256,16 @@ describe 'vas' do
           :vas_conf_vasd_workstation_mode_users_preload         => 'usergroup',
           :vas_conf_vasd_workstation_mode_group_do_member       => 'true',
           :vas_conf_vasd_workstation_mode_groups_skip_update    => 'true',
+          :vas_conf_vasd_username_attr_name                     => 'userprincipalname',
+          :vas_conf_vasd_groupname_attr_name                    => 'groupprincipalname',
+          :vas_conf_vasd_uid_number_attr_name                   => 'employeID',
+          :vas_conf_vasd_gid_number_attr_name                   => 'primaryGroupID',
+          :vas_conf_vasd_gecos_attr_name                        => 'displayName',
+          :vas_conf_vasd_home_dir_attr_name                     => 'homeDirectory',
+          :vas_conf_vasd_login_shell_attr_name                  => 'loginShell',
+          :vas_conf_vasd_group_member_attr_name                 => 'groupMembershipSAM',
+          :vas_conf_vasd_memberof_attr_name                     => 'memberOf',
+          :vas_conf_vasd_unix_password_attr_name                => 'userPassword',
           :vas_conf_vasd_ws_resolve_uid                         => 'true',
           :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
@@ -337,6 +347,16 @@ describe 'vas' do
  upm-computerou-attr = managedBy
  password-change-script = /opt/quest/libexec/vas-set-samba-password
  password-change-script-timelimit = 30
+ username-attr-name = userprincipalname
+ groupname-attr-name = groupprincipalname
+ uid-number-attr-name = employeID
+ gid-number-attr-name = primaryGroupID
+ gecos-attr-name = displayName
+ home-dir-attr-name = homeDirectory
+ login-shell-attr-name = loginShell
+ group-member-attr-name = groupMembershipSAM
+ memberof-attr-name = memberOf
+ unix-password-attr-name = userPassword
 
 [nss_vas]
  group-update-mode = none

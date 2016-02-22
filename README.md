@@ -367,6 +367,69 @@ Path for script to set value of delusercheck-script in [vasd] section of vas.con
 
 - *Default*: 'UNSET'
 
+vas_conf_vasd_username_attr_name
+--------------------------------
+String to be used for username-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+
+vas_conf_vasd_groupname_attr_name
+---------------------------------
+String to be used for groupname-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_uid_number_attr_name
+----------------------------------
+String to be used for uid-number-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_gid_number_attr_name
+----------------------------------
+String to be used for gid-number-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_gecos_attr_name
+-----------------------------
+String to be used for gecos-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_home_dir_attr_name
+--------------------------------
+String to be used for home-dir-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_login_shell_attr_name
+-----------------------------------
+String to be used for login-shell-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_group_member_attr_name
+------------------------------------
+String to be used for group-member-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_memberof_attr_name
+--------------------------------
+String to be used for memberof-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+vas_conf_vasd_unix_password_attr_name
+-------------------------------------
+String to be used for unix_password-attr-name  in [vasd] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
+
+
 vas_conf_prompt_vas_ad_pw
 -------------------------
 prompt-vas-ad-pw option in vas.conf. Sets the password prompt for logins.
