@@ -10,6 +10,7 @@ describe 'vas' do
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
 
@@ -56,6 +57,7 @@ describe 'vas' do
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -77,6 +79,7 @@ describe 'vas' do
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -100,6 +103,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
 
@@ -226,6 +230,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -382,6 +387,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -403,6 +409,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21517',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -424,6 +431,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -445,6 +453,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -466,6 +475,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -487,6 +497,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -508,6 +519,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -529,6 +541,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -550,6 +563,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -571,6 +585,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -592,6 +607,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -613,6 +629,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -634,6 +651,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -655,6 +673,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -676,6 +695,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -697,6 +717,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -718,6 +739,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -739,6 +761,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -774,6 +797,7 @@ DOMAIN\\adgroup
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -808,6 +832,7 @@ DOMAIN\\adgroup
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -843,6 +868,7 @@ DOMAIN\\adgroup
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -877,6 +903,7 @@ DOMAIN\\adgroup
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -913,6 +940,7 @@ jane@example.com:::::/local/home/jane:
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -948,6 +976,7 @@ jdoestring@example.com::::::/bin/sh
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -984,6 +1013,7 @@ DOMAIN\\adgroup2:group2::
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1020,6 +1050,7 @@ DOMAIN\\adgroup:group::
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1043,6 +1074,7 @@ DOMAIN\\adgroup:group::
           :domain                     => 'example.com',
           :vas_domain                 => 'example.com',
           :vas_version                => '4.1.0.21518',
+          :virtual                    => 'physical',
         }
       end
       let :params do
@@ -1067,6 +1099,7 @@ DOMAIN\\adgroup:group::
           :domain                     => 'example.com',
           :vas_domain                 => 'example.com',
           :vas_version                => '4.1.0.21518',
+          :virtual                    => 'physical',
         }
       end
       let :params do
@@ -1089,6 +1122,7 @@ DOMAIN\\adgroup:group::
           :domain                     => 'example.com',
           :vas_domain                 => 'example.com',
           :vas_version                => '4.1.0.21518',
+          :virtual                    => 'physical',
         }
       end
       let :params do
@@ -1121,6 +1155,7 @@ DOMAIN\\adgroup:group::
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1157,6 +1192,7 @@ DOMAIN\\adgroup:group::
         :fqdn                      => 'host.example.com',
         :domain                    => 'example.com',
         :vas_version               => '4.1.0.21518',
+        :virtual                   => 'physical',
       }
     end
     let :params do
@@ -1187,6 +1223,7 @@ DOMAIN\\adgroup:group::
         :fqdn                      => 'host.example.com',
         :domain                    => 'example.com',
         :vas_version               => '4.1.0.21518',
+        :virtual                   => 'physical',
       }
     end
     let :params do
@@ -1236,6 +1273,7 @@ DOMAIN\\adgroup:group::
           :fqdn                       => 'hieramerge.example.local',
           :vas_version                => '4.1.0.21518',
           :parameter_tests            => "#{parameter}",
+          :virtual                    => 'physical',
         }
       end
 
@@ -1288,6 +1326,7 @@ DOMAIN\\adgroup:group::
             :lsbmajdistrelease         => '6',
             :operatingsystemmajrelease => '6',
             :vas_version               => '4.1.0.21518',
+            :virtual                   => 'physical',
           }
         end
         let(:params) do
@@ -1312,6 +1351,7 @@ DOMAIN\\adgroup:group::
             :lsbmajdistrelease         => '6',
             :operatingsystemmajrelease => '6',
             :vas_version               => '4.1.0.21518',
+            :virtual                   => 'physical',
           }
         end
         let(:params) do
@@ -1330,6 +1370,7 @@ DOMAIN\\adgroup:group::
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let(:params) do
@@ -1384,6 +1425,7 @@ DOMAIN\\adgroup:group::
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1413,6 +1455,7 @@ DOMAIN\\adgroup:group::
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1446,6 +1489,7 @@ DOMAIN\\adgroup:group::
         :operatingsystemmajrelease  => '6',
         :fqdn                       => 'hieramerge.example.local',
         :vas_version                => '4.1.0.21518',
+        :virtual                    => 'physical',
       }
     end
     let :validation_params do
