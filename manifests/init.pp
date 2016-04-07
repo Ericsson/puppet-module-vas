@@ -54,6 +54,16 @@ class vas (
   $vas_conf_vasd_deluser_check_timelimit                = 'UNSET',
   $vas_conf_vasd_delusercheck_interval                  = 'UNSET',
   $vas_conf_vasd_delusercheck_script                    = 'UNSET',
+  $vas_conf_vasd_username_attr_name                     = 'UNSET',
+  $vas_conf_vasd_groupname_attr_name                    = 'UNSET',
+  $vas_conf_vasd_uid_number_attr_name                   = 'UNSET',
+  $vas_conf_vasd_gid_number_attr_name                   = 'UNSET',
+  $vas_conf_vasd_gecos_attr_name                        = 'UNSET',
+  $vas_conf_vasd_home_dir_attr_name                     = 'UNSET',
+  $vas_conf_vasd_login_shell_attr_name                  = 'UNSET',
+  $vas_conf_vasd_group_member_attr_name                 = 'UNSET',
+  $vas_conf_vasd_memberof_attr_name                     = 'UNSET',
+  $vas_conf_vasd_unix_password_attr_name                = 'UNSET',
   $vas_conf_prompt_vas_ad_pw                            = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
@@ -133,6 +143,17 @@ class vas (
   validate_string($users_ou)
   validate_string($computers_ou)
   validate_string($nismaps_ou)
+
+  validate_string($vas_conf_vasd_username_attr_name)
+  validate_string($vas_conf_vasd_groupname_attr_name)
+  validate_string($vas_conf_vasd_uid_number_attr_name)
+  validate_string($vas_conf_vasd_gid_number_attr_name)
+  validate_string($vas_conf_vasd_gecos_attr_name)
+  validate_string($vas_conf_vasd_home_dir_attr_name)
+  validate_string($vas_conf_vasd_login_shell_attr_name)
+  validate_string($vas_conf_vasd_group_member_attr_name)
+  validate_string($vas_conf_vasd_memberof_attr_name)
+  validate_string($vas_conf_vasd_unix_password_attr_name)
 
   if is_string($domain_change) {
     $domain_change_real = str2bool($domain_change)

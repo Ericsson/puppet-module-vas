@@ -105,6 +105,36 @@
 <% if @vas_conf_vasd_delusercheck_script != 'UNSET' -%>
  delusercheck-script = <%= @vas_conf_vasd_delusercheck_script %>
 <% end -%>
+<% if @vas_conf_vasd_username_attr_name != 'UNSET' -%>
+ username-attr-name = <%= @vas_conf_vasd_username_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_groupname_attr_name != 'UNSET' -%>
+ groupname-attr-name = <%= @vas_conf_vasd_groupname_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_uid_number_attr_name != 'UNSET' -%>
+ uid-number-attr-name = <%= @vas_conf_vasd_uid_number_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_gid_number_attr_name != 'UNSET' -%>
+ gid-number-attr-name = <%= @vas_conf_vasd_gid_number_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_gecos_attr_name != 'UNSET' -%>
+ gecos-attr-name = <%= @vas_conf_vasd_gecos_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_home_dir_attr_name != 'UNSET' -%>
+ home-dir-attr-name = <%= @vas_conf_vasd_home_dir_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_login_shell_attr_name != 'UNSET' -%>
+ login-shell-attr-name = <%= @vas_conf_vasd_login_shell_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_group_member_attr_name != 'UNSET' -%>
+ group-member-attr-name = <%= @vas_conf_vasd_group_member_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_memberof_attr_name != 'UNSET' -%>
+ memberof-attr-name = <%= @vas_conf_vasd_memberof_attr_name %>
+<% end -%>
+<% if @vas_conf_vasd_unix_password_attr_name != 'UNSET' -%>
+ unix-password-attr-name = <%= @vas_conf_vasd_unix_password_attr_name %>
+<% end -%>
 
 [nss_vas]
 <% if @vas_conf_group_update_mode != nil -%>
