@@ -454,6 +454,12 @@ Integer for uid-check-limit option in vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 'UNSET'
 
+vas_conf_vas_auth_allow_disconnected_auth
+-----------------------------------------
+Stringified boolean to be used for allow-disconnected-auth option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'UNSET'
+
 vas_conf_libvas_vascache_ipc_timeout
 ------------------------------------
 Integer for number of seconds to set value of vascache-ipc-timeout in [libvas] section of vas.conf. See VAS.CONF(5) for more info.

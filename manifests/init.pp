@@ -68,6 +68,7 @@ class vas (
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
+  $vas_conf_vas_auth_allow_disconnected_auth            = 'UNSET',
   $vas_conf_libvas_vascache_ipc_timeout                 = 15,
   $vas_conf_libvas_use_server_referrals                 = true,
   $vas_conf_libvas_use_server_referrals_version_switch  = '4.1.0.21518',
@@ -154,6 +155,12 @@ class vas (
   validate_string($vas_conf_vasd_group_member_attr_name)
   validate_string($vas_conf_vasd_memberof_attr_name)
   validate_string($vas_conf_vasd_unix_password_attr_name)
+
+  if $vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' {
+    validate_re($vas_conf_vas_auth_allow_disconnected_auth, '^(true|false)$',
+      'vas_conf_vas_auth_allow_disconnected_auth does not match regex. Valid values are <true> and <false>.'
+    )
+  }
 
   if is_string($domain_change) {
     $domain_change_real = str2bool($domain_change)
