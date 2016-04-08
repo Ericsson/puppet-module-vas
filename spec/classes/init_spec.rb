@@ -521,6 +521,27 @@ describe 'vas' do
       end
     end
 
+    context 'with join_domain_controllers set to invalid value (non-array or string)' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :fqdn                      => 'host.example.com',
+          :domain                    => 'example.com',
+          :vas_version               => '4.1.0.21518',
+        }
+      end
+      let :params do
+        { :join_domain_controllers => false }
+      end
+
+      it 'should fail' do
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not a string/)
+      end
+    end
+
     context 'with users_allow_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
       let :params do
         {
@@ -830,6 +851,72 @@ DOMAIN\\adgroup:group::
     it { should contain_exec('vasinst').with_command(/-c OU=Computers,DC=example,DC=com/) }
     it { should contain_exec('vasinst').with_command(/-n host.example.com/) }
     it { should_not contain_exec('vasinst').with_command(/-g/) }
+  end
+
+  context 'with join_domain_controllers unset' do
+    let :facts do
+      {
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
+        :fqdn                      => 'host.example.com',
+        :domain                    => 'example.com',
+        :vas_version               => '4.1.0.21518',
+      }
+    end
+    let :params do
+      {
+        :realm           => 'example.com',
+        :vasjoin_logfile => '/tmp/vasjoin.log'
+      }
+    end
+
+    it { should contain_exec('vasinst').with_command(/example\.com\s+>\s+\/tmp\/vasjoin.log/) }
+  end
+  context 'with join_domain_controllers as a string' do
+    let :facts do
+      {
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
+        :fqdn                      => 'host.example.com',
+        :domain                    => 'example.com',
+        :vas_version               => '4.1.0.21518',
+      }
+    end
+    let :params do
+      {
+        :realm           => 'example.com',
+        :vasjoin_logfile => '/tmp/vasjoin.log',
+        :join_domain_controllers => 'dc01.example.com'
+      }
+    end
+
+    it { should contain_exec('vasinst').with_command(/example\.com\s+dc01.example.com\s+>\s+\/tmp\/vasjoin.log/) }
+  end
+  context 'with join_domain_controllers as an array' do
+    let :facts do
+      {
+        :kernel                    => 'Linux',
+        :osfamily                  => 'RedHat',
+        :lsbmajdistrelease         => '6',
+        :operatingsystemmajrelease => '6',
+        :fqdn                      => 'host.example.com',
+        :domain                    => 'example.com',
+        :vas_version               => '4.1.0.21518',
+      }
+    end
+    let :params do
+      {
+        :realm           => 'example.com',
+        :vasjoin_logfile => '/tmp/vasjoin.log',
+        :join_domain_controllers => ['dc01.example.com', 'dc02.example.com']
+      }
+    end
+
+    it { should contain_exec('vasinst').with_command(/example\.com\s+dc01.example.com dc02.example.com\s+>\s+\/tmp\/vasjoin.log/) }
   end
 
   hiera_merge_parameters = {
