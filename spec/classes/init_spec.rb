@@ -78,11 +78,11 @@ describe 'vas' do
     context 'defaults on osfamily redhat with lsbmajdistrelease 6' do
       it do
         should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/vas.conf',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_config').with_content(
           %(# This file is being maintained by Puppet.
@@ -137,11 +137,11 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_user_override').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/user-override',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/user-override',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_user_override').with_content(
           %(# This file is being maintained by Puppet.
@@ -150,11 +150,11 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_group_override').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/group-override',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/group-override',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_group_override').with_content(
           %(# This file is being maintained by Puppet.
@@ -163,11 +163,11 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_users_allow').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/users.allow',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/users.allow',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_users_allow').with_content(
           %(# This file is being maintained by Puppet.
@@ -176,11 +176,11 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_users_deny').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/users.deny',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/users.deny',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_users_deny').with_content(
           %(# This file is being maintained by Puppet.
@@ -253,11 +253,11 @@ describe 'vas' do
 
       it do
         should contain_file('vas_config').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/vas.conf',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/vas.conf',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_config').with_content(
           %(# This file is being maintained by Puppet.
@@ -529,11 +529,11 @@ describe 'vas' do
 
       it do
         should contain_file('vas_users_allow').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/users.allow',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/users.allow',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_users_allow').with_content(
           %(# This file is being maintained by Puppet.
@@ -553,11 +553,11 @@ DOMAIN\\adgroup
 
       it do
         should contain_file('vas_users_allow').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/users.allow',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/users.allow',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_users_allow').with_content(
           %(# This file is being maintained by Puppet.
@@ -576,11 +576,11 @@ DOMAIN\\adgroup
 
       it do
         should contain_file('vas_users_deny').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/users.deny',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/users.deny',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_users_deny').with_content(
           %(# This file is being maintained by Puppet.
@@ -600,11 +600,11 @@ DOMAIN\\adgroup
 
       it do
         should contain_file('vas_users_deny').with({
-          'ensure'  => 'present',
-          'path'    => '/etc/opt/quest/vas/users.deny',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/etc/opt/quest/vas/users.deny',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_users_deny').with_content(
           %(# This file is being maintained by Puppet.
@@ -617,18 +617,18 @@ DOMAIN\\adgroup
     context 'with user_override_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
       let :params do
         {
-          :user_override_entries => ['jdoe@example.com::::::/bin/sh', 'jane@example.com:::::/local/home/jane:'],
+          :user_override_entries  => ['jdoe@example.com::::::/bin/sh', 'jane@example.com:::::/local/home/jane:'],
           :vas_user_override_path => '/path/to/user-override',
         }
       end
 
       it do
         should contain_file('vas_user_override').with({
-          'ensure'  => 'present',
-          'path'    => '/path/to/user-override',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/path/to/user-override',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_user_override').with_content(
           %(# This file is being maintained by Puppet.
@@ -642,18 +642,18 @@ jane@example.com:::::/local/home/jane:
     context 'with user_override_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
       let :params do
         {
-          :user_override_entries => 'jdoestring@example.com::::::/bin/sh',
+          :user_override_entries  => 'jdoestring@example.com::::::/bin/sh',
           :vas_user_override_path => '/path/to/user-override',
         }
       end
 
       it do
         should contain_file('vas_user_override').with({
-          'ensure'  => 'present',
-          'path'    => '/path/to/user-override',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/path/to/user-override',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_user_override').with_content(
           %(# This file is being maintained by Puppet.
@@ -666,18 +666,18 @@ jdoestring@example.com::::::/bin/sh
     context 'with group_override_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
       let :params do
         {
-          :group_override_entries => ['DOMAIN\adgroup:group::', 'DOMAIN\adgroup2:group2::'],
+          :group_override_entries  => ['DOMAIN\adgroup:group::', 'DOMAIN\adgroup2:group2::'],
           :vas_group_override_path => '/path/to/group-override',
         }
       end
 
       it do
         should contain_file('vas_group_override').with({
-          'ensure'  => 'present',
-          'path'    => '/path/to/group-override',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/path/to/group-override',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_group_override').with_content(
           %(# This file is being maintained by Puppet.
@@ -698,11 +698,11 @@ DOMAIN\\adgroup2:group2::
 
       it do
         should contain_file('vas_group_override').with({
-          'ensure'  => 'present',
-          'path'    => '/path/to/group-override',
-          'owner'   => 'root',
-          'group'   => 'root',
-          'mode'    => '0644',
+          'ensure' => 'present',
+          'path'   => '/path/to/group-override',
+          'owner'  => 'root',
+          'group'  => 'root',
+          'mode'   => '0644',
         })
         should contain_file('vas_group_override').with_content(
           %(# This file is being maintained by Puppet.
@@ -716,8 +716,8 @@ DOMAIN\\adgroup:group::
     context 'with domain_change set to false and matching domains' do
       let :params do
         {
-          :domain_change  => false,
-          :realm          => 'realm.example.com',
+          :domain_change => false,
+          :realm         => 'realm.example.com',
         }
       end
       it { should contain_class('vas') }
@@ -727,8 +727,8 @@ DOMAIN\\adgroup:group::
     context 'with domain_change set to false and mismatching domains' do
       let :params do
         {
-          :domain_change  => false,
-          :realm          => 'example.io',
+          :domain_change => false,
+          :realm         => 'example.io',
         }
       end
       it 'should fail' do
@@ -739,8 +739,8 @@ DOMAIN\\adgroup:group::
     context 'with domain_change set to true and matching domains' do
       let :params do
         {
-          :domain_change  => true,
-          :realm          => 'realm.example.com',
+          :domain_change => true,
+          :realm         => 'realm.example.com',
         }
       end
       it { should_not contain_exec('vas_change_domain') }
@@ -749,18 +749,18 @@ DOMAIN\\adgroup:group::
     context 'with domain_change set to true and mismatching domains' do
       let :params do
         {
-          :domain_change  => true,
-          :realm          => 'example.io',
+          :domain_change => true,
+          :realm         => 'example.io',
         }
       end
       it { should contain_exec('vas_change_domain').with(
-        'command' => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
-        'onlyif'  => '/usr/bin/test -f /etc/vasinst.key || /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
-        'provider'  => 'shell',
-        'path'      => '/bin:/usr/bin:/opt/quest/bin',
-        'timeout'   => 1800,
-        'before'    => ['File[vas_config]', 'File[keytab]', 'Exec[vasinst]'],
-        'require'   => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]']
+        'command'  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
+        'onlyif'   => '/usr/bin/test -f /etc/vasinst.key || /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
+        'provider' => 'shell',
+        'path'     => '/bin:/usr/bin:/opt/quest/bin',
+        'timeout'  => 1800,
+        'before'   => ['File[vas_config]', 'File[keytab]', 'Exec[vasinst]'],
+        'require'  => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]']
       )}
       it { should contain_exec('vasinst') }
       it { should contain_exec('vasinst').that_requires('Exec[vas_change_domain]') }
@@ -795,8 +795,8 @@ DOMAIN\\adgroup:group::
   context 'new UPM configuration' do
     let :params do
       {
-        :upm_search_path  => 'OU=UPM,DC=example,DC=com',
-        :computers_ou     => 'OU=Computers,DC=example,DC=com',
+        :upm_search_path => 'OU=UPM,DC=example,DC=com',
+        :computers_ou    => 'OU=Computers,DC=example,DC=com',
       }
     end
 
@@ -814,8 +814,8 @@ DOMAIN\\adgroup:group::
   context 'old UPM-mode parameters' do
     let :params do
       {
-        :users_ou      => 'OU=UPM,DC=example,DC=com',
-        :computers_ou  => 'OU=Computers,DC=example,DC=com',
+        :users_ou     => 'OU=UPM,DC=example,DC=com',
+        :computers_ou => 'OU=Computers,DC=example,DC=com',
       }
     end
 
@@ -909,9 +909,9 @@ DOMAIN\\adgroup:group::
         end
         it do
           should contain_file('vastool_symlink').with({
-              'path'    => '/usr/bin/vastool',
-              'target'  => '/opt/quest/bin/vastool',
-              'ensure'  => 'link',
+              'path'   => '/usr/bin/vastool',
+              'target' => '/opt/quest/bin/vastool',
+              'ensure' => 'link',
           })
         end
       end
@@ -937,9 +937,9 @@ DOMAIN\\adgroup:group::
 
       it do
         should contain_file('vastool_symlink').with({
-            'path'    => '/bar',
-            'target'  => '/foo/bar',
-            'ensure'  => 'link',
+            'path'   => '/bar',
+            'target' => '/foo/bar',
+            'ensure' => 'link',
         })
       end
     end
@@ -985,8 +985,8 @@ DOMAIN\\adgroup:group::
 
       it do
         should contain_file('VAS_license').with({
-          'ensure' => 'file',
-          'path'   => '/etc/opt/quest/vas/.licenses/VAS_license',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/.licenses/VAS_license',
           'content' => 'VAS license file contents',
         })
       end
@@ -997,8 +997,8 @@ DOMAIN\\adgroup:group::
         {
           :license_files => {
             'VAS_license' => {
-              'ensure' => 'present',
-              'path' => '/tmp/vas_license',
+              'ensure'  => 'present',
+              'path'    => '/tmp/vas_license',
               'content' => 'VAS license file',
             }
           }
@@ -1006,8 +1006,8 @@ DOMAIN\\adgroup:group::
       end
       it do
         should contain_file('VAS_license').with({
-          'ensure' => 'present',
-          'path'   => '/tmp/vas_license',
+          'ensure'  => 'present',
+          'path'    => '/tmp/vas_license',
           'content' => 'VAS license file',
         })
       end
