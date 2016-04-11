@@ -9,7 +9,9 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
 
@@ -55,7 +57,9 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -76,7 +80,9 @@ describe 'vas' do
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -99,7 +105,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
 
@@ -225,7 +233,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm2.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -270,6 +280,7 @@ describe 'vas' do
           :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
           :vas_conf_libvas_auth_helper_timeout                  => '120',
+          :vas_conf_vas_auth_allow_disconnected_auth            => 'false',
           :sitenameoverride                                     => 'foobar',
           :vas_conf_libvas_use_dns_srv                          => 'false',
           :vas_conf_libvas_use_tcp_only                         => 'false',
@@ -368,6 +379,7 @@ describe 'vas' do
 
 [vas_auth]
  uid-check-limit = 100000
+ allow-disconnected-auth = false
 ))
       end
     end
@@ -381,7 +393,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -402,7 +416,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21517',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -423,7 +439,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -444,7 +462,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -465,7 +485,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -486,7 +508,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -507,7 +531,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -528,7 +554,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -549,7 +577,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -570,7 +600,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -592,6 +624,7 @@ describe 'vas' do
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -612,7 +645,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -633,7 +668,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -654,7 +691,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -675,7 +714,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -696,7 +737,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -717,7 +760,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -738,7 +783,9 @@ describe 'vas' do
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -773,7 +820,9 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -807,7 +856,9 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -842,7 +893,9 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -876,7 +929,9 @@ DOMAIN\\adgroup
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -912,7 +967,9 @@ jane@example.com:::::/local/home/jane:
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -947,7 +1004,9 @@ jdoestring@example.com::::::/bin/sh
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -983,7 +1042,9 @@ DOMAIN\\adgroup2:group2::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1019,7 +1080,9 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1043,6 +1106,7 @@ DOMAIN\\adgroup:group::
           :domain                     => 'example.com',
           :vas_domain                 => 'example.com',
           :vas_version                => '4.1.0.21518',
+          :virtual                    => 'physical',
         }
       end
       let :params do
@@ -1067,6 +1131,7 @@ DOMAIN\\adgroup:group::
           :domain                     => 'example.com',
           :vas_domain                 => 'example.com',
           :vas_version                => '4.1.0.21518',
+          :virtual                    => 'physical',
         }
       end
       let :params do
@@ -1089,6 +1154,7 @@ DOMAIN\\adgroup:group::
           :domain                     => 'example.com',
           :vas_domain                 => 'example.com',
           :vas_version                => '4.1.0.21518',
+          :virtual                    => 'physical',
         }
       end
       let :params do
@@ -1120,7 +1186,9 @@ DOMAIN\\adgroup:group::
           :operatingsystemmajrelease => '6',
           :fqdn                      => 'host.example.com',
           :domain                    => 'example.com',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1156,7 +1224,9 @@ DOMAIN\\adgroup:group::
         :operatingsystemmajrelease => '6',
         :fqdn                      => 'host.example.com',
         :domain                    => 'example.com',
+        :vas_domain                => 'realm.example.com',
         :vas_version               => '4.1.0.21518',
+        :virtual                   => 'physical',
       }
     end
     let :params do
@@ -1186,7 +1256,9 @@ DOMAIN\\adgroup:group::
         :operatingsystemmajrelease => '6',
         :fqdn                      => 'host.example.com',
         :domain                    => 'example.com',
+        :vas_domain                => 'realm.example.com',
         :vas_version               => '4.1.0.21518',
+        :virtual                   => 'physical',
       }
     end
     let :params do
@@ -1234,8 +1306,10 @@ DOMAIN\\adgroup:group::
           :lsbmajdistrelease          => '6',
           :operatingsystemmajrelease  => '6',
           :fqdn                       => 'hieramerge.example.local',
+          :vas_domain                 => 'realm.example.com',
           :vas_version                => '4.1.0.21518',
           :parameter_tests            => "#{parameter}",
+          :virtual                    => 'physical',
         }
       end
 
@@ -1257,7 +1331,10 @@ DOMAIN\\adgroup:group::
     context 'fail on unsupported kernel' do
       let :facts do
         {
-          :kernel => 'AIX',
+          :kernel      => 'AIX',
+          :vas_domain  => 'realm.example.com',
+          :vas_version => '4.1.0.21518',
+          :virtual     => 'physical',
         }
       end
       it 'should fail' do
@@ -1268,8 +1345,11 @@ DOMAIN\\adgroup:group::
     context 'fail on unsupported osfamily' do
       let :facts do
         {
-          :kernel   => 'Linux',
-          :osfamily => 'Gentoo',
+          :kernel      => 'Linux',
+          :osfamily    => 'Gentoo',
+          :vas_domain  => 'realm.example.com',
+          :vas_version => '4.1.0.21518',
+          :virtual     => 'physical',
         }
       end
       it 'should fail' do
@@ -1287,7 +1367,9 @@ DOMAIN\\adgroup:group::
             :osfamily                  => 'RedHat',
             :lsbmajdistrelease         => '6',
             :operatingsystemmajrelease => '6',
+            :vas_domain                => 'realm.example.com',
             :vas_version               => '4.1.0.21518',
+            :virtual                   => 'physical',
           }
         end
         let(:params) do
@@ -1311,7 +1393,9 @@ DOMAIN\\adgroup:group::
             :osfamily                  => 'RedHat',
             :lsbmajdistrelease         => '6',
             :operatingsystemmajrelease => '6',
+            :vas_domain                => 'realm.example.com',
             :vas_version               => '4.1.0.21518',
+            :virtual                   => 'physical',
           }
         end
         let(:params) do
@@ -1329,7 +1413,9 @@ DOMAIN\\adgroup:group::
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let(:params) do
@@ -1349,6 +1435,17 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with invalid vastool_binary' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
+          :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
+        }
+      end
       let(:params) do
         {
           :symlink_vastool_binary        => true,
@@ -1357,11 +1454,22 @@ DOMAIN\\adgroup:group::
         }
       end
       it 'should fail' do
-        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels. Detected kernel is <>/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not an absolute path/)
       end
     end
 
     context 'enabled with invalid symlink_vastool_binary_target' do
+      let :facts do
+        {
+          :kernel                    => 'Linux',
+          :osfamily                  => 'RedHat',
+          :lsbmajdistrelease         => '6',
+          :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
+          :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
+        }
+      end
       let(:params) do
         {
           :symlink_vastool_binary        => true,
@@ -1370,7 +1478,7 @@ DOMAIN\\adgroup:group::
         }
       end
       it 'should fail' do
-        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels\. Detected kernel is <>/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not an absolute path/)
       end
     end
   end
@@ -1383,7 +1491,9 @@ DOMAIN\\adgroup:group::
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1412,7 +1522,9 @@ DOMAIN\\adgroup:group::
           :osfamily                  => 'RedHat',
           :lsbmajdistrelease         => '6',
           :operatingsystemmajrelease => '6',
+          :vas_domain                => 'realm.example.com',
           :vas_version               => '4.1.0.21518',
+          :virtual                   => 'physical',
         }
       end
       let :params do
@@ -1445,7 +1557,9 @@ DOMAIN\\adgroup:group::
         :lsbmajdistrelease          => '6',
         :operatingsystemmajrelease  => '6',
         :fqdn                       => 'hieramerge.example.local',
+        :vas_domain                 => 'realm.example.com',
         :vas_version                => '4.1.0.21518',
+        :virtual                    => 'physical',
       }
     end
     let :validation_params do
@@ -1460,6 +1574,12 @@ DOMAIN\\adgroup:group::
         :valid   => [true, false, 'true', 'false'],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
+      },
+      'stringified_boolean' => {
+        :name    => %w(vas_conf_vas_auth_allow_disconnected_auth),
+        :valid   => ['true', 'false' ],
+        :invalid => [%w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil ],
+        :message => 'Valid values are <true> and <false>',
       },
     }
 
