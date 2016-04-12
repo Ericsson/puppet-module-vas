@@ -21,35 +21,36 @@ describe 'vas' do
       it { should contain_package('vasgp').with({ 'ensure' => 'installed' }) }
     end
 
-    # pam module does not support Suse yet
-    #    context 'defaults on osfamily Suse with lsbmajdistrelease 11' do
-    #      let :facts do
-    #      {
-    #        :kernel            => 'Linux',
-    #        :osfamily          => 'Suse',
-    #        :lsbmajdistrelease => '11'
-    #      }
-    #      end
-    #
-    #      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-    #      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-    #      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
-    #    end
+    context 'defaults on osfamily Suse with lsbmajdistrelease 11' do
+      let :facts do
+        default_facts.merge(
+          {
+            :osfamily          => 'Suse',
+            :lsbmajdistrelease => '11'
+          }
+        )
+      end
 
-    # pam module does not support Solaris yet
-    #    context 'defaults on osfamily Solaris with kernelrelease 5.10' do
-    #      let :facts do
-    #      {
-    #        :kernel        => 'SunOS',
-    #        :osfamily      => 'Solaris',
-    #        :kernelrelease => '5.10'
-    #      }
-    #      end
-    #
-    #      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-    #      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-    #      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
-    #    end
+      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+    end
+
+    context 'defaults on osfamily Solaris with kernelrelease 5.10' do
+      let :facts do
+        default_facts.merge(
+          {
+            :kernel        => 'SunOS',
+            :osfamily      => 'Solaris',
+            :kernelrelease => '5.10'
+          }
+        )
+      end
+
+      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+    end
 
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
       let :params do
