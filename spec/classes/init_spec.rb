@@ -1,20 +1,21 @@
 require 'spec_helper'
 
 describe 'vas' do
+  default_facts = {
+    :kernel                    => 'Linux',
+    :osfamily                  => 'RedHat',
+    :lsbmajdistrelease         => '6',
+    :operatingsystemmajrelease => '6',
+    :vas_domain                => 'realm.example.com',
+    :vas_version               => '4.1.0.21518',
+    :virtual                   => 'physical',
+    :fqdn                      => 'host.example.com',
+    :domain                    => 'example.com',
+  }
+  let (:facts) { default_facts }
+
   describe 'packages' do
     context 'defaults on osfamily RedHat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
-
       it { should contain_package('vasclnt').with({ 'ensure' => 'installed' }) }
       it { should contain_package('vasyp').with({ 'ensure' => 'installed' }) }
       it { should contain_package('vasgp').with({ 'ensure' => 'installed' }) }
@@ -51,17 +52,6 @@ describe 'vas' do
     #    end
 
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :package_version => '4.0.3-206',
@@ -74,17 +64,6 @@ describe 'vas' do
     end
 
     context 'with enable_group_policies set to false' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :enable_group_policies => 'false',
@@ -97,20 +76,6 @@ describe 'vas' do
 
   describe 'config' do
     context 'defaults on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
-
       it do
         should contain_file('vas_config').with({
           'ensure'  => 'present',
@@ -226,17 +191,11 @@ describe 'vas' do
 
     context 'with parameters for vas.conf specified on osfamily redhat with lsbmajdistrelease 6' do
       let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm2.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
+        default_facts.merge(
+          {
+            :vas_domain => 'realm2.example.com',
+          }
+        )
       end
       let :params do
         {
@@ -385,19 +344,6 @@ describe 'vas' do
     end
 
     context 'with use_server_referrals enabled by vas version' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_libvas_use_server_referrals => 'USE_DEFAULTS' }
       end
@@ -409,17 +355,11 @@ describe 'vas' do
 
     context 'with use_server_referrals disabled by vas version' do
       let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21517',
-          :virtual                   => 'physical',
-        }
+        default_facts.merge(
+          {
+            :vas_version => '4.1.0.21517',
+          }
+        )
       end
       let :params do
         { :vas_conf_libvas_use_server_referrals => 'USE_DEFAULTS' }
@@ -431,19 +371,6 @@ describe 'vas' do
     end
 
     context 'with use_server_referrals set to invalid value' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_libvas_use_server_referrals => 42 }
       end
@@ -454,19 +381,6 @@ describe 'vas' do
     end
 
     context 'with vas_fqdn to invalid domainname' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_fqdn => 'bad!@#hostname' }
       end
@@ -477,19 +391,6 @@ describe 'vas' do
     end
 
     context 'with enable_group_policies to invalid type (not bool or string)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :enable_group_policies => '600invalid' }
       end
@@ -500,19 +401,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_vasd_auto_ticket_renew_interval to invalid string (non-integer)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_vasd_auto_ticket_renew_interval => '600invalid' }
       end
@@ -523,19 +411,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_vasd_update_interval set to invalid string (non-integer)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_vasd_update_interval => '600invalid' }
       end
@@ -546,19 +421,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_prompt_vas_ad_pw set to invalid type (non-string)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_prompt_vas_ad_pw => ['array'] }
       end
@@ -569,19 +431,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_disabled_user_pwhash set to invalid type (non-string)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_disabled_user_pwhash => ['array'] }
       end
@@ -592,19 +441,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_locked_out_pwhash set to invalid type (non-string)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_locked_out_pwhash => ['array'] }
       end
@@ -615,18 +451,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_libvas_use_dns_srv set to invalid non-boolean string' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_libvas_use_dns_srv => 'invalid' }
       end
@@ -637,19 +461,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_libvas_use_tcp_only set to invalid non-boolean string' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_libvas_use_tcp_only => 'invalid' }
       end
@@ -660,19 +471,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_lowercase_homedirs set to invalid non-boolean string' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_lowercase_homedirs => 'invalid' }
       end
@@ -683,19 +481,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_lowercase_names set to invalid non-boolean string' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_lowercase_names => 'invalid' }
       end
@@ -706,19 +491,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_libvas_site_only_servers set to invalid non-boolean string' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_libvas_site_only_servers => 'invalid' }
       end
@@ -729,19 +501,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_libvas_auth_helper_timeout set to invalid string (non-integer)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_libvas_auth_helper_timeout => '10invalid' }
       end
@@ -752,19 +511,6 @@ describe 'vas' do
     end
 
     context 'with vas_conf_client_addrs set to a string too long (>1024 bytes)' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         { :vas_conf_client_addrs => '100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100' }
       end
@@ -775,19 +521,6 @@ describe 'vas' do
     end
 
     context 'with users_allow_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :users_allow_entries => ['user@realm.com', 'DOMAIN\adgroup'],
@@ -812,19 +545,6 @@ DOMAIN\\adgroup
     end
 
     context 'with users_allow_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :users_allow_entries => 'DOMAIN\adgroup',
@@ -848,19 +568,6 @@ DOMAIN\\adgroup
     end
 
     context 'with users_deny_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :users_deny_entries => ['user@realm.com', 'DOMAIN\adgroup'],
@@ -885,19 +592,6 @@ DOMAIN\\adgroup
     end
 
     context 'with users_deny_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :users_deny_entries => 'DOMAIN\adgroup',
@@ -921,19 +615,6 @@ DOMAIN\\adgroup
     end
 
     context 'with user_override_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :user_override_entries => ['jdoe@example.com::::::/bin/sh', 'jane@example.com:::::/local/home/jane:'],
@@ -959,19 +640,6 @@ jane@example.com:::::/local/home/jane:
     end
 
     context 'with user_override_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :user_override_entries => 'jdoestring@example.com::::::/bin/sh',
@@ -996,19 +664,6 @@ jdoestring@example.com::::::/bin/sh
     end
 
     context 'with group_override_entries specified as an array on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :group_override_entries => ['DOMAIN\adgroup:group::', 'DOMAIN\adgroup2:group2::'],
@@ -1034,19 +689,6 @@ DOMAIN\\adgroup2:group2::
     end
 
     context 'with group_override_entries specified as a string on osfamily redhat with lsbmajdistrelease 6' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :group_override_entries  => 'DOMAIN\adgroup:group::',
@@ -1072,23 +714,10 @@ DOMAIN\\adgroup:group::
 
     # Domain change spec tests
     context 'with domain_change set to false and matching domains' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :domain_change  => false,
-          :realm          => 'example.com',
+          :realm          => 'realm.example.com',
         }
       end
       it { should contain_class('vas') }
@@ -1096,19 +725,6 @@ DOMAIN\\adgroup:group::
     end
 
     context 'with domain_change set to false and mismatching domains' do
-      let :facts do
-        {
-          :kernel                     => 'Linux',
-          :osfamily                   => 'RedHat',
-          :lsbmajdistrelease          => '6',
-          :operatingsystemmajrelease  => '6',
-          :fqdn                       => 'host.example.com',
-          :domain                     => 'example.com',
-          :vas_domain                 => 'example.com',
-          :vas_version                => '4.1.0.21518',
-          :virtual                    => 'physical',
-        }
-      end
       let :params do
         {
           :domain_change  => false,
@@ -1121,42 +737,16 @@ DOMAIN\\adgroup:group::
     end
 
     context 'with domain_change set to true and matching domains' do
-      let :facts do
-        {
-          :kernel                     => 'Linux',
-          :osfamily                   => 'RedHat',
-          :lsbmajdistrelease          => '6',
-          :operatingsystemmajrelease  => '6',
-          :fqdn                       => 'host.example.com',
-          :domain                     => 'example.com',
-          :vas_domain                 => 'example.com',
-          :vas_version                => '4.1.0.21518',
-          :virtual                    => 'physical',
-        }
-      end
       let :params do
         {
           :domain_change  => true,
-          :realm          => 'example.com',
+          :realm          => 'realm.example.com',
         }
       end
       it { should_not contain_exec('vas_change_domain') }
     end
 
     context 'with domain_change set to true and mismatching domains' do
-      let :facts do
-        {
-          :kernel                     => 'Linux',
-          :osfamily                   => 'RedHat',
-          :lsbmajdistrelease          => '6',
-          :operatingsystemmajrelease  => '6',
-          :fqdn                       => 'host.example.com',
-          :domain                     => 'example.com',
-          :vas_domain                 => 'example.com',
-          :vas_version                => '4.1.0.21518',
-          :virtual                    => 'physical',
-        }
-      end
       let :params do
         {
           :domain_change  => true,
@@ -1178,19 +768,6 @@ DOMAIN\\adgroup:group::
     # End Domain change spec tests
 
     context 'with non-UPM configuration' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :fqdn                      => 'host.example.com',
-          :domain                    => 'example.com',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :user_search_path           => 'OU=Users,DC=example,DC=com',
@@ -1216,19 +793,6 @@ DOMAIN\\adgroup:group::
     end
   end
   context 'new UPM configuration' do
-    let :facts do
-      {
-        :kernel                    => 'Linux',
-        :osfamily                  => 'RedHat',
-        :lsbmajdistrelease         => '6',
-        :operatingsystemmajrelease => '6',
-        :fqdn                      => 'host.example.com',
-        :domain                    => 'example.com',
-        :vas_domain                => 'realm.example.com',
-        :vas_version               => '4.1.0.21518',
-        :virtual                   => 'physical',
-      }
-    end
     let :params do
       {
         :upm_search_path  => 'OU=UPM,DC=example,DC=com',
@@ -1248,19 +812,6 @@ DOMAIN\\adgroup:group::
   end
 
   context 'old UPM-mode parameters' do
-    let :facts do
-      {
-        :kernel                    => 'Linux',
-        :osfamily                  => 'RedHat',
-        :lsbmajdistrelease         => '6',
-        :operatingsystemmajrelease => '6',
-        :fqdn                      => 'host.example.com',
-        :domain                    => 'example.com',
-        :vas_domain                => 'realm.example.com',
-        :vas_version               => '4.1.0.21518',
-        :virtual                   => 'physical',
-      }
-    end
     let :params do
       {
         :users_ou      => 'OU=UPM,DC=example,DC=com',
@@ -1300,17 +851,12 @@ DOMAIN\\adgroup:group::
   hiera_merge_parameters.each do |parameter, v|
     describe 'hiera merge parameters' do
       let :facts do
-        {
-          :kernel                     => 'Linux',
-          :osfamily                   => 'RedHat',
-          :lsbmajdistrelease          => '6',
-          :operatingsystemmajrelease  => '6',
-          :fqdn                       => 'hieramerge.example.local',
-          :vas_domain                 => 'realm.example.com',
-          :vas_version                => '4.1.0.21518',
-          :parameter_tests            => "#{parameter}",
-          :virtual                    => 'physical',
-        }
+        default_facts.merge(
+          {
+            :fqdn            => 'hieramerge.example.local',
+            :parameter_tests => "#{parameter}",
+          }
+        )
       end
 
       [true, false, 'true', 'false'].each do |value|
@@ -1330,12 +876,11 @@ DOMAIN\\adgroup:group::
   describe 'other' do
     context 'fail on unsupported kernel' do
       let :facts do
-        {
-          :kernel      => 'AIX',
-          :vas_domain  => 'realm.example.com',
-          :vas_version => '4.1.0.21518',
-          :virtual     => 'physical',
-        }
+        default_facts.merge(
+          {
+            :kernel => 'AIX',
+          }
+        )
       end
       it 'should fail' do
         expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas module support Linux and SunOS kernels\./)
@@ -1344,13 +889,11 @@ DOMAIN\\adgroup:group::
 
     context 'fail on unsupported osfamily' do
       let :facts do
-        {
-          :kernel      => 'Linux',
-          :osfamily    => 'Gentoo',
-          :vas_domain  => 'realm.example.com',
-          :vas_version => '4.1.0.21518',
-          :virtual     => 'physical',
-        }
+        default_facts.merge(
+          {
+            :osfamily => 'Gentoo',
+          }
+        )
       end
       it 'should fail' do
         expect { should contain_class('vas') }.to raise_error(Puppet::Error, /Vas supports Debian, Suse, and RedHat\./)
@@ -1361,17 +904,6 @@ DOMAIN\\adgroup:group::
   describe 'with symlink_vastool_binary' do
     ['true', true].each do |value|
       context "set to #{value} (default)" do
-        let :facts do
-          {
-            :kernel                    => 'Linux',
-            :osfamily                  => 'RedHat',
-            :lsbmajdistrelease         => '6',
-            :operatingsystemmajrelease => '6',
-            :vas_domain                => 'realm.example.com',
-            :vas_version               => '4.1.0.21518',
-            :virtual                   => 'physical',
-          }
-        end
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
@@ -1387,17 +919,6 @@ DOMAIN\\adgroup:group::
 
     ['false', false].each do |value|
       context "set to #{value} (default)" do
-        let :facts do
-          {
-            :kernel                    => 'Linux',
-            :osfamily                  => 'RedHat',
-            :lsbmajdistrelease         => '6',
-            :operatingsystemmajrelease => '6',
-            :vas_domain                => 'realm.example.com',
-            :vas_version               => '4.1.0.21518',
-            :virtual                   => 'physical',
-          }
-        end
         let(:params) do
           { :symlink_vastool_binary => value, }
         end
@@ -1407,17 +928,6 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with all params specified' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let(:params) do
         { :symlink_vastool_binary        => true,
           :vastool_binary                => '/foo/bar',
@@ -1435,17 +945,6 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with invalid vastool_binary' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let(:params) do
         {
           :symlink_vastool_binary        => true,
@@ -1459,17 +958,6 @@ DOMAIN\\adgroup:group::
     end
 
     context 'enabled with invalid symlink_vastool_binary_target' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let(:params) do
         {
           :symlink_vastool_binary        => true,
@@ -1485,17 +973,6 @@ DOMAIN\\adgroup:group::
 
   describe 'licensefiles' do
     context 'with defaults on osfamily RedHat' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :license_files => {
@@ -1516,17 +993,6 @@ DOMAIN\\adgroup:group::
     end
 
     context 'with custom parameters on osfamily RedHat' do
-      let :facts do
-        {
-          :kernel                    => 'Linux',
-          :osfamily                  => 'RedHat',
-          :lsbmajdistrelease         => '6',
-          :operatingsystemmajrelease => '6',
-          :vas_domain                => 'realm.example.com',
-          :vas_version               => '4.1.0.21518',
-          :virtual                   => 'physical',
-        }
-      end
       let :params do
         {
           :license_files => {
@@ -1551,16 +1017,11 @@ DOMAIN\\adgroup:group::
   describe 'variable type and content validations' do
     # set needed custom facts and variables
     let :facts do
-      {
-        :kernel                     => 'Linux',
-        :osfamily                   => 'RedHat',
-        :lsbmajdistrelease          => '6',
-        :operatingsystemmajrelease  => '6',
-        :fqdn                       => 'hieramerge.example.local',
-        :vas_domain                 => 'realm.example.com',
-        :vas_version                => '4.1.0.21518',
-        :virtual                    => 'physical',
-      }
+      default_facts.merge(
+        {
+          :fqdn => 'hieramerge.example.local',
+        }
+      )
     end
     let :validation_params do
       {
