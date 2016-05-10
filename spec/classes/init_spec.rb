@@ -807,7 +807,7 @@ DOMAIN\\adgroup:group::
       end
       it { should contain_exec('vas_change_domain').with(
         'command'  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
-        'onlyif'   => '/usr/bin/test -f /etc/vasinst.key || /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
+        'onlyif'   => '/usr/bin/test -f /etc/vasinst.key && /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
         'provider' => 'shell',
         'path'     => '/bin:/usr/bin:/opt/quest/bin',
         'timeout'  => 1800,

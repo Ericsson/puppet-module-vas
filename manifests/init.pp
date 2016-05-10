@@ -500,7 +500,7 @@ class vas (
             # new AD server we would need updated hiera information for that. Preventing
             # us from using the new hiera data to unjoin the current AD Server.
             command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
-            onlyif   => "/usr/bin/test -f ${keytab_path} || /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+            onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
             provider => 'shell',
             path     => '/bin:/usr/bin:/opt/quest/bin',
             timeout  => 1800,
