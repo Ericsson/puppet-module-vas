@@ -166,6 +166,6 @@
 <% if @vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' -%>
  allow-disconnected-auth = <%= @vas_conf_vas_auth_allow_disconnected_auth %>
 <% end -%>
-<% if @vas_conf_vas_auth_expand_ac_groups != 'UNSET' -%>
- expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups %>
+<% if @vas_conf_vas_auth_expand_ac_groups_string != nil -%>
+ expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups_string %>
 <% end -%>

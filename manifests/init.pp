@@ -165,9 +165,18 @@ class vas (
   }
 
   if $vas_conf_vas_auth_expand_ac_groups != 'UNSET' {
-    validate_re($vas_conf_vas_auth_expand_ac_groups, '^(true|false)$',
-      'vas_conf_vas_auth_expand_ac_groups does not match regex. Valid values are <true> and <false>.'
-    )
+    if type3x($vas_conf_vas_auth_expand_ac_groups) == 'boolean' {
+      $vas_conf_vas_auth_expand_ac_groups_string = bool2str($vas_conf_vas_auth_expand_ac_groups)
+    }
+    elsif type3x($vas_conf_vas_auth_expand_ac_groups) == 'string' {
+      validate_re($vas_conf_vas_auth_expand_ac_groups, '^(true|false)$',
+        'vas_conf_vas_auth_expand_ac_groups is not a boolean. Valid values are <true> and <false>.'
+      )
+      $vas_conf_vas_auth_expand_ac_groups_string = $vas_conf_vas_auth_expand_ac_groups
+    }
+    else {
+      fail('vas_conf_vas_auth_expand_ac_groups is not a boolean nor a string. Valid values are <true> and <false>.')
+    }
   }
 
   if is_string($domain_change) {
