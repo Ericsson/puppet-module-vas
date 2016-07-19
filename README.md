@@ -188,6 +188,12 @@ Hash of domains that should be mapped to correct realm.
 
 - *Default*: {}
 
+unjoin_vas
+----------
+Boolean to trigger an unjoining of the domain. Obviously this will only work if the system is joined to a domain.
+
+- *Default*: false
+
 #### Hiera Example
 Assume the hostname of the node is: host2.example.com and realm is REALM2.EXAMPLE.COM.
 ```
