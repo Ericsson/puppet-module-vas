@@ -407,19 +407,19 @@ class vas (
 
   case $::kernel {
     'Linux': {
-      include vas::linux
+      include ::vas::linux
     }
     'SunOS': {
-      include vas::solaris
+      include ::vas::solaris
     }
     default: {
       fail("Vas module support Linux and SunOS kernels. Detected kernel is <${::kernel}>")
     }
   }
 
-  include nisclient
-  include nsswitch
-  include pam
+  include ::nisclient
+  include ::nsswitch
+  include ::pam
 
   # Use nisdomainname is supplied. If not, use nisclient::domainname if it
   # exists, last resort fall back to domain fact
@@ -491,7 +491,7 @@ class vas (
         provider => 'shell',
         path     => '/bin:/usr/bin:/opt/quest/bin',
         timeout  => 1800,
-        require  => [Package['vasclnt','vasyp','vasgp']]
+        require  => [Package['vasclnt','vasyp','vasgp']],
       }
   } elsif $unjoin_vas_real == false {
     # no run if undef!
@@ -530,7 +530,7 @@ class vas (
             path     => '/bin:/usr/bin:/opt/quest/bin',
             timeout  => 1800,
             before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
-            require  => [Package['vasclnt','vasyp','vasgp']]
+            require  => [Package['vasclnt','vasyp','vasgp']],
           }
         } else {
           fail('VAS domain missmatch!')
@@ -539,7 +539,7 @@ class vas (
     }
 
     file { 'vas_config':
-      ensure  => present,
+      ensure  => file,
       path    => $vas_config_path,
       owner   => $vas_config_owner,
       group   => $vas_config_group,
@@ -553,7 +553,7 @@ class vas (
       default => $vas_users_allow_path,
     }
     file { 'vas_users_allow':
-      ensure  => present,
+      ensure  => file,
       path    => $_vas_users_allow_path,
       owner   => $vas_users_allow_owner,
       group   => $vas_users_allow_group,
@@ -567,7 +567,7 @@ class vas (
       default => $vas_users_deny_path,
     }
     file { 'vas_users_deny':
-      ensure  => present,
+      ensure  => file,
       path    => $_vas_users_deny_path,
       owner   => $vas_users_deny_owner,
       group   => $vas_users_deny_group,
@@ -581,7 +581,7 @@ class vas (
       default => $vas_user_override_path,
     }
     file { 'vas_user_override':
-      ensure  => present,
+      ensure  => file,
       path    => $_vas_user_override_path,
       owner   => $vas_user_override_owner,
       group   => $vas_user_override_group,
@@ -596,7 +596,7 @@ class vas (
       default => $vas_group_override_path,
     }
     file { 'vas_group_override':
-      ensure  => present,
+      ensure  => file,
       path    => $_vas_group_override_path,
       owner   => $vas_group_override_owner,
       group   => $vas_group_override_group,
@@ -607,7 +607,7 @@ class vas (
     }
 
     file { 'keytab':
-      ensure => 'present',
+      ensure => 'file',
       name   => $keytab_path,
       source => $keytab_source,
       owner  => $keytab_owner,
@@ -629,7 +629,7 @@ class vas (
     }
 
     if $sitenameoverride == 'UNSET' {
-      $s_opts = ''
+      $s_opts = '' # lint:ignore:empty_string_assignment
     } else {
       $s_opts = "-s ${sitenameoverride}"
     }
@@ -637,23 +637,23 @@ class vas (
     if $vas_conf_vasd_workstation_mode_real == true {
       $workstation_flag = '-w'
     } else {
-      $workstation_flag = ''
+      $workstation_flag = '' # lint:ignore:empty_string_assignment
     }
 
     if $user_search_path_real != undef {
       $user_search_path_parm = "-u ${user_search_path_real}"
     } else {
-      $user_search_path_parm = ''
+      $user_search_path_parm = '' # lint:ignore:empty_string_assignment
     }
     if $group_search_path_real != undef {
       $group_search_path_parm = "-g ${group_search_path_real}"
     } else {
-      $group_search_path_parm = ''
+      $group_search_path_parm = '' # lint:ignore:empty_string_assignment
     }
     if $upm_search_path_real != undef {
       $upm_search_path_parm = "-p ${upm_search_path_real}"
     } else {
-      $upm_search_path_parm = ''
+      $upm_search_path_parm = '' # lint:ignore:empty_string_assignment
     }
 
     exec { 'vasinst':

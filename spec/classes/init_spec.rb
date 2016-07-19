@@ -130,7 +130,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_config').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/vas.conf',
           'owner'   => 'root',
           'group'   => 'root',
@@ -140,7 +140,7 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_user_override').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/user-override',
           'owner'   => 'root',
           'group'   => 'root',
@@ -151,7 +151,7 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_group_override').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/group-override',
           'owner'   => 'root',
           'group'   => 'root',
@@ -161,7 +161,7 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_users_allow').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/users.allow',
           'owner'   => 'root',
           'group'   => 'root',
@@ -171,7 +171,7 @@ describe 'vas' do
       end
       it do
         should contain_file('vas_users_deny').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/users.deny',
           'owner'   => 'root',
           'group'   => 'root',
@@ -329,7 +329,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_config').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/vas.conf',
           'owner'   => 'root',
           'group'   => 'root',
@@ -531,7 +531,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_users_allow').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/users.allow',
           'owner'   => 'root',
           'group'   => 'root',
@@ -555,7 +555,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_users_allow').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/users.allow',
           'owner'   => 'root',
           'group'   => 'root',
@@ -580,7 +580,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_users_deny').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/users.deny',
           'owner'   => 'root',
           'group'   => 'root',
@@ -604,7 +604,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_users_deny').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/etc/opt/quest/vas/users.deny',
           'owner'   => 'root',
           'group'   => 'root',
@@ -630,7 +630,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_user_override').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/path/to/user-override',
           'owner'   => 'root',
           'group'   => 'root',
@@ -655,7 +655,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_user_override').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/path/to/user-override',
           'owner'   => 'root',
           'group'   => 'root',
@@ -681,7 +681,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_group_override').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/path/to/group-override',
           'owner'   => 'root',
           'group'   => 'root',
@@ -706,7 +706,7 @@ describe 'vas' do
 
       it do
         should contain_file('vas_group_override').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/path/to/group-override',
           'owner'   => 'root',
           'group'   => 'root',
@@ -1055,7 +1055,7 @@ describe 'vas' do
         {
           :license_files => {
             'VAS_license' => {
-              'ensure'  => 'present',
+              'ensure'  => 'file',
               'path'    => '/tmp/vas_license',
               'content' => 'VAS license file',
             }
@@ -1064,7 +1064,7 @@ describe 'vas' do
       end
       it do
         should contain_file('VAS_license').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/tmp/vas_license',
           'content' => 'VAS license file',
         })
