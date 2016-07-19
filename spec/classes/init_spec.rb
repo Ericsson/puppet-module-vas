@@ -713,6 +713,57 @@ DOMAIN\\adgroup:group::
       end
     end
 
+    # Vas Domain unjoin
+    context 'with unjoin_vas set to false' do
+      let :params do
+        {
+          :unjoin_vas => false,
+          :realm      => 'realm.example.com',
+        }
+      end
+      it { should contain_class('vas') }
+      it { should_not contain_exec('vas_unjoin') }
+      it { should contain_exec('vasinst') }
+    end
+
+    context 'with unjoin_vas set to true and vas_domain fact set' do
+      let :facts do
+        default_facts.merge(
+          {
+            :vas_domain => 'realm.example.com',
+          }
+        )
+      end
+      let :params do
+        {
+          :unjoin_vas => true,
+          :realm      => 'realm.example.com',
+        }
+      end
+      it { should contain_class('vas') }
+      it { should contain_exec('vas_unjoin') }
+      it { should_not contain_exec('vasinst') }
+    end
+
+    context 'with unjoin_vas set to true and vas_domain fact unset' do
+      let :facts do
+        default_facts.merge(
+          {
+            :vas_domain => nil,
+          }
+        )
+      end
+      let :params do
+        {
+          :unjoin_vas => true,
+          :realm      => 'realm.example.com',
+        }
+      end
+      it { should contain_class('vas') }
+      it { should_not contain_exec('vas_unjoin') }
+      it { should_not contain_exec('vasinst') }
+    end
+
     # Domain change spec tests
     context 'with domain_change set to false and matching domains' do
       let :params do
@@ -756,7 +807,7 @@ DOMAIN\\adgroup:group::
       end
       it { should contain_exec('vas_change_domain').with(
         'command'  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
-        'onlyif'   => '/usr/bin/test -f /etc/vasinst.key || /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
+        'onlyif'   => '/usr/bin/test -f /etc/vasinst.key && /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
         'provider' => 'shell',
         'path'     => '/bin:/usr/bin:/opt/quest/bin',
         'timeout'  => 1800,
@@ -1032,7 +1083,7 @@ DOMAIN\\adgroup:group::
 
     validations = {
       'boolean' => {
-        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change),
+        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas),
         :valid   => [true, false, 'true', 'false'],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
