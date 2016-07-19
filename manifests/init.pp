@@ -69,6 +69,7 @@ class vas (
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_vas_auth_allow_disconnected_auth            = 'UNSET',
+  $vas_conf_vas_auth_expand_ac_groups                   = 'UNSET',
   $vas_conf_libvas_vascache_ipc_timeout                 = 15,
   $vas_conf_libvas_use_server_referrals                 = true,
   $vas_conf_libvas_use_server_referrals_version_switch  = '4.1.0.21518',
@@ -160,6 +161,12 @@ class vas (
   if $vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' {
     validate_re($vas_conf_vas_auth_allow_disconnected_auth, '^(true|false)$',
       'vas_conf_vas_auth_allow_disconnected_auth does not match regex. Valid values are <true> and <false>.'
+    )
+  }
+
+  if $vas_conf_vas_auth_expand_ac_groups != 'UNSET' {
+    validate_re($vas_conf_vas_auth_expand_ac_groups, '^(true|false)$',
+      'vas_conf_vas_auth_expand_ac_groups does not match regex. Valid values are <true> and <false>.'
     )
   }
 
