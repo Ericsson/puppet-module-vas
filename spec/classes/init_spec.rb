@@ -240,8 +240,8 @@ describe 'vas' do
           :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
           :vas_conf_libvas_auth_helper_timeout                  => '120',
-          :vas_conf_vas_auth_allow_disconnected_auth            => 'false',
-          :vas_conf_vas_auth_expand_ac_groups                   => 'false',
+          :vas_conf_vas_auth_allow_disconnected_auth            => false,
+          :vas_conf_vas_auth_expand_ac_groups                   => false,
           :sitenameoverride                                     => 'foobar',
           :vas_conf_libvas_use_dns_srv                          => 'false',
           :vas_conf_libvas_use_tcp_only                         => 'false',
@@ -1085,16 +1085,10 @@ DOMAIN\\adgroup:group::
 
     validations = {
       'boolean' => {
-        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas vas_conf_vas_auth_expand_ac_groups),
+        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas vas_conf_vas_auth_allow_disconnected_auth vas_conf_vas_auth_expand_ac_groups),
         :valid   => [true, false, 'true', 'false'],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
-      },
-      'stringified_boolean' => {
-        :name    => %w(vas_conf_vas_auth_allow_disconnected_auth),
-        :valid   => ['true', 'false' ],
-        :invalid => [%w(array), { 'ha' => 'sh' }, 3, 2.42, true, false, nil ],
-        :message => 'Valid values are <true> and <false>',
       },
     }
 

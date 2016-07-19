@@ -462,13 +462,15 @@ Integer for uid-check-limit option in vas.conf. See VAS.CONF(5) for more info.
 
 vas_conf_vas_auth_allow_disconnected_auth
 -----------------------------------------
-Stringified boolean to be used for allow-disconnected-auth option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+Boolean to set value of allow-disconnected-auth option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+If set to 'UNSET' nothing will get printed.
 
 - *Default*: 'UNSET'
 
 vas_conf_vas_auth_expand_ac_groups
 -----------------------------------------
-Stringified boolean to be used for expand-ac-groups option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+Boolean to set value of expand-ac-groups option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+If set to 'UNSET' nothing will get printed.
 
 - *Default*: 'UNSET'
 

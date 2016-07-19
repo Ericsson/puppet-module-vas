@@ -163,8 +163,8 @@
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
 <% end -%>
-<% if @vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' -%>
- allow-disconnected-auth = <%= @vas_conf_vas_auth_allow_disconnected_auth %>
+<% if @vas_conf_vas_auth_allow_disconnected_auth_string != nil -%>
+ allow-disconnected-auth = <%= @vas_conf_vas_auth_allow_disconnected_auth_string %>
 <% end -%>
 <% if @vas_conf_vas_auth_expand_ac_groups_string != nil -%>
  expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups_string %>

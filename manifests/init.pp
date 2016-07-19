@@ -159,9 +159,18 @@ class vas (
   validate_string($vas_conf_vasd_unix_password_attr_name)
 
   if $vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' {
-    validate_re($vas_conf_vas_auth_allow_disconnected_auth, '^(true|false)$',
-      'vas_conf_vas_auth_allow_disconnected_auth does not match regex. Valid values are <true> and <false>.'
-    )
+    if type3x($vas_conf_vas_auth_allow_disconnected_auth) == 'boolean' {
+      $vas_conf_vas_auth_allow_disconnected_auth_string = bool2str($vas_conf_vas_auth_allow_disconnected_auth)
+    }
+    elsif type3x($vas_conf_vas_auth_allow_disconnected_auth) == 'string' {
+      validate_re($vas_conf_vas_auth_allow_disconnected_auth, '^(true|false)$',
+        'vas_conf_vas_auth_allow_disconnected_auth is not a boolean. Valid values are <true> and <false>.'
+      )
+      $vas_conf_vas_auth_allow_disconnected_auth_string = $vas_conf_vas_auth_allow_disconnected_auth
+    }
+    else {
+      fail('vas_conf_vas_auth_allow_disconnected_auth is not a boolean nor a string. Valid values are <true> and <false>.')
+    }
   }
 
   if $vas_conf_vas_auth_expand_ac_groups != 'UNSET' {
