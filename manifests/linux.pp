@@ -11,7 +11,7 @@ class vas::linux inherits vas {
       if $vas::package_version != undef {
         $vasver = regsubst($vas::package_version, '-', '.')
       } else {
-        $vasver = ''
+        $vasver = '' # lint:ignore:empty_string_assignment
       }
 
       if ($::vas_version and $vasver > $::vas_version and $vas::package_version != 'UNSET') {

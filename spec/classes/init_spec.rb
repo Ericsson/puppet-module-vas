@@ -12,7 +12,7 @@ describe 'vas' do
     :fqdn                      => 'host.example.com',
     :domain                    => 'example.com',
   }
-  let (:facts) { default_facts }
+  let(:facts) { default_facts }
 
   describe 'packages' do
     context 'defaults on osfamily RedHat with lsbmajdistrelease 6' do
@@ -31,9 +31,9 @@ describe 'vas' do
         )
       end
 
-      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasclnt').with({ 'ensure' => 'installed' }) }
+      it { should contain_package('vasyp').with({ 'ensure' => 'installed' }) }
+      it { should contain_package('vasgp').with({ 'ensure' => 'installed' }) }
     end
 
     context 'defaults on osfamily Solaris with kernelrelease 5.10' do
@@ -47,9 +47,9 @@ describe 'vas' do
         )
       end
 
-      it { should contain_package('vasclnt').with({'ensure' => 'installed'}) }
-      it { should contain_package('vasyp').with({'ensure' => 'installed'}) }
-      it { should contain_package('vasgp').with({'ensure' => 'installed'}) }
+      it { should contain_package('vasclnt').with({ 'ensure' => 'installed' }) }
+      it { should contain_package('vasyp').with({ 'ensure' => 'installed' }) }
+      it { should contain_package('vasgp').with({ 'ensure' => 'installed' }) }
     end
 
     context 'with package_version specified on osfamily RedHat with lsbmajdistrelease 6' do
@@ -77,116 +77,107 @@ describe 'vas' do
 
   describe 'config' do
     context 'defaults on osfamily redhat with lsbmajdistrelease 6' do
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |[domain_realm]
+        | host.example.com = REALM.EXAMPLE.COM
+        |
+        |[libdefaults]
+        | default_realm = REALM.EXAMPLE.COM
+        | default_tgs_enctypes = arcfour-hmac-md5
+        | default_tkt_enctypes = arcfour-hmac-md5
+        | default_etypes_des = des-cbc-crc
+        | default_etypes = arcfour-hmac-md5
+        | forwardable = true
+        | renew_lifetime = 604800
+        |
+        | ticket_lifetime = 36000
+        | default_keytab_name = /etc/opt/quest/vas/host.keytab
+        |
+        |[libvas]
+        | vascache-ipc-timeout = 15
+        | use-server-referrals = true
+        | mscldap-timeout = 1
+        | use-dns-srv = true
+        | use-tcp-only = true
+        | auth-helper-timeout = 10
+        | site-only-servers = false
+        |
+        |[pam_vas]
+        | prompt-vas-ad-pw = "Enter Windows password: "
+        |
+        |[vasypd]
+        | search-base = ou=nismaps,dc=example,dc=com
+        | split-groups = true
+        | update-interval = 1800
+        | domainname-override = example.com
+        | update-process = /opt/quest/libexec/vas/mapupdate_2307
+        |
+        |[vasd]
+        | update-interval = 600
+        | workstation-mode = false
+        | auto-ticket-renew-interval = 32400
+        | lazy-cache-update-interval = 10
+        | upm-computerou-attr = department
+        |
+        |[nss_vas]
+        | group-update-mode = none
+        | root-update-mode = none
+        |
+        |[vas_auth]
+      END
+
       it do
         should contain_file('vas_config').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/vas.conf',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_config').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-[domain_realm]
- host.example.com = REALM.EXAMPLE.COM
-
-[libdefaults]
- default_realm = REALM.EXAMPLE.COM
- default_tgs_enctypes = arcfour-hmac-md5
- default_tkt_enctypes = arcfour-hmac-md5
- default_etypes_des = des-cbc-crc
- default_etypes = arcfour-hmac-md5
- forwardable = true
- renew_lifetime = 604800
-
- ticket_lifetime = 36000
- default_keytab_name = /etc/opt/quest/vas/host.keytab
-
-[libvas]
- vascache-ipc-timeout = 15
- use-server-referrals = true
- mscldap-timeout = 1
- use-dns-srv = true
- use-tcp-only = true
- auth-helper-timeout = 10
- site-only-servers = false
-
-[pam_vas]
- prompt-vas-ad-pw = "Enter Windows password: "
-
-[vasypd]
- search-base = ou=nismaps,dc=example,dc=com
- split-groups = true
- update-interval = 1800
- domainname-override = example.com
- update-process = /opt/quest/libexec/vas/mapupdate_2307
-
-[vasd]
- update-interval = 600
- workstation-mode = false
- auto-ticket-renew-interval = 32400
- lazy-cache-update-interval = 10
- upm-computerou-attr = department
-
-[nss_vas]
- group-update-mode = none
- root-update-mode = none
-
-[vas_auth]
-))
       end
       it do
         should contain_file('vas_user_override').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/user-override',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/user-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n"
+
         })
-        should contain_file('vas_user_override').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-))
       end
       it do
         should contain_file('vas_group_override').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/group-override',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/group-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n"
         })
-        should contain_file('vas_group_override').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-))
       end
       it do
         should contain_file('vas_users_allow').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/users.allow',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/users.allow',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n"
         })
-        should contain_file('vas_users_allow').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-))
       end
       it do
         should contain_file('vas_users_deny').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/users.deny',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/users.deny',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n"
         })
-        should contain_file('vas_users_deny').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-))
       end
     end
 
@@ -253,96 +244,98 @@ describe 'vas' do
         }
       end
 
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |[domain_realm]
+        | fqdn.example.se = EXAMPLE.SE
+        | host2.example.com = REALM2.EXAMPLE.COM
+        |
+        |[libdefaults]
+        | default_realm = REALM2.EXAMPLE.COM
+        | default_tgs_enctypes = arcfour-hmac-md5
+        | default_tkt_enctypes = arcfour-hmac-md5
+        | default_etypes_des = des-cbc-crc
+        | default_etypes = arcfour-hmac-md5
+        | forwardable = false
+        | renew_lifetime = 604800
+        |
+        | ticket_lifetime = 36000
+        | default_keytab_name = /etc/opt/quest/vas/host.keytab
+        |
+        |[libvas]
+        | vascache-ipc-timeout = 15
+        | use-server-referrals = true
+        | site-name-override = foobar
+        | mscldap-timeout = 10
+        | use-dns-srv = false
+        | use-tcp-only = false
+        | auth-helper-timeout = 120
+        | site-only-servers = false
+        |
+        |[pam_vas]
+        | prompt-vas-ad-pw = Enter pw
+        | prompt-ad-lockout-msg = "Account is locked"
+        |
+        |[vasypd]
+        | search-base = ou=site,ou=nismaps,dc=example,dc=com
+        | split-groups = true
+        | update-interval = 1800
+        | domainname-override = nis.domain
+        | update-process = /opt/quest/libexec/vas/mapupdate
+        | full-update-interval = 3600
+        | client-addrs = 10.10.0.0/24 10.50.0.0/24
+        |
+        |[vasd]
+        | update-interval = 1200
+        | upm-search-path = ou=site,ou=users,dc=example,dc=com
+        | workstation-mode = true
+        | workstation-mode-users-preload = usergroup
+        | workstation-mode-group-do-member = true
+        | workstation-mode-groups-skip-update = true
+        | ws-resolve-uid = true
+        | auto-ticket-renew-interval = 540
+        | lazy-cache-update-interval = 5
+        | cross-domain-user-groups-member-search = true
+        | timesync-interval = 0
+        | preload-nested-memberships = false
+        | upm-computerou-attr = managedBy
+        | password-change-script = /opt/quest/libexec/vas-set-samba-password
+        | password-change-script-timelimit = 30
+        | username-attr-name = userprincipalname
+        | groupname-attr-name = groupprincipalname
+        | uid-number-attr-name = employeID
+        | gid-number-attr-name = primaryGroupID
+        | gecos-attr-name = displayName
+        | home-dir-attr-name = homeDirectory
+        | login-shell-attr-name = loginShell
+        | group-member-attr-name = groupMembershipSAM
+        | memberof-attr-name = memberOf
+        | unix-password-attr-name = userPassword
+        |
+        |[nss_vas]
+        | group-update-mode = none
+        | root-update-mode = none
+        | disabled-user-pwhash = disabled
+        | locked-out-pwhash = locked
+        | lowercase-names = true
+        | lowercase-homedirs = true
+        |
+        |[vas_auth]
+        | uid-check-limit = 100000
+        | allow-disconnected-auth = false
+        | expand-ac-groups = false
+      END
+
       it do
         should contain_file('vas_config').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/vas.conf',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/vas.conf',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_config').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-[domain_realm]
- fqdn.example.se = EXAMPLE.SE
- host2.example.com = REALM2.EXAMPLE.COM
-
-[libdefaults]
- default_realm = REALM2.EXAMPLE.COM
- default_tgs_enctypes = arcfour-hmac-md5
- default_tkt_enctypes = arcfour-hmac-md5
- default_etypes_des = des-cbc-crc
- default_etypes = arcfour-hmac-md5
- forwardable = false
- renew_lifetime = 604800
-
- ticket_lifetime = 36000
- default_keytab_name = /etc/opt/quest/vas/host.keytab
-
-[libvas]
- vascache-ipc-timeout = 15
- use-server-referrals = true
- site-name-override = foobar
- mscldap-timeout = 10
- use-dns-srv = false
- use-tcp-only = false
- auth-helper-timeout = 120
- site-only-servers = false
-
-[pam_vas]
- prompt-vas-ad-pw = Enter pw
- prompt-ad-lockout-msg = "Account is locked"
-
-[vasypd]
- search-base = ou=site,ou=nismaps,dc=example,dc=com
- split-groups = true
- update-interval = 1800
- domainname-override = nis.domain
- update-process = /opt/quest/libexec/vas/mapupdate
- full-update-interval = 3600
- client-addrs = 10.10.0.0/24 10.50.0.0/24
-
-[vasd]
- update-interval = 1200
- upm-search-path = ou=site,ou=users,dc=example,dc=com
- workstation-mode = true
- workstation-mode-users-preload = usergroup
- workstation-mode-group-do-member = true
- workstation-mode-groups-skip-update = true
- ws-resolve-uid = true
- auto-ticket-renew-interval = 540
- lazy-cache-update-interval = 5
- cross-domain-user-groups-member-search = true
- timesync-interval = 0
- preload-nested-memberships = false
- upm-computerou-attr = managedBy
- password-change-script = /opt/quest/libexec/vas-set-samba-password
- password-change-script-timelimit = 30
- username-attr-name = userprincipalname
- groupname-attr-name = groupprincipalname
- uid-number-attr-name = employeID
- gid-number-attr-name = primaryGroupID
- gecos-attr-name = displayName
- home-dir-attr-name = homeDirectory
- login-shell-attr-name = loginShell
- group-member-attr-name = groupMembershipSAM
- memberof-attr-name = memberOf
- unix-password-attr-name = userPassword
-
-[nss_vas]
- group-update-mode = none
- root-update-mode = none
- disabled-user-pwhash = disabled
- locked-out-pwhash = locked
- lowercase-names = true
- lowercase-homedirs = true
-
-[vas_auth]
- uid-check-limit = 100000
- allow-disconnected-auth = false
- expand-ac-groups = false
-))
       end
     end
 
@@ -529,21 +522,22 @@ describe 'vas' do
           :users_allow_entries => ['user@realm.com', 'DOMAIN\adgroup'],
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |user@realm.com
+        |DOMAIN\\adgroup
+      END
 
       it do
         should contain_file('vas_users_allow').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/users.allow',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/users.allow',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_users_allow').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-user@realm.com
-DOMAIN\\adgroup
-))
       end
     end
 
@@ -553,20 +547,21 @@ DOMAIN\\adgroup
           :users_allow_entries => 'DOMAIN\adgroup',
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |DOMAIN\\adgroup
+      END
 
       it do
         should contain_file('vas_users_allow').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/users.allow',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/users.allow',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_users_allow').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-DOMAIN\\adgroup
-))
       end
     end
 
@@ -576,21 +571,22 @@ DOMAIN\\adgroup
           :users_deny_entries => ['user@realm.com', 'DOMAIN\adgroup'],
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |user@realm.com
+        |DOMAIN\\adgroup
+      END
 
       it do
         should contain_file('vas_users_deny').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/users.deny',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/users.deny',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_users_deny').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-user@realm.com
-DOMAIN\\adgroup
-))
       end
     end
 
@@ -600,20 +596,21 @@ DOMAIN\\adgroup
           :users_deny_entries => 'DOMAIN\adgroup',
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |DOMAIN\\adgroup
+      END
 
       it do
         should contain_file('vas_users_deny').with({
-          'ensure' => 'present',
-          'path'   => '/etc/opt/quest/vas/users.deny',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/etc/opt/quest/vas/users.deny',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_users_deny').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-DOMAIN\\adgroup
-))
       end
     end
 
@@ -624,21 +621,22 @@ DOMAIN\\adgroup
           :vas_user_override_path => '/path/to/user-override',
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |jdoe@example.com::::::/bin/sh
+        |jane@example.com:::::/local/home/jane:
+      END
 
       it do
         should contain_file('vas_user_override').with({
-          'ensure' => 'present',
-          'path'   => '/path/to/user-override',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/path/to/user-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_user_override').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-jdoe@example.com::::::/bin/sh
-jane@example.com:::::/local/home/jane:
-))
       end
     end
 
@@ -649,20 +647,21 @@ jane@example.com:::::/local/home/jane:
           :vas_user_override_path => '/path/to/user-override',
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |jdoestring@example.com::::::/bin/sh
+      END
 
       it do
         should contain_file('vas_user_override').with({
-          'ensure' => 'present',
-          'path'   => '/path/to/user-override',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/path/to/user-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_user_override').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-jdoestring@example.com::::::/bin/sh
-))
       end
     end
 
@@ -673,21 +672,22 @@ jdoestring@example.com::::::/bin/sh
           :vas_group_override_path => '/path/to/group-override',
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |DOMAIN\\adgroup:group::
+        |DOMAIN\\adgroup2:group2::
+      END
 
       it do
         should contain_file('vas_group_override').with({
-          'ensure' => 'present',
-          'path'   => '/path/to/group-override',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/path/to/group-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_group_override').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-DOMAIN\\adgroup:group::
-DOMAIN\\adgroup2:group2::
-))
       end
     end
 
@@ -698,20 +698,21 @@ DOMAIN\\adgroup2:group2::
           :vas_group_override_path => '/path/to/group-override',
         }
       end
+      content = <<-END.gsub(/^\s+\|/, '')
+        |# This file is being maintained by Puppet.
+        |# DO NOT EDIT
+        |DOMAIN\\adgroup:group::
+      END
 
       it do
         should contain_file('vas_group_override').with({
-          'ensure' => 'present',
-          'path'   => '/path/to/group-override',
-          'owner'  => 'root',
-          'group'  => 'root',
-          'mode'   => '0644',
+          'ensure'  => 'file',
+          'path'    => '/path/to/group-override',
+          'owner'   => 'root',
+          'group'   => 'root',
+          'mode'    => '0644',
+          'content' => content,
         })
-        should contain_file('vas_group_override').with_content(
-          %(# This file is being maintained by Puppet.
-# DO NOT EDIT
-DOMAIN\\adgroup:group::
-))
       end
     end
 
@@ -807,15 +808,17 @@ DOMAIN\\adgroup:group::
           :realm         => 'example.io',
         }
       end
-      it { should contain_exec('vas_change_domain').with(
-        'command'  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
-        'onlyif'   => '/usr/bin/test -f /etc/vasinst.key && /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
-        'provider' => 'shell',
-        'path'     => '/bin:/usr/bin:/opt/quest/bin',
-        'timeout'  => 1800,
-        'before'   => ['File[vas_config]', 'File[keytab]', 'Exec[vasinst]'],
-        'require'  => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]']
-      )}
+      it do
+        should contain_exec('vas_change_domain').with(
+          'command'  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
+          'onlyif'   => '/usr/bin/test -f /etc/vasinst.key && /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
+          'provider' => 'shell',
+          'path'     => '/bin:/usr/bin:/opt/quest/bin',
+          'timeout'  => 1800,
+          'before'   => ['File[vas_config]', 'File[keytab]', 'Exec[vasinst]'],
+          'require'  => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]']
+        )
+      end
       it { should contain_exec('vasinst') }
       it { should contain_exec('vasinst').that_requires('Exec[vas_change_domain]') }
     end
@@ -908,7 +911,7 @@ DOMAIN\\adgroup:group::
         default_facts.merge(
           {
             :fqdn            => 'hieramerge.example.local',
-            :parameter_tests => "#{parameter}",
+            :parameter_tests => parameter.to_s,
           }
         )
       end
@@ -921,7 +924,7 @@ DOMAIN\\adgroup:group::
             }
           end
           content = "#{Regexp.escape(file_header)}#{Regexp.escape(v[:"#{value}_content"])}"
-          it { should contain_file("#{v[:filename]}").with_content(/^#{content}/) }
+          it { should contain_file(v[:filename].to_s).with_content(/^#{content}/) }
         end
       end
     end
@@ -983,7 +986,8 @@ DOMAIN\\adgroup:group::
 
     context 'enabled with all params specified' do
       let(:params) do
-        { :symlink_vastool_binary        => true,
+        {
+          :symlink_vastool_binary        => true,
           :vastool_binary                => '/foo/bar',
           :symlink_vastool_binary_target => '/bar',
         }
@@ -1051,7 +1055,7 @@ DOMAIN\\adgroup:group::
         {
           :license_files => {
             'VAS_license' => {
-              'ensure'  => 'present',
+              'ensure'  => 'file',
               'path'    => '/tmp/vas_license',
               'content' => 'VAS license file',
             }
@@ -1060,7 +1064,7 @@ DOMAIN\\adgroup:group::
       end
       it do
         should contain_file('VAS_license').with({
-          'ensure'  => 'present',
+          'ensure'  => 'file',
           'path'    => '/tmp/vas_license',
           'content' => 'VAS license file',
         })
