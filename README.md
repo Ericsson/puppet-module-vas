@@ -188,6 +188,12 @@ Hash of domains that should be mapped to correct realm.
 
 - *Default*: {}
 
+unjoin_vas
+----------
+Boolean to trigger an unjoining of the domain. Obviously this will only work if the system is joined to a domain.
+
+- *Default*: false
+
 #### Hiera Example
 Assume the hostname of the node is: host2.example.com and realm is REALM2.EXAMPLE.COM.
 ```
@@ -456,7 +462,15 @@ Integer for uid-check-limit option in vas.conf. See VAS.CONF(5) for more info.
 
 vas_conf_vas_auth_allow_disconnected_auth
 -----------------------------------------
-Stringified boolean to be used for allow-disconnected-auth option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+Boolean to set value of allow-disconnected-auth option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+If set to 'UNSET' nothing will get printed.
+
+- *Default*: 'UNSET'
+
+vas_conf_vas_auth_expand_ac_groups
+-----------------------------------------
+Boolean to set value of expand-ac-groups option in [vas_auth] section of vas.conf. See VAS.CONF(5) for more info.
+If set to 'UNSET' nothing will get printed.
 
 - *Default*: 'UNSET'
 

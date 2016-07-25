@@ -69,6 +69,7 @@ class vas (
   $vas_conf_libdefaults_forwardable                     = true,
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_vas_auth_allow_disconnected_auth            = 'UNSET',
+  $vas_conf_vas_auth_expand_ac_groups                   = 'UNSET',
   $vas_conf_libvas_vascache_ipc_timeout                 = 15,
   $vas_conf_libvas_use_server_referrals                 = true,
   $vas_conf_libvas_use_server_referrals_version_switch  = '4.1.0.21518',
@@ -111,6 +112,7 @@ class vas (
   $license_files                                        = undef,
   $domain_realms                                        = {},
   $join_domain_controllers                              = 'UNSET',
+  $unjoin_vas                                           = false,
 ) {
 
   $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
@@ -158,9 +160,33 @@ class vas (
   validate_string($vas_conf_vasd_unix_password_attr_name)
 
   if $vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' {
-    validate_re($vas_conf_vas_auth_allow_disconnected_auth, '^(true|false)$',
-      'vas_conf_vas_auth_allow_disconnected_auth does not match regex. Valid values are <true> and <false>.'
-    )
+    if type3x($vas_conf_vas_auth_allow_disconnected_auth) == 'boolean' {
+      $vas_conf_vas_auth_allow_disconnected_auth_string = bool2str($vas_conf_vas_auth_allow_disconnected_auth)
+    }
+    elsif type3x($vas_conf_vas_auth_allow_disconnected_auth) == 'string' {
+      validate_re($vas_conf_vas_auth_allow_disconnected_auth, '^(true|false)$',
+        'vas_conf_vas_auth_allow_disconnected_auth is not a boolean. Valid values are <true> and <false>.'
+      )
+      $vas_conf_vas_auth_allow_disconnected_auth_string = $vas_conf_vas_auth_allow_disconnected_auth
+    }
+    else {
+      fail('vas_conf_vas_auth_allow_disconnected_auth is not a boolean nor a string. Valid values are <true> and <false>.')
+    }
+  }
+
+  if $vas_conf_vas_auth_expand_ac_groups != 'UNSET' {
+    if type3x($vas_conf_vas_auth_expand_ac_groups) == 'boolean' {
+      $vas_conf_vas_auth_expand_ac_groups_string = bool2str($vas_conf_vas_auth_expand_ac_groups)
+    }
+    elsif type3x($vas_conf_vas_auth_expand_ac_groups) == 'string' {
+      validate_re($vas_conf_vas_auth_expand_ac_groups, '^(true|false)$',
+        'vas_conf_vas_auth_expand_ac_groups is not a boolean. Valid values are <true> and <false>.'
+      )
+      $vas_conf_vas_auth_expand_ac_groups_string = $vas_conf_vas_auth_expand_ac_groups
+    }
+    else {
+      fail('vas_conf_vas_auth_expand_ac_groups is not a boolean nor a string. Valid values are <true> and <false>.')
+    }
   }
 
   if is_string($domain_change) {
@@ -327,6 +353,13 @@ class vas (
     $vas_conf_vasd_ws_resolve_uid_real = $vas_conf_vasd_ws_resolve_uid
   }
 
+  if is_string($unjoin_vas) {
+    $unjoin_vas_real = str2bool($unjoin_vas)
+  } else {
+    $unjoin_vas_real = $unjoin_vas
+  }
+  validate_bool($unjoin_vas_real)
+
   if is_string($enable_group_policies) {
     $enable_group_policies_real = str2bool($enable_group_policies)
   } else {
@@ -386,19 +419,19 @@ class vas (
 
   case $::kernel {
     'Linux': {
-      include vas::linux
+      include ::vas::linux
     }
     'SunOS': {
-      include vas::solaris
+      include ::vas::solaris
     }
     default: {
       fail("Vas module support Linux and SunOS kernels. Detected kernel is <${::kernel}>")
     }
   }
 
-  include nisclient
-  include nsswitch
-  include pam
+  include ::nisclient
+  include ::nsswitch
+  include ::pam
 
   # Use nisdomainname is supplied. If not, use nisclient::domainname if it
   # exists, last resort fall back to domain fact
@@ -462,194 +495,206 @@ class vas (
 
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
-  # no run if undef!
-  # We should probably have better sanity checks for $realm parameter instead of this.
-  if $realm != undef {
-    # So we use the fact vas_domain to identify if vas is already joined to a AD
-    # server. It will make sure and check that ::vas_domain is not undef before doing this
-    # to prevent something from happening at first run.
-    # If the vas_domain fact is not the same as the realm specified in hiera it
-    # will then check if the domain_change_real parameter is set to true. If it is
-    # it will join the domain with help of the lastjoin file.
-    # If the domain_change_real fact is false, it will fail the compilation and warn
-    # of the mismatching realm.
-    if $::vas_domain != $realm and $::vas_domain != undef  {
-      if $domain_change_real == true {
-        exec { 'vas_change_domain':
-          # This command executes the result of the sed command, puts the log from
-          # the unjoin command into a log file and removes the once file to allow
-          # the  vas_inst command to join the new AD server.
-          # This is how the join command is built up by the vas module.
-          # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
-          # The sed regex will save everything up to but not including the join part.
-          # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
-          # It will save the part above and add to the end of it unjoin.
-          # The result would be ${vastool_binary} -u ${username} -k ${keytab_path} -d3 unjoin
-          #
-          # This sed command is required because we need to use the old credentials
-          # and old username to unjoin the currently joined AD.
-          # It could be that you need to use a newly created keytab file for perhaps
-          # the same/new user required to join the new AD Server. So to join the
-          # new AD server we would need updated hiera information for that. Preventing
-          # us from using the new hiera data to unjoin the current AD Server.
-          command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
-          onlyif   => "/usr/bin/test -f ${keytab_path} || /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
-          provider => 'shell',
-          path     => '/bin:/usr/bin:/opt/quest/bin',
-          timeout  => 1800,
-          before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
-          require  => [Package['vasclnt','vasyp','vasgp']]
+
+  if $unjoin_vas_real == true and $::vas_domain != undef {
+      exec { 'vas_unjoin':
+        command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
+        onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+        provider => 'shell',
+        path     => '/bin:/usr/bin:/opt/quest/bin',
+        timeout  => 1800,
+        require  => [Package['vasclnt','vasyp','vasgp']],
+      }
+  } elsif $unjoin_vas_real == false {
+    # no run if undef!
+    # We should probably have better sanity checks for $realm parameter instead of this.
+    if $realm != undef {
+      # So we use the fact vas_domain to identify if vas is already joined to a AD
+      # server. It will make sure and check that ::vas_domain is not undef before doing this
+      # to prevent something from happening at first run.
+      # If the vas_domain fact is not the same as the realm specified in hiera it
+      # will then check if the domain_change_real parameter is set to true. If it is
+      # it will join the domain with help of the lastjoin file.
+      # If the domain_change_real fact is false, it will fail the compilation and warn
+      # of the mismatching realm.
+      if $::vas_domain != $realm and $::vas_domain != undef  {
+        if $domain_change_real == true {
+          exec { 'vas_change_domain':
+            # This command executes the result of the sed command, puts the log from
+            # the unjoin command into a log file and removes the once file to allow
+            # the  vas_inst command to join the new AD server.
+            # This is how the join command is built up by the vas module.
+            # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
+            # The sed regex will save everything up to but not including the join part.
+            # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
+            # It will save the part above and add to the end of it unjoin.
+            # The result would be ${vastool_binary} -u ${username} -k ${keytab_path} -d3 unjoin
+            #
+            # This sed command is required because we need to use the old credentials
+            # and old username to unjoin the currently joined AD.
+            # It could be that you need to use a newly created keytab file for perhaps
+            # the same/new user required to join the new AD Server. So to join the
+            # new AD server we would need updated hiera information for that. Preventing
+            # us from using the new hiera data to unjoin the current AD Server.
+            command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
+            onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+            provider => 'shell',
+            path     => '/bin:/usr/bin:/opt/quest/bin',
+            timeout  => 1800,
+            before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
+            require  => [Package['vasclnt','vasyp','vasgp']],
+          }
+        } else {
+          fail('VAS domain missmatch!')
         }
-      } else {
-        fail('VAS domain missmatch!')
       }
     }
-  }
 
-  file { 'vas_config':
-    ensure  => present,
-    path    => $vas_config_path,
-    owner   => $vas_config_owner,
-    group   => $vas_config_group,
-    mode    => $vas_config_mode,
-    content => template('vas/vas.conf.erb'),
-    require => Package['vasclnt','vasyp','vasgp'],
-  }
+    file { 'vas_config':
+      ensure  => file,
+      path    => $vas_config_path,
+      owner   => $vas_config_owner,
+      group   => $vas_config_group,
+      mode    => $vas_config_mode,
+      content => template('vas/vas.conf.erb'),
+      require => Package['vasclnt','vasyp','vasgp'],
+    }
 
-  $_vas_users_allow_path = $vas_users_allow_path ? {
-    'UNSET' => $_vas_users_allow_path_default,
-    default => $vas_users_allow_path,
-  }
-  file { 'vas_users_allow':
-    ensure  => present,
-    path    => $_vas_users_allow_path,
-    owner   => $vas_users_allow_owner,
-    group   => $vas_users_allow_group,
-    mode    => $vas_users_allow_mode,
-    content => template('vas/users.allow.erb'),
-    require => Package['vasclnt','vasyp','vasgp'],
-  }
+    $_vas_users_allow_path = $vas_users_allow_path ? {
+      'UNSET' => $_vas_users_allow_path_default,
+      default => $vas_users_allow_path,
+    }
+    file { 'vas_users_allow':
+      ensure  => file,
+      path    => $_vas_users_allow_path,
+      owner   => $vas_users_allow_owner,
+      group   => $vas_users_allow_group,
+      mode    => $vas_users_allow_mode,
+      content => template('vas/users.allow.erb'),
+      require => Package['vasclnt','vasyp','vasgp'],
+    }
 
-  $_vas_users_deny_path = $vas_users_deny_path ? {
-    'UNSET' => $_vas_users_deny_path_default,
-    default => $vas_users_deny_path,
-  }
-  file { 'vas_users_deny':
-    ensure  => present,
-    path    => $_vas_users_deny_path,
-    owner   => $vas_users_deny_owner,
-    group   => $vas_users_deny_group,
-    mode    => $vas_users_deny_mode,
-    content => template('vas/users.deny.erb'),
-    require => Package['vasclnt','vasyp','vasgp'],
-  }
+    $_vas_users_deny_path = $vas_users_deny_path ? {
+      'UNSET' => $_vas_users_deny_path_default,
+      default => $vas_users_deny_path,
+    }
+    file { 'vas_users_deny':
+      ensure  => file,
+      path    => $_vas_users_deny_path,
+      owner   => $vas_users_deny_owner,
+      group   => $vas_users_deny_group,
+      mode    => $vas_users_deny_mode,
+      content => template('vas/users.deny.erb'),
+      require => Package['vasclnt','vasyp','vasgp'],
+    }
 
-  $_vas_user_override_path = $vas_user_override_path ? {
-    'UNSET' => $_vas_user_override_path_default,
-    default => $vas_user_override_path,
-  }
-  file { 'vas_user_override':
-    ensure  => present,
-    path    => $_vas_user_override_path,
-    owner   => $vas_user_override_owner,
-    group   => $vas_user_override_group,
-    mode    => $vas_user_override_mode,
-    content => template('vas/user-override.erb'),
-    require => Package['vasclnt','vasyp','vasgp'],
-    before  => Service['vasd','vasypd'],
-  }
+    $_vas_user_override_path = $vas_user_override_path ? {
+      'UNSET' => $_vas_user_override_path_default,
+      default => $vas_user_override_path,
+    }
+    file { 'vas_user_override':
+      ensure  => file,
+      path    => $_vas_user_override_path,
+      owner   => $vas_user_override_owner,
+      group   => $vas_user_override_group,
+      mode    => $vas_user_override_mode,
+      content => template('vas/user-override.erb'),
+      require => Package['vasclnt','vasyp','vasgp'],
+      before  => Service['vasd','vasypd'],
+    }
 
-  $_vas_group_override_path = $vas_group_override_path ? {
-    'UNSET' => $_vas_group_override_path_default,
-    default => $vas_group_override_path,
-  }
-  file { 'vas_group_override':
-    ensure  => present,
-    path    => $_vas_group_override_path,
-    owner   => $vas_group_override_owner,
-    group   => $vas_group_override_group,
-    mode    => $vas_group_override_mode,
-    content => template('vas/group-override.erb'),
-    require => Package['vasclnt','vasyp','vasgp'],
-    before  => Service['vasd','vasypd'],
-  }
+    $_vas_group_override_path = $vas_group_override_path ? {
+      'UNSET' => $_vas_group_override_path_default,
+      default => $vas_group_override_path,
+    }
+    file { 'vas_group_override':
+      ensure  => file,
+      path    => $_vas_group_override_path,
+      owner   => $vas_group_override_owner,
+      group   => $vas_group_override_group,
+      mode    => $vas_group_override_mode,
+      content => template('vas/group-override.erb'),
+      require => Package['vasclnt','vasyp','vasgp'],
+      before  => Service['vasd','vasypd'],
+    }
 
-  file { 'keytab':
-    ensure => 'present',
-    name   => $keytab_path,
-    source => $keytab_source,
-    owner  => $keytab_owner,
-    group  => $keytab_group,
-    mode   => $keytab_mode,
-  }
+    file { 'keytab':
+      ensure => 'file',
+      name   => $keytab_path,
+      source => $keytab_source,
+      owner  => $keytab_owner,
+      group  => $keytab_group,
+      mode   => $keytab_mode,
+    }
 
-  service { 'vasd':
-    ensure  => 'running',
-    enable  => true,
-    require => Exec['vasinst'],
-  }
+    service { 'vasd':
+      ensure  => 'running',
+      enable  => true,
+      require => Exec['vasinst'],
+    }
 
-  service { 'vasypd':
-    ensure  => 'running',
-    enable  => true,
-    require => Service['vasd'],
-    before  => Class['nisclient'],
-  }
+    service { 'vasypd':
+      ensure  => 'running',
+      enable  => true,
+      require => Service['vasd'],
+      before  => Class['nisclient'],
+    }
 
-  if $sitenameoverride == 'UNSET' {
-    $s_opts = ''
-  } else {
-    $s_opts = "-s ${sitenameoverride}"
-  }
+    if $sitenameoverride == 'UNSET' {
+      $s_opts = '' # lint:ignore:empty_string_assignment
+    } else {
+      $s_opts = "-s ${sitenameoverride}"
+    }
 
-  if $vas_conf_vasd_workstation_mode_real == true {
-    $workstation_flag = '-w'
-  } else {
-    $workstation_flag = ''
-  }
+    if $vas_conf_vasd_workstation_mode_real == true {
+      $workstation_flag = '-w'
+    } else {
+      $workstation_flag = '' # lint:ignore:empty_string_assignment
+    }
 
-  if $user_search_path_real != undef {
-    $user_search_path_parm = "-u ${user_search_path_real}"
-  } else {
-    $user_search_path_parm = ''
-  }
-  if $group_search_path_real != undef {
-    $group_search_path_parm = "-g ${group_search_path_real}"
-  } else {
-    $group_search_path_parm = ''
-  }
-  if $upm_search_path_real != undef {
-    $upm_search_path_parm = "-p ${upm_search_path_real}"
-  } else {
-    $upm_search_path_parm = ''
-  }
+    if $user_search_path_real != undef {
+      $user_search_path_parm = "-u ${user_search_path_real}"
+    } else {
+      $user_search_path_parm = '' # lint:ignore:empty_string_assignment
+    }
+    if $group_search_path_real != undef {
+      $group_search_path_parm = "-g ${group_search_path_real}"
+    } else {
+      $group_search_path_parm = '' # lint:ignore:empty_string_assignment
+    }
+    if $upm_search_path_real != undef {
+      $upm_search_path_parm = "-p ${upm_search_path_real}"
+    } else {
+      $upm_search_path_parm = '' # lint:ignore:empty_string_assignment
+    }
 
-  exec { 'vasinst':
-    command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
-    path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
-    timeout => 1800,
-    creates => $once_file,
-    before  => Class['pam'],
-    require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
-  }
+    exec { 'vasinst':
+      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+      path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
+      timeout => 1800,
+      creates => $once_file,
+      before  => Class['pam'],
+      require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
+    }
 
-  if is_string($symlink_vastool_binary) {
-    $symlink_vastool_binary_bool = str2bool($symlink_vastool_binary)
-  } else {
-    $symlink_vastool_binary_bool = $symlink_vastool_binary
-  }
-  validate_bool($symlink_vastool_binary_bool)
+    if is_string($symlink_vastool_binary) {
+      $symlink_vastool_binary_bool = str2bool($symlink_vastool_binary)
+    } else {
+      $symlink_vastool_binary_bool = $symlink_vastool_binary
+    }
+    validate_bool($symlink_vastool_binary_bool)
 
-  # optionally create symlinks to vastool binary
-  if $symlink_vastool_binary_bool == true {
-    # validate params
-    validate_absolute_path($symlink_vastool_binary_target)
-    validate_absolute_path($vastool_binary)
+    # optionally create symlinks to vastool binary
+    if $symlink_vastool_binary_bool == true {
+      # validate params
+      validate_absolute_path($symlink_vastool_binary_target)
+      validate_absolute_path($vastool_binary)
 
-    file { 'vastool_symlink':
-      ensure => link,
-      path   => $symlink_vastool_binary_target,
-      target => $vastool_binary,
+      file { 'vastool_symlink':
+        ensure => link,
+        path   => $symlink_vastool_binary_target,
+        target => $vastool_binary,
+      }
     }
   }
 }

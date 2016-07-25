@@ -7,8 +7,20 @@ else
 end
 
 gem 'metadata-json-lint'
-gem 'puppetlabs_spec_helper', '>= 0.1.0'
-gem 'puppet-lint', '>= 1.0.0'
+gem 'puppetlabs_spec_helper', '>= 1.1.1'
+gem 'puppet-lint', '>= 1.0', '< 3.0'
+gem 'puppet-lint-absolute_classname-check'
+gem 'puppet-lint-alias-check'
+gem 'puppet-lint-empty_string-check'
+gem 'puppet-lint-file_ensure-check'
+gem 'puppet-lint-file_source_rights-check'
+gem 'puppet-lint-fileserver-check'
+gem 'puppet-lint-leading_zero-check'
+gem 'puppet-lint-spaceship_operator_without_tag-check'
+gem 'puppet-lint-trailing_comma-check'
+gem 'puppet-lint-undef_in_function-check'
+gem 'puppet-lint-unquoted_string-check'
+gem 'puppet-lint-variable_contains_upcase'
 gem 'facter', '>= 1.7.0'
 gem 'rspec-puppet'
 gem 'rubocop' if RUBY_VERSION >= '1.9.3'
@@ -19,3 +31,5 @@ if RUBY_VERSION >= '1.8.7' and RUBY_VERSION < '1.9'
   # rake must be v10 for ruby 1.8.7
   gem 'rake', '~> 10.0'
 end
+
+gem 'json', '~> 1.0' if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '2.0'
