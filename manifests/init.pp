@@ -366,16 +366,16 @@ class vas (
     $enable_group_policies_real = $enable_group_policies
   }
 
-  if  is_array($join_domain_controllers) {
-    $join_domain_controllers_real = join($join_domain_controllers, ' ')
-  } else {
-    if $join_domain_controllers == 'UNSET' {
-      $join_domain_controllers_real = ''
-    } else {
-      $join_domain_controllers_real = $join_domain_controllers
+  case type3x($join_domain_controllers) {
+    'array': { $join_domain_controllers_real = join($join_domain_controllers, ' ') }
+    'string': {
+      case $join_domain_controllers {
+        'UNSET': { $join_domain_controllers_real = undef }
+        default: { $join_domain_controllers_real = $join_domain_controllers }
+      }
     }
+    default: { fail('vas::join_domain_controllers is not an array nor a string.') }
   }
-  validate_string($join_domain_controllers_real)
 
   case $::virtual {
     'zone': {
