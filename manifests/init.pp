@@ -111,6 +111,7 @@ class vas (
   $symlink_vastool_binary                               = false,
   $license_files                                        = undef,
   $domain_realms                                        = {},
+  $join_domain_controllers                              = 'UNSET',
   $unjoin_vas                                           = false,
 ) {
 
@@ -363,6 +364,17 @@ class vas (
     $enable_group_policies_real = str2bool($enable_group_policies)
   } else {
     $enable_group_policies_real = $enable_group_policies
+  }
+
+  case type3x($join_domain_controllers) {
+    'array': { $join_domain_controllers_real = join($join_domain_controllers, ' ') }
+    'string': {
+      case $join_domain_controllers {
+        'UNSET': { $join_domain_controllers_real = undef }
+        default: { $join_domain_controllers_real = $join_domain_controllers }
+      }
+    }
+    default: { fail('vas::join_domain_controllers is not an array nor a string.') }
   }
 
   case $::virtual {
@@ -657,7 +669,7 @@ class vas (
     }
 
     exec { 'vasinst':
-      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
       path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
       timeout => 1800,
       creates => $once_file,

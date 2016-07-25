@@ -713,3 +713,9 @@ license_files
 Hash of license files
 
 - *Default*: undef
+
+join_domain_controllers
+-----------------------
+A string or an array with domain controllers to contact during the join process. Normally the servers for the domain will be automatically detected through DNS and LDAP lookups. By specifying this parameter vastool will contact the specified servers and only those servers during the join process. This can be useful if the machine being joined is not able to talk with all global Domain Controllers (e.g. due to firewalls). Note that this will have no effect after the join, where normal site discovery of servers will be made.
+
+- *Default*: 'UNSET'

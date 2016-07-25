@@ -888,6 +888,26 @@ describe 'vas' do
     it { should_not contain_exec('vasinst').with_command(/-g/) }
   end
 
+  # valid for all join_domain_controllers tests
+  jdc_before = '/opt/quest/bin/vastool -u username -k /etc/vasinst.key -d3 join -f  -c UNSET    -n host.example.com  realm.example.com'
+  jdc_after  = '> /var/tmp/vasjoin.log 2>&1 && touch /etc/opt/quest/vas/puppet_joined'
+
+  context 'with join_domain_controllers unset' do
+    it { should contain_exec('vasinst').with_command(/#{jdc_before}  #{jdc_after}/) }
+  end
+
+  context 'with join_domain_controllers as a string' do
+    let(:params) { { :join_domain_controllers => 'dc01.example.com' } }
+
+    it { should contain_exec('vasinst').with_command(/#{jdc_before} dc01.example.com #{jdc_after}/) }
+  end
+
+  context 'with join_domain_controllers as an array' do
+    let(:params) { { :join_domain_controllers => ['dc01.example.com', 'dc02.example.com'] } }
+
+    it { should contain_exec('vasinst').with_command(/#{jdc_before} dc01.example.com dc02.example.com #{jdc_after}/) }
+  end
+
   hiera_merge_parameters = {
     'user_override_hiera_merge' =>
       {
@@ -1088,6 +1108,12 @@ describe 'vas' do
     end
 
     validations = {
+      'array/string' => {
+        :name    => %w(join_domain_controllers),
+        :valid   => [%w(array), 'string'],
+        :invalid => [{ 'ha' => 'sh' }, 3, 2.42, true, false],
+        :message => 'is not an array nor a string',
+      },
       'boolean' => {
         :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas vas_conf_vas_auth_allow_disconnected_auth vas_conf_vas_auth_expand_ac_groups),
         :valid   => [true, false, 'true', 'false'],
