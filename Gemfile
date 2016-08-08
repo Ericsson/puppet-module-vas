@@ -1,14 +1,16 @@
 source 'https://rubygems.org'
 
-if puppetversion = ENV['PUPPET_GEM_VERSION']
-  gem 'puppet', puppetversion, :require => false
+if ENV['PUPPET_GEM_VERSION']
+  gem 'puppet', ENV['PUPPET_GEM_VERSION'], :require => false
 else
   gem 'puppet', :require => false
 end
 
 gem 'metadata-json-lint'
 gem 'puppetlabs_spec_helper', '>= 1.1.1'
-gem 'puppet-lint', '>= 1.0', '< 3.0'
+gem 'facter', '>= 1.7.0'
+gem 'rspec-puppet'
+gem 'puppet-lint', '>= 1.0', '< 3.0' # change to '~> 2.0' once the plugins got updated
 gem 'puppet-lint-absolute_classname-check'
 gem 'puppet-lint-alias-check'
 gem 'puppet-lint-empty_string-check'
@@ -21,15 +23,17 @@ gem 'puppet-lint-trailing_comma-check'
 gem 'puppet-lint-undef_in_function-check'
 gem 'puppet-lint-unquoted_string-check'
 gem 'puppet-lint-variable_contains_upcase'
-gem 'facter', '>= 1.7.0'
-gem 'rspec-puppet'
-gem 'rubocop' if RUBY_VERSION >= '2.0.0'
 
 if RUBY_VERSION >= '1.8.7' and RUBY_VERSION < '1.9'
   # rspec must be v2 for ruby 1.8.7
   gem 'rspec', '~> 2.0'
-  # rake must be v10 for ruby 1.8.7
+  # rake >= 11 does not support ruby 1.8.7
   gem 'rake', '~> 10.0'
 end
 
-gem 'json', '~> 1.0' if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '2.0'
+if RUBY_VERSION < '2.0'
+  # json 2.x requires ruby 2.0. Lock to 1.8
+  gem 'json', '~> 1.8'
+  # json_pure 2.0.2 requires ruby 2.0. Lock to 2.0.1
+  gem 'json_pure', '= 2.0.1'
+end
