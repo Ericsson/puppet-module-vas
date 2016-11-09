@@ -21,7 +21,7 @@ class vas::linux inherits vas {
       }
 
       # No vasgpd service in VAS 4
-      if $::vas_version =~ /^3/ and $upgrade == false {
+      if "${::vas_version}" =~ /^3/ and $upgrade == false { # lint:ignore:only_variable_string
         service { 'vasgpd':
           ensure    => running,
           enable    => true,
