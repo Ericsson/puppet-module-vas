@@ -545,7 +545,7 @@ class vas (
             require  => [Package['vasclnt','vasyp','vasgp']],
           }
         } else {
-          fail('VAS domain missmatch!')
+          fail('VAS domain mismatch!')
         }
       }
     }
