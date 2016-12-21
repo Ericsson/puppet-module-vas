@@ -810,7 +810,7 @@ describe 'vas' do
         }
       end
       it 'should fail' do
-        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /VAS domain mismatch!/)
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /VAS domain mismatch/)
       end
     end
 
