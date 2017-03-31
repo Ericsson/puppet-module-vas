@@ -38,7 +38,7 @@ class vas (
   $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',
   $vas_conf_update_process                              = '/opt/quest/libexec/vas/mapupdate_2307',
-  $vas_conf_upm_computerou_attr                         = 'department',
+  $vas_conf_upm_computerou_attr                         = 'UNSET',
   $vas_conf_vasd_update_interval                        = '600',
   $vas_conf_vasd_auto_ticket_renew_interval             = '32400',
   $vas_conf_vasd_lazy_cache_update_interval             = '10',

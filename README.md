@@ -272,9 +272,9 @@ update-process option in vas.conf. See VAS.CONF(5) for more info.
 
 vas_conf_upm_computerou_attr
 ----------------------------
-upm-computerou-attr option in vas.conf. Changed to 'department' to work in a multi-AD-domain setup. See VAS.CONF(5) for more info.
+upm-computerou-attr option in vas.conf. See VAS.CONF(5) for more info.
 
-- *Default*: 'department'
+- *Default*: 'UNSET'
 
 vas_conf_full_update_interval
 -----------------------------
