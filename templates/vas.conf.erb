@@ -38,7 +38,7 @@
 [vasypd]
  search-base = <%= @nismaps_ou %>
  split-groups = true
- update-interval = 1800
+ update-interval = <%= @vas_conf_vasypd_update_interval_integer %>
  domainname-override = <%= @my_nisdomainname %>
 <% if !@vas_conf_update_process.empty? -%>
  update-process = <%= @vas_conf_update_process %>
