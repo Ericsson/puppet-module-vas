@@ -282,6 +282,12 @@ Integer for number of seconds vasypd will wait until it fully reloads all the NI
 
 - *Default*: 'UNSET' (keep default value from VAS)
 
+vas_conf_vasypd_update_interval
+-----------------------------
+Integer for number of seconds vasypd will wait between checks for updated NIS Map information in Active Directory. See VAS.CONF(5)
+
+- *Default*: 1800
+
 vas_conf_vasd_update_interval
 -----------------------------
 Integer for number of seconds to set value of update-interval in [vasd] section of vas.conf. See VAS.CONF(5) for more info.

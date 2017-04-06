@@ -31,6 +31,7 @@ class vas (
   $domain_change                                        = false,
   $sitenameoverride                                     = 'UNSET',
   $vas_conf_client_addrs                                = 'UNSET',
+  $vas_conf_vasypd_update_interval                      = '1800',
   $vas_conf_full_update_interval                        = 'UNSET',
   $vas_conf_group_update_mode                           = 'none',
   $vas_conf_root_update_mode                            = 'none',
@@ -129,6 +130,9 @@ class vas (
   }
 
   # validate params
+  validate_integer($vas_conf_vasypd_update_interval)
+  $vas_conf_vasypd_update_interval_integer = 0 + $vas_conf_vasypd_update_interval # str2integer
+
   validate_integer($vas_conf_vasd_update_interval)
   validate_integer($vas_conf_vasd_auto_ticket_renew_interval)
   if $vas_conf_vasd_deluser_check_timelimit != 'UNSET' {

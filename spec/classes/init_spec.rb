@@ -205,6 +205,7 @@ describe 'vas' do
           :vas_conf_disabled_user_pwhash                        => 'disabled',
           :vas_conf_locked_out_pwhash                           => 'locked',
           :vas_conf_update_process                              => '/opt/quest/libexec/vas/mapupdate',
+          :vas_conf_vasypd_update_interval                      => '2200',
           :vas_conf_full_update_interval                        => '3600',
           :vas_conf_vasd_update_interval                        => '1200',
           :vas_conf_upm_computerou_attr                         => 'managedBy',
@@ -280,7 +281,7 @@ describe 'vas' do
         |[vasypd]
         | search-base = ou=site,ou=nismaps,dc=example,dc=com
         | split-groups = true
-        | update-interval = 1800
+        | update-interval = 2200
         | domainname-override = nis.domain
         | update-process = /opt/quest/libexec/vas/mapupdate
         | full-update-interval = 3600
@@ -336,6 +337,16 @@ describe 'vas' do
           'mode'    => '0644',
           'content' => content,
         })
+      end
+    end
+
+    context 'with vas_conf_vasypd_update_interval set' do
+      let :params do
+        { :vas_conf_vasypd_update_interval => '234577' }
+      end
+
+      it do
+        should contain_file('vas_config').with_content(/update-interval = 234577/)
       end
     end
 
@@ -1119,6 +1130,12 @@ describe 'vas' do
         :valid   => [true, false, 'true', 'false'],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
+      },
+      'integer' => {
+        :name    => %w(vas_conf_vasypd_update_interval),
+        :valid   => [242,'242'],
+        :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, false, nil],
+        :message => 'Expected.*to be an Integer',
       },
     }
 
