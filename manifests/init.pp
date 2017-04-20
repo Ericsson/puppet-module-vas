@@ -65,6 +65,7 @@ class vas (
   $vas_conf_vasd_group_member_attr_name                 = 'UNSET',
   $vas_conf_vasd_memberof_attr_name                     = 'UNSET',
   $vas_conf_vasd_unix_password_attr_name                = 'UNSET',
+  $vas_conf_vasd_netgroup_mode                          = 'UNSET',
   $vas_conf_prompt_vas_ad_pw                            = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
@@ -162,6 +163,12 @@ class vas (
   validate_string($vas_conf_vasd_group_member_attr_name)
   validate_string($vas_conf_vasd_memberof_attr_name)
   validate_string($vas_conf_vasd_unix_password_attr_name)
+  validate_string($vas_conf_vasd_netgroup_mode)
+
+  if $vas_conf_vasd_netgroup_mode != 'UNSET' {
+    validate_re($vas_conf_vasd_netgroup_mode, '^(NSS|NIS|OFF)$',
+      'Invalid value specified for vas_conf_vasd_netgroup_mode. Valid values are NSS, NIS and OFF')
+  }
 
   if $vas_conf_vas_auth_allow_disconnected_auth != 'UNSET' {
     if type3x($vas_conf_vas_auth_allow_disconnected_auth) == 'boolean' {

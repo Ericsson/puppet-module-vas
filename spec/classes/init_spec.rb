@@ -228,6 +228,7 @@ describe 'vas' do
           :vas_conf_vasd_group_member_attr_name                 => 'groupMembershipSAM',
           :vas_conf_vasd_memberof_attr_name                     => 'memberOf',
           :vas_conf_vasd_unix_password_attr_name                => 'userPassword',
+          :vas_conf_vasd_netgroup_mode                          => 'NIS',
           :vas_conf_vasd_ws_resolve_uid                         => 'true',
           :vas_conf_vasd_lazy_cache_update_interval             => '5',
           :vas_conf_vasd_password_change_script_timelimit       => '30',
@@ -303,6 +304,7 @@ describe 'vas' do
         | upm-computerou-attr = managedBy
         | password-change-script = /opt/quest/libexec/vas-set-samba-password
         | password-change-script-timelimit = 30
+        | netgroup-mode = NIS
         | username-attr-name = userprincipalname
         | groupname-attr-name = groupprincipalname
         | uid-number-attr-name = employeID
@@ -348,6 +350,16 @@ describe 'vas' do
       it do
         should contain_file('vas_config').with_content(/update-interval = 234577/)
       end
+    end
+
+    context 'with vas_conf_vasd_netgroup_mode set to valid string NSS' do
+      let(:params) { { :vas_conf_vasd_netgroup_mode => 'NSS', } }
+      it { should contain_file('vas_config').with_content(/^[ ]*netgroup-mode = NSS$/) }
+    end
+
+    context 'with vas_conf_vasd_netgroup_mode set to valid string UNSET' do
+      let(:params) { { :vas_conf_vasd_netgroup_mode => 'UNSET', } }
+      it { should contain_file('vas_config').without_content(/^[ ]*netgroup-mode/) }
     end
 
     context 'with use_server_referrals enabled by vas version' do
@@ -1119,6 +1131,12 @@ describe 'vas' do
     end
 
     validations = {
+      'netgroup_mode' => {
+        :name    => %w(vas_conf_vasd_netgroup_mode),
+        :valid   => ['UNSET', 'NSS', 'NIS', 'OFF'],
+        :invalid => [{ 'ha' => 'sh' }, 3, 2.42, true, false, 'nss', 'nis', 'off'],
+        :message => 'Valid values are NSS, NIS and OFF|is not a string'
+      },
       'array/string' => {
         :name    => %w(join_domain_controllers),
         :valid   => [%w(array), 'string'],

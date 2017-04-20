@@ -105,6 +105,9 @@
 <% if @vas_conf_vasd_delusercheck_script != 'UNSET' -%>
  delusercheck-script = <%= @vas_conf_vasd_delusercheck_script %>
 <% end -%>
+<% if @vas_conf_vasd_netgroup_mode != 'UNSET' -%>
+ netgroup-mode = <%= @vas_conf_vasd_netgroup_mode %>
+<% end -%>
 <% if @vas_conf_vasd_username_attr_name != 'UNSET' -%>
  username-attr-name = <%= @vas_conf_vasd_username_attr_name %>
 <% end -%>
