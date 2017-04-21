@@ -726,4 +726,3 @@ A string or an array with domain controllers to contact during the join process.
 
 - *Default*: 'UNSET'
 
-
