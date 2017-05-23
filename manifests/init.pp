@@ -556,7 +556,7 @@ class vas (
             require  => [Package['vasclnt','vasyp','vasgp']],
           }
         } else {
-          fail("VAS domain mismatch, got <$vas_domain> but wanted <$realm>")
+          fail("VAS domain mismatch, got <${::vas_domain}> but wanted <${realm}>")
         }
       }
     }
