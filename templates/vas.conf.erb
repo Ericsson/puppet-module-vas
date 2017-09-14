@@ -16,6 +16,9 @@
 
  ticket_lifetime = 36000
  default_keytab_name = /etc/opt/quest/vas/host.keytab
+<% if @vas_conf_libdefaults_default_cc_name != 'UNSET' -%>
+ default_cc_name = <%= @vas_conf_libdefaults_default_cc_name %>
+<% end -%>
 
 [libvas]
  vascache-ipc-timeout = <%= @vas_conf_libvas_vascache_ipc_timeout %>

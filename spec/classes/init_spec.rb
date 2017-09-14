@@ -201,6 +201,7 @@ describe 'vas' do
           :vas_conf_prompt_vas_ad_pw                            => 'Enter pw',
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
           :vas_conf_libdefaults_forwardable                     => 'false',
+          :vas_conf_libdefaults_default_cc_name                 => 'FILE:/dev/null/krb5cc_${uid}',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
           :vas_conf_disabled_user_pwhash                        => 'disabled',
           :vas_conf_locked_out_pwhash                           => 'locked',
@@ -264,6 +265,7 @@ describe 'vas' do
         |
         | ticket_lifetime = 36000
         | default_keytab_name = /etc/opt/quest/vas/host.keytab
+        | default_cc_name = FILE:/dev/null/krb5cc_${uid}
         |
         |[libvas]
         | vascache-ipc-timeout = 15
