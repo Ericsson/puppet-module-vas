@@ -7,10 +7,9 @@
 
 [libdefaults]
  default_realm = <%= @realm.upcase %>
- default_tgs_enctypes = arcfour-hmac-md5
- default_tkt_enctypes = arcfour-hmac-md5
- default_etypes_des = des-cbc-crc
- default_etypes = arcfour-hmac-md5
+<% @vas_conf_libvas_crypt_thingys.each_slice(2) do |k, v| -%>
+  <%= k %> = <%= v %>
+<% end -%>  
  forwardable = <%= @vas_conf_libdefaults_forwardable_real %>
  renew_lifetime = 604800
 
