@@ -7,10 +7,10 @@
 
 [libdefaults]
  default_realm = <%= @realm.upcase %>
- default_tgs_enctypes = arcfour-hmac-md5
- default_tkt_enctypes = arcfour-hmac-md5
+ default_tgs_enctypes = <%= @vas_conf_libdefaults_tgs_default_enctypes %>
+ default_tkt_enctypes = <%= @vas_conf_libdefaults_tkt_default_enctypes %>
  default_etypes_des = des-cbc-crc
- default_etypes = arcfour-hmac-md5
+ default_etypes = <%= @vas_conf_libdefaults_default_etypes %>
  forwardable = <%= @vas_conf_libdefaults_forwardable_real %>
  renew_lifetime = 604800
 

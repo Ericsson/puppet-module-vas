@@ -462,6 +462,24 @@ prompt-ad-lockout-msg option in vas.conf. See VAS.CONF(5) for more info.
 
 - *Default*: 'UNSET'
 
+vas_conf_libdefaults_default_tgs_enctypes
+-----------------------------------------
+String to set value of default_tgs_enctypes in [libdefaults] vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'arcfour-hmac-md5'
+
+vas_conf_libdefaults_default_tkt_enctypes
+-----------------------------------------
+String to set value of default_tkt_enctypes in [libdefaults] vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'arcfour-hmac-md5'
+
+vas_conf_libdefaults_default_etypes
+-----------------------------------------
+String to set value of default_etypes in [libdefaults] vas.conf. See VAS.CONF(5) for more info.
+
+- *Default*: 'arcfour-hmac-md5'
+
 vas_conf_libdefaults_forwardable
 --------------------------------
 Boolean to set value of forwardable in [libdefaults] vas.conf. See VAS.CONF(5) for more info.
