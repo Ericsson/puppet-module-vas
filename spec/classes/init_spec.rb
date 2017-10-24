@@ -87,7 +87,6 @@ describe 'vas' do
         | default_realm = REALM.EXAMPLE.COM
         | default_tgs_enctypes = arcfour-hmac-md5
         | default_tkt_enctypes = arcfour-hmac-md5
-        | default_etypes_des = des-cbc-crc
         | default_etypes = arcfour-hmac-md5
         | forwardable = true
         | renew_lifetime = 604800
@@ -260,7 +259,6 @@ describe 'vas' do
         | default_realm = REALM2.EXAMPLE.COM
         | default_tgs_enctypes = arcfour-hmac-md5
         | default_tkt_enctypes = arcfour-hmac-md5
-        | default_etypes_des = des-cbc-crc
         | default_etypes = arcfour-hmac-md5
         | forwardable = false
         | renew_lifetime = 604800
