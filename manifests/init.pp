@@ -124,6 +124,9 @@ class vas (
   $kdc_port                                             = 88,
   $kpasswd_servers                                      = [],
   $kpasswd_server_port                                  = 464,
+  $api_enable                                           = false,
+  $api_users_allow_url                                  = undef,
+  $api_token                                            = undef,
 ) {
 
   $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
@@ -418,6 +421,18 @@ class vas (
     $kpasswd_servers_real = join(suffix($kpasswd_servers, ":${kpasswd_server_port}"), ' ')
   }
 
+  if is_string($api_enable) {
+    $api_enable_real = str2bool($api_enable)
+  } else {
+    $api_enable_real = $api_enable
+  }
+  validate_bool($api_enable_real)
+
+  if $api_enable_real {
+    validate_string($api_users_allow_url)
+    validate_string($api_token)
+  }
+
   case type3x($join_domain_controllers) {
     'array': { $join_domain_controllers_real = join($join_domain_controllers, ' ') }
     'string': {
@@ -510,9 +525,17 @@ class vas (
   }
 
   if $users_allow_hiera_merge_real == true {
-    $users_allow_entries_real = hiera_array('vas::users_allow_entries')
+    $users_allow_entries_real1 = hiera_array('vas::users_allow_entries')
   } else {
-    $users_allow_entries_real = $users_allow_entries
+    $users_allow_entries_real1 = $users_allow_entries
+  }
+
+  if $api_enable_real {
+    $api_users_allow_entries = api_fetch($api_users_allow_url, $api_token)
+
+    $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_entries)
+  } else {
+    $users_allow_entries_real = $users_allow_entries_real1
   }
 
   if $users_deny_hiera_merge_real == true {
