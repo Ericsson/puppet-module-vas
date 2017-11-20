@@ -1157,6 +1157,12 @@ describe 'vas' do
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, false, nil],
         :message => 'Expected.*to be an Integer',
       },
+      'string' => {
+        :name    => %w(vas_conf_libdefaults_default_cc_name),
+        :valid   => ['string'],
+        :invalid => [%w(array), { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
+        :message => 'is not a string',
+      },
     }
 
     validations.sort.each do |type, var|
