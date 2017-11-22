@@ -486,6 +486,13 @@ Boolean to set value of forwardable in [libdefaults] vas.conf. See VAS.CONF(5) f
 
 - *Default*: true
 
+vas_conf_libdefaults_default_cc_name
+--------------------------------
+String to set where kerberos cache files should be stored (default on most systems is /tmp/krb5cc_${uid}).
+Example: FILE:/new/path/krb5cc_${uid}
+
+- *Default*: 'UNSET'
+
 vas_conf_vas_auth_uid_check_limit
 ---------------------------------
 Integer for uid-check-limit option in vas.conf. See VAS.CONF(5) for more info.

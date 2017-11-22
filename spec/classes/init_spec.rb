@@ -203,6 +203,7 @@ describe 'vas' do
           :vas_conf_libdefaults_tgs_default_enctypes            => 'arcfour-hmac-md5',
           :vas_conf_libdefaults_tkt_default_enctypes            => 'arcfour-hmac-md5',
           :vas_conf_libdefaults_default_etypes                  => 'arcfour-hmac-md5',
+          :vas_conf_libdefaults_default_cc_name                 => 'FILE:/dev/null/krb5cc_${uid}',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
           :vas_conf_disabled_user_pwhash                        => 'disabled',
           :vas_conf_locked_out_pwhash                           => 'locked',
@@ -265,6 +266,7 @@ describe 'vas' do
         |
         | ticket_lifetime = 36000
         | default_keytab_name = /etc/opt/quest/vas/host.keytab
+        | default_cc_name = FILE:/dev/null/krb5cc_${uid}
         |
         |[libvas]
         | vascache-ipc-timeout = 15
@@ -1155,6 +1157,12 @@ describe 'vas' do
         :valid   => [242,'242'],
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, false, nil],
         :message => 'Expected.*to be an Integer',
+      },
+      'string' => {
+        :name    => %w(vas_conf_libdefaults_default_cc_name),
+        :valid   => ['string'],
+        :invalid => [%w(array), { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
+        :message => 'is not a string',
       },
     }
 
