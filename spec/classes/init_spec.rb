@@ -87,7 +87,6 @@ describe 'vas' do
         | default_realm = REALM.EXAMPLE.COM
         | default_tgs_enctypes = arcfour-hmac-md5
         | default_tkt_enctypes = arcfour-hmac-md5
-        | default_etypes_des = des-cbc-crc
         | default_etypes = arcfour-hmac-md5
         | forwardable = true
         | renew_lifetime = 604800
@@ -201,6 +200,9 @@ describe 'vas' do
           :vas_conf_prompt_vas_ad_pw                            => 'Enter pw',
           :vas_conf_pam_vas_prompt_ad_lockout_msg               => 'Account is locked',
           :vas_conf_libdefaults_forwardable                     => 'false',
+          :vas_conf_libdefaults_tgs_default_enctypes            => 'arcfour-hmac-md5',
+          :vas_conf_libdefaults_tkt_default_enctypes            => 'arcfour-hmac-md5',
+          :vas_conf_libdefaults_default_etypes                  => 'arcfour-hmac-md5',
           :vas_conf_libdefaults_default_cc_name                 => 'FILE:/dev/null/krb5cc_${uid}',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
           :vas_conf_disabled_user_pwhash                        => 'disabled',
@@ -258,7 +260,6 @@ describe 'vas' do
         | default_realm = REALM2.EXAMPLE.COM
         | default_tgs_enctypes = arcfour-hmac-md5
         | default_tkt_enctypes = arcfour-hmac-md5
-        | default_etypes_des = des-cbc-crc
         | default_etypes = arcfour-hmac-md5
         | forwardable = false
         | renew_lifetime = 604800
@@ -1158,7 +1159,7 @@ describe 'vas' do
         :message => 'Expected.*to be an Integer',
       },
       'string' => {
-        :name    => %w(vas_conf_libdefaults_default_cc_name),
+        :name    => %w(vas_conf_libdefaults_default_cc_name vas_conf_libdefaults_default_etypes vas_conf_libdefaults_tgs_default_enctypes vas_conf_libdefaults_tkt_default_enctypes),
         :valid   => ['string'],
         :invalid => [%w(array), { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
         :message => 'is not a string',

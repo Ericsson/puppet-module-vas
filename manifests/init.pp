@@ -69,6 +69,9 @@ class vas (
   $vas_conf_prompt_vas_ad_pw                            = '"Enter Windows password: "',
   $vas_conf_pam_vas_prompt_ad_lockout_msg               = 'UNSET',
   $vas_conf_libdefaults_forwardable                     = true,
+  $vas_conf_libdefaults_tgs_default_enctypes            = 'arcfour-hmac-md5',
+  $vas_conf_libdefaults_tkt_default_enctypes            = 'arcfour-hmac-md5',
+  $vas_conf_libdefaults_default_etypes                  = 'arcfour-hmac-md5',
   $vas_conf_libdefaults_default_cc_name                 = 'UNSET',
   $vas_conf_vas_auth_uid_check_limit                    = 'UNSET',
   $vas_conf_vas_auth_allow_disconnected_auth            = 'UNSET',
@@ -155,6 +158,9 @@ class vas (
   validate_string($nismaps_ou)
 
   validate_string($vas_conf_libdefaults_default_cc_name)
+  validate_string($vas_conf_libdefaults_default_etypes)
+  validate_string($vas_conf_libdefaults_tgs_default_enctypes)
+  validate_string($vas_conf_libdefaults_tkt_default_enctypes)
   validate_string($vas_conf_vasd_username_attr_name)
   validate_string($vas_conf_vasd_groupname_attr_name)
   validate_string($vas_conf_vasd_uid_number_attr_name)
