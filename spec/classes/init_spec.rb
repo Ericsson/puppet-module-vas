@@ -1159,7 +1159,7 @@ describe 'vas' do
         :message => 'Expected.*to be an Integer',
       },
       'string' => {
-        :name    => %w(vas_conf_libdefaults_default_cc_name),
+        :name    => %w(vas_conf_libdefaults_default_cc_name vas_conf_libdefaults_default_etypes vas_conf_libdefaults_tgs_default_enctypes vas_conf_libdefaults_tkt_default_enctypes),
         :valid   => ['string'],
         :invalid => [%w(array), { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
         :message => 'is not a string',

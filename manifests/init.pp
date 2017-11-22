@@ -158,6 +158,9 @@ class vas (
   validate_string($nismaps_ou)
 
   validate_string($vas_conf_libdefaults_default_cc_name)
+  validate_string($vas_conf_libdefaults_default_etypes)
+  validate_string($vas_conf_libdefaults_tgs_default_enctypes)
+  validate_string($vas_conf_libdefaults_tkt_default_enctypes)
   validate_string($vas_conf_vasd_username_attr_name)
   validate_string($vas_conf_vasd_groupname_attr_name)
   validate_string($vas_conf_vasd_uid_number_attr_name)
