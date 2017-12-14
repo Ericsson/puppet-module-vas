@@ -119,6 +119,11 @@ class vas (
   $domain_realms                                        = {},
   $join_domain_controllers                              = 'UNSET',
   $unjoin_vas                                           = false,
+  $use_srv_infocache                                    = 'UNSET',
+  $kdcs                                                 = ['UNSET'],
+  $kdc_port                                             = '88',
+  $kpasswd_servers                                      = ['UNSET'],
+  $kpasswd_server_port                                  = '464',
 ) {
 
   $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
@@ -383,6 +388,30 @@ class vas (
     $enable_group_policies_real = str2bool($enable_group_policies)
   } else {
     $enable_group_policies_real = $enable_group_policies
+  }
+
+  if $use_srv_infocache != 'UNSET' {
+    validate_bool($use_srv_infocache)
+  }
+
+  if $kdcs != ['UNSET'] {
+    validate_array($kdcs)
+  }
+
+  if $kpasswd_servers != ['UNSET'] {
+    validate_array($kpasswd_servers)
+  }
+
+  validate_string($kdc_port)
+
+  validate_string($kpasswd_server_port)
+
+  if  $kdcs != ['UNSET'] and $kpasswd_servers != ['UNSET'] {
+    $kdcs_real=$kdcs
+    $kpasswd_servers_real = $kpasswd_servers
+  } else {
+    $kdcs_real=$kdcs
+    $kpasswd_servers_real = $kdcs
   }
 
   case type3x($join_domain_controllers) {
