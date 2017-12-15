@@ -177,3 +177,17 @@
 <% if @vas_conf_vas_auth_expand_ac_groups_string != nil -%>
  expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups_string %>
 <% end -%>
+
+[realms]
+<% if @kdcs != ['UNSET'] -%>
+
+ <%= @realm.upcase -%> = {
+
+ kdc = <% @kdcs.each do | kdc | -%>
+ <%= kdc:@kdc_port -%>
+ <% end -%>
+ passwd_server = <% @kdcs.each do | server | -%>
+ <%= server:@kpasswd_server_port -%>
+  <% end -%>
+}
+<% end -%>

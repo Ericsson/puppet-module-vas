@@ -777,4 +777,20 @@ A bool to achieve the same thing as issuing "vastool configure vas libvas use-sr
 Only has any effect if set to false.
 
 - *Default*: 'UNSET'
+kdcs
+----
+An array of kdcs that are to be entered under the [realms] section
+If set has the same effect as  issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
+- *Default*: ['UNSET']
 
+kdc_port
+--------
+A string containing the kdc port. 
+Has no effect unless kdcs is populated with servernames.
+- *Default*: '88'
+
+kpasswd_server_port
+-------------------
+A string containing the kpasswd server port. 
+Has no effect unless kdcs is populated with servernames.
+- *Default*: '464'
