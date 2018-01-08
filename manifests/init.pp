@@ -395,10 +395,11 @@ class vas (
   }
 
   if $kdcs != ['UNSET'] {
-    validate_array($kdcs)
+    validate_array($kdcs) 
+    $kpasswd_servers=$kdcs
   }
 
-  if $kpasswd_servers != ['UNSET'] {
+  if $kpasswd_servers != ['UNSET'] and  $kpasswd_servers != $kdcs {
     validate_array($kpasswd_servers)
   }
 
