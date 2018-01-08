@@ -122,7 +122,7 @@ class vas (
   $use_srv_infocache                                    = 'UNSET',
   $kdcs                                                 = ['UNSET'],
   $kdc_port                                             = '88',
-  $kpasswd_servers                                      = @kdcs,
+  $kpasswd_servers                                      = $kdcs,
   $kpasswd_server_port                                  = '464',
 ) {
 
