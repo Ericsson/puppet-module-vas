@@ -179,14 +179,14 @@
 <% end -%>
 
 [realms]
-<% if @kdcs != ['UNSET'] -%>
+<% if @kdcs != ['UNSET'] && @kpasswd_servers!= ['UNSET'] -%>
 
  <%= @realm.upcase -%> = {
 
  kdc = <% @kdcs.each do | kdc | -%>
  kdc:<%= @kdc_port -%>
  <% end -%>
- passwd_server = <% @kdcs.each do | server | -%>
+ passwd_server = <% @kpasswd_servers.each do | server | -%>
  server:<%= @kpasswd_server_port -%>
   <% end -%>
 }
