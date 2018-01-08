@@ -184,11 +184,11 @@
  <%= @realm.upcase -%> = {
 
  kdc = <% @kdcs.each do | kdc | -%>
- <%= @kdc:@kdc_port -%>
+ <%= @kdc -%>:<%= @kdc_port -%>
 
  <% end -%>
  kpasswd_server = <% @kpasswd_servers.each do | server | -%>
- <%= @server:@kpasswd_server_port -%>
+ <%= @server -%>:<%= @kpasswd_server_port -%>
   <% end -%>
 }
 <% end -%>
