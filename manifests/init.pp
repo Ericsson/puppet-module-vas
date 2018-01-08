@@ -122,7 +122,7 @@ class vas (
   $use_srv_infocache                                    = 'UNSET',
   $kdcs                                                 = ['UNSET'],
   $kdc_port                                             = '88',
-  $kpasswd_servers                                      = $kdcs,
+  $kpasswd_servers                                      = ['UNSET'],
   $kpasswd_server_port                                  = '464',
 ) {
 
@@ -398,7 +398,7 @@ class vas (
     validate_array($kdcs)
   }
 
-  if $kpasswd_servers != $kdcs {
+  if $kpasswd_servers != ['UNSET'] {
     validate_array($kpasswd_servers)
   }
 

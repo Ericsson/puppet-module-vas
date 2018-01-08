@@ -783,6 +783,12 @@ An array of kdcs that are to be entered under the [realms] section
 If set has the same effect as  issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
 - *Default*: ['UNSET']
 
+kpasswd_servers
+----
+An array of kpasswd servers  that are to be entered under the [realms] section
+If set has the same effect as  issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
+- *Default*: ['UNSET']
+
 kdc_port
 --------
 A string containing the kdc port. 
