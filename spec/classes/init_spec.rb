@@ -125,6 +125,8 @@ describe 'vas' do
         | root-update-mode = none
         |
         |[vas_auth]
+	|
+	|[realms]
       END
 
       it do
