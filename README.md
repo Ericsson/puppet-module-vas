@@ -786,7 +786,7 @@ If set has the same effect as  issuing "vastool configure realm ericsson.se eris
 kpasswd_servers
 ----
 An array of kpasswd servers  that are to be entered under the [realms] section
-If set has the same effect as  issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
+Normally needs not be set unless you want something different than the value of kdcs (above).
 - *Default*: ['UNSET']
 
 kdc_port

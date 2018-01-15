@@ -406,6 +406,14 @@ class vas (
 
   validate_string($kpasswd_server_port)
 
+  if  $kdcs != ['UNSET'] and $kpasswd_servers != ['UNSET'] {
+    $kdcs_real=$kdcs
+    $kpasswd_servers_real = $kpasswd_servers
+  } else { 
+    $kdcs_real=$kdcs
+    $kpasswd_servers_real = $kdcs
+  }
+
   case type3x($join_domain_controllers) {
     'array': { $join_domain_controllers_real = join($join_domain_controllers, ' ') }
     'string': {
