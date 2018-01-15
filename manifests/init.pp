@@ -409,7 +409,7 @@ class vas (
   if  $kdcs != ['UNSET'] and $kpasswd_servers != ['UNSET'] {
     $kdcs_real=$kdcs
     $kpasswd_servers_real = $kpasswd_servers
-  } else { 
+  } else {
     $kdcs_real=$kdcs
     $kpasswd_servers_real = $kdcs
   }
