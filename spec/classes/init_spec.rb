@@ -125,6 +125,8 @@ describe 'vas' do
         | root-update-mode = none
         |
         |[vas_auth]
+	|
+	|[realms]
       END
 
       it do
@@ -331,6 +333,8 @@ describe 'vas' do
         | uid-check-limit = 100000
         | allow-disconnected-auth = false
         | expand-ac-groups = false
+	|
+	|[realms]
       END
 
       it do
