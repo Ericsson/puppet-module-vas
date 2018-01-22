@@ -120,10 +120,10 @@ class vas (
   $join_domain_controllers                              = 'UNSET',
   $unjoin_vas                                           = false,
   $use_srv_infocache                                    = 'UNSET',
-  $kdcs                                                 = ['UNSET'],
-  $kdc_port                                             = '88',
-  $kpasswd_servers                                      = ['UNSET'],
-  $kpasswd_server_port                                  = '464',
+  $kdcs                                                 = [],
+  $kdc_port                                             = 88,
+  $kpasswd_servers                                      = [],
+  $kpasswd_server_port                                  = 464,
 ) {
 
   $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
@@ -391,27 +391,31 @@ class vas (
   }
 
   if $use_srv_infocache != 'UNSET' {
-    validate_bool($use_srv_infocache)
-  }
-
-  if $kdcs != ['UNSET'] {
-    validate_array($kdcs)
-  }
-
-  if $kpasswd_servers != ['UNSET'] {
-    validate_array($kpasswd_servers)
-  }
-
-  validate_string($kdc_port)
-
-  validate_string($kpasswd_server_port)
-
-  if  $kdcs != ['UNSET'] and $kpasswd_servers != ['UNSET'] {
-    $kdcs_real=$kdcs
-    $kpasswd_servers_real = $kpasswd_servers
+    if type3x($use_srv_infocache) == 'boolean' {
+      $use_srv_infocache_bool = $use_srv_infocache
+    }
+    elsif type3x($use_srv_infocache) == 'string' {
+      $use_srv_infocache_bool = str2bool($use_srv_infocache)
+    }
+    else {
+      fail('use_srv_infocache is not a boolean nor a string. Valid values are <true> and <false>.')
+    }
   } else {
-    $kdcs_real=$kdcs
-    $kpasswd_servers_real = $kdcs
+    $use_srv_infocache_bool = undef
+  }
+
+  validate_array($kdcs)
+  validate_array($kpasswd_servers)
+
+  validate_integer($kdc_port, 65535, 1)
+  validate_integer($kpasswd_server_port, 65535, 1)
+
+  $kdcs_real = join(suffix($kdcs, ":${kdc_port}"), ' ')
+
+  if empty($kpasswd_servers) {
+    $kpasswd_servers_real = join(suffix($kdcs, ":${kpasswd_server_port}"), ' ')
+  } else {
+    $kpasswd_servers_real = join(suffix($kpasswd_servers, ":${kpasswd_server_port}"), ' ')
   }
 
   case type3x($join_domain_controllers) {

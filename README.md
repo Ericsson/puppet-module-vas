@@ -777,26 +777,31 @@ A bool to achieve the same thing as issuing "vastool configure vas libvas use-sr
 Only has any effect if set to false.
 
 - *Default*: 'UNSET'
+
 kdcs
 ----
 An array of kdcs that are to be entered under the [realms] section
-If set has the same effect as  issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
-- *Default*: ['UNSET']
+If set has the same effect as issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
+
+- *Default*: []
 
 kpasswd_servers
-----
-An array of kpasswd servers  that are to be entered under the [realms] section
+---------------
+An array of kpasswd servers that are to be entered under the [realms] section
 Normally needs not be set unless you want something different than the value of kdcs (above).
-- *Default*: ['UNSET']
+
+- *Default*: []
 
 kdc_port
 --------
-A string containing the kdc port. 
+An integer containing the kdc port.
 Has no effect unless kdcs is populated with servernames.
-- *Default*: '88'
+
+- *Default*: 88
 
 kpasswd_server_port
 -------------------
-A string containing the kpasswd server port. 
-Has no effect unless kdcs is populated with servernames.
-- *Default*: '464'
+An integer containing the kpasswd server port.
+Has no effect unless kpasswd_servers or kdcs is populated with servernames.
+
+- *Default*: 464
