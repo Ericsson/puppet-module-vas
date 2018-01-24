@@ -119,6 +119,11 @@ class vas (
   $domain_realms                                        = {},
   $join_domain_controllers                              = 'UNSET',
   $unjoin_vas                                           = false,
+  $use_srv_infocache                                    = 'UNSET',
+  $kdcs                                                 = [],
+  $kdc_port                                             = 88,
+  $kpasswd_servers                                      = [],
+  $kpasswd_server_port                                  = 464,
 ) {
 
   $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
@@ -383,6 +388,34 @@ class vas (
     $enable_group_policies_real = str2bool($enable_group_policies)
   } else {
     $enable_group_policies_real = $enable_group_policies
+  }
+
+  if $use_srv_infocache != 'UNSET' {
+    if type3x($use_srv_infocache) == 'boolean' {
+      $use_srv_infocache_bool = $use_srv_infocache
+    }
+    elsif type3x($use_srv_infocache) == 'string' {
+      $use_srv_infocache_bool = str2bool($use_srv_infocache)
+    }
+    else {
+      fail('use_srv_infocache is not a boolean nor a string. Valid values are <true> and <false>.')
+    }
+  } else {
+    $use_srv_infocache_bool = undef
+  }
+
+  validate_array($kdcs)
+  validate_array($kpasswd_servers)
+
+  validate_integer($kdc_port, 65535, 1)
+  validate_integer($kpasswd_server_port, 65535, 1)
+
+  $kdcs_real = join(suffix($kdcs, ":${kdc_port}"), ' ')
+
+  if empty($kpasswd_servers) {
+    $kpasswd_servers_real = join(suffix($kdcs, ":${kpasswd_server_port}"), ' ')
+  } else {
+    $kpasswd_servers_real = join(suffix($kpasswd_servers, ":${kpasswd_server_port}"), ' ')
   }
 
   case type3x($join_domain_controllers) {

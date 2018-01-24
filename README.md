@@ -770,3 +770,38 @@ join_domain_controllers
 A string or an array with domain controllers to contact during the join process. Normally the servers for the domain will be automatically detected through DNS and LDAP lookups. By specifying this parameter vastool will contact the specified servers and only those servers during the join process. This can be useful if the machine being joined is not able to talk with all global Domain Controllers (e.g. due to firewalls). Note that this will have no effect after the join, where normal site discovery of servers will be made.
 
 - *Default*: 'UNSET'
+
+use_srv_infocache
+-----------------
+A bool to achieve the same thing as issuing "vastool configure vas libvas use-srv-info-cache <bool>"
+Only has any effect if set to false.
+
+- *Default*: 'UNSET'
+
+kdcs
+----
+An array of kdcs that are to be entered under the [realms] section
+If set has the same effect as issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
+
+- *Default*: []
+
+kpasswd_servers
+---------------
+An array of kpasswd servers that are to be entered under the [realms] section
+Normally needs not be set unless you want something different than the value of kdcs (above).
+
+- *Default*: []
+
+kdc_port
+--------
+An integer containing the kdc port.
+Has no effect unless kdcs is populated with servernames.
+
+- *Default*: 88
+
+kpasswd_server_port
+-------------------
+An integer containing the kpasswd server port.
+Has no effect unless kpasswd_servers or kdcs is populated with servernames.
+
+- *Default*: 464

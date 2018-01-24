@@ -30,6 +30,9 @@
  use-tcp-only = <%= @vas_conf_libvas_use_tcp_only_real %>
  auth-helper-timeout = <%= @vas_conf_libvas_auth_helper_timeout %>
  site-only-servers = <%= @vas_conf_libvas_site_only_servers_real %>
+<% if @use_srv_infocache_bool != nil -%>
+ use-srvinfo-cache = <%= @use_srv_infocache_bool %>
+<% end -%>
 
 [pam_vas]
  prompt-vas-ad-pw = <%= @vas_conf_prompt_vas_ad_pw %>
@@ -173,4 +176,12 @@
 <% end -%>
 <% if @vas_conf_vas_auth_expand_ac_groups_string != nil -%>
  expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups_string %>
+<% end -%>
+<% if @kdcs_real != '' -%>
+
+[realms]
+ <%= @realm.upcase -%> = {
+  kdc = <%= @kdcs_real %>
+  kpasswd_server = <%= @kpasswd_servers_real %>
+ }
 <% end -%>

@@ -1118,7 +1118,77 @@ describe 'vas' do
     end
   end
 
-  describe 'variable type and content validations' do
+  [true, false,:undef].each do |value|
+    context "with use_srv_infocache set to valid #{value} (as #{value.class})" do
+      let (:params) { { :use_srv_infocache => value } }
+
+      if value != :undef
+        it { should contain_file('vas_config').with_content(%r{^ use-srvinfo-cache = #{value}$}) }
+      else
+        it { should contain_file('vas_config').without_content(%r{use-srvinfo-cache}) }
+      end
+    end
+  end
+
+  context 'with kdcs set to valid array [test1.domain.local test2.domain.local]' do
+    let (:params) { { :kdcs => ['kdc1.domain.local', 'kdc2.domain.local'] } }
+    it { should contain_file('vas_config').with_content(%r{^  kdc = kdc1.domain.local:88 kdc2.domain.local:88\n  kpasswd_server = kdc1.domain.local:464 kdc2.domain.local:464}) }
+  end
+
+  context 'with kdcs unset' do
+    it { should contain_file('vas_config').without_content(%r{kdc}) }
+  end
+
+  context 'with kpasswd_servers set to valid array [kpasswd1.domain.local kpasswd2.domain.local]' do
+    let (:params) { { :kpasswd_servers => ['kpasswd1.domain.local', 'kpasswd2.domain.local'] } }
+    it { should contain_file('vas_config').without_content(%r{kpasswd_server}) }
+  end
+
+  context 'with kpasswd_servers set to valid array [kpasswd1.domain.local kpasswd2.domain.local] when kdcs is set to a valid array' do
+    let (:params) do
+      {
+        :kpasswd_servers => ['kpasswd1.domain.local', 'kpasswd2.domain.local'],
+        :kdcs            => ['kdc1.domain.local', 'kdc2.domain.local'],
+      }
+    end
+    it { should contain_file('vas_config').with_content(%r{^  kdc = kdc1.domain.local:88 kdc2.domain.local:88\n  kpasswd_server = kpasswd1.domain.local:464 kpasswd2.domain.local:464}) }
+  end
+
+  context 'with kpasswd_servers unset' do
+    it { should contain_file('vas_config').without_content(%r{kdc}) }
+  end
+
+  context 'with kdc_port set to valid integer 242' do
+    let (:params) { { :kdc_port => 242 } }
+    it { should contain_file('vas_config').without_content(%r{kdc}) }
+  end
+
+  context 'with kdc_port set to valid integer 242 when kdcs is set to a valid array' do
+    let (:params) do
+      {
+        :kdc_port => 242,
+        :kdcs     => ['kdc1.domain.local', 'kdc2.domain.local'],
+      }
+    end
+    it { should contain_file('vas_config').with_content(%r{^  kdc = kdc1.domain.local:242 kdc2.domain.local:242}) }
+  end
+
+  context 'with kpasswd_server_port set to valid integer 242' do
+    let (:params) { { :kpasswd_server_port => 242 } }
+    it { should contain_file('vas_config').without_content(%r{kdc}) }
+  end
+
+  context 'with kpasswd_server_port set to valid integer 242 when kdcs is set to a valid array' do
+    let (:params) do
+      {
+        :kpasswd_server_port => 242,
+        :kdcs     => ['kdc1.domain.local', 'kdc2.domain.local'],
+      }
+    end
+    it { should contain_file('vas_config').with_content(%r{^  kpasswd_server = kdc1.domain.local:242 kdc2.domain.local:242}) }
+  end
+
+  describe 'variable data type and content validations' do
     # set needed custom facts and variables
     let :facts do
       default_facts.merge(
@@ -1126,11 +1196,6 @@ describe 'vas' do
           :fqdn => 'hieramerge.example.local',
         }
       )
-    end
-    let :validation_params do
-      {
-        # :param => 'value',
-      }
     end
 
     validations = {
@@ -1140,6 +1205,12 @@ describe 'vas' do
         :invalid => [{ 'ha' => 'sh' }, 3, 2.42, true, false, 'nss', 'nis', 'off'],
         :message => 'Valid values are NSS, NIS and OFF|is not a string'
       },
+      'array' => {
+        :name    => %w(kdcs kpasswd_servers),
+        :valid   => [%w(array)],
+        :invalid => ['string', { 'ha' => 'sh' }, 3, 2.42, false, nil],
+        :message => 'is not an Array',
+      },
       'array/string' => {
         :name    => %w(join_domain_controllers),
         :valid   => [%w(array), 'string'],
@@ -1147,16 +1218,22 @@ describe 'vas' do
         :message => 'is not an array nor a string',
       },
       'boolean' => {
-        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas vas_conf_vas_auth_allow_disconnected_auth vas_conf_vas_auth_expand_ac_groups),
+        :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas vas_conf_vas_auth_allow_disconnected_auth vas_conf_vas_auth_expand_ac_groups use_srv_infocache),
         :valid   => [true, false, 'true', 'false'],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
       },
-      'integer' => {
-        :name    => %w(vas_conf_vasypd_update_interval),
+      'integer/stringified' => {
+        :name    => %w(vas_conf_vasypd_update_interval kdc_port kpasswd_server_port),
         :valid   => [242,'242'],
-        :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, true, false, nil],
+        :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, false, nil],
         :message => 'Expected.*to be an Integer',
+      },
+      'integer (range 1-65535)' => {
+        :name    => %w(kdc_port kpasswd_server_port),
+        :valid   => [1, 65535],
+        :invalid => [0, 65536],
+        :message => 'Expected \d+ to be (smaller|greater) or equal to (1|65535)',
       },
       'string' => {
         :name    => %w(vas_conf_libdefaults_default_cc_name vas_conf_libdefaults_default_etypes vas_conf_libdefaults_tgs_default_enctypes vas_conf_libdefaults_tkt_default_enctypes),
@@ -1165,19 +1242,20 @@ describe 'vas' do
         :message => 'is not a string',
       },
     }
-
     validations.sort.each do |type, var|
+      mandatory_params = {} if mandatory_params.nil?
       var[:name].each do |var_name|
+        var[:params] = {} if var[:params].nil?
         var[:valid].each do |valid|
-          context "with #{var_name} (#{type}) set to valid #{valid} (as #{valid.class})" do
-            let(:params) { validation_params.merge({ :"#{var_name}" => valid, }) }
+          context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
             it { should compile }
           end
         end
 
         var[:invalid].each do |invalid|
-          context "with #{var_name} (#{type}) set to invalid #{invalid} (as #{invalid.class})" do
-            let(:params) { validation_params.merge({ :"#{var_name}" => invalid, }) }
+          context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => invalid, }].reduce(:merge) }
             it 'should fail' do
               expect { should contain_class(subject) }.to raise_error(Puppet::Error, /#{var[:message]}/)
             end
