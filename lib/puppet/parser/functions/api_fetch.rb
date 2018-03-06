@@ -23,7 +23,7 @@ module Puppet::Parser::Functions
 
     uri = URI.parse(url)
 
-    req = Net::HTTP::Get.new(uri.parse)
+    req = Net::HTTP::Get.new(uri.to_s)
     req['Authorization'] = "Bearer #{token}"
     req['Accept'] = 'text/plain'
 
