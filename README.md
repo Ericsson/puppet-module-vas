@@ -47,13 +47,13 @@ vas::realm: 'realm.example.com'
 
 # Facts
 The module creates facts as below:
-vas_usersallow - A list of entries in /etc/opt/quest/vas/users.allow.
-vas_domain - The domain that the host belongs to.
-vas_server_type - The server types (GC, DC, PDC).
-vas_servers - List of servers that VAS is using for authentication.
-vas_site - The AD-site that the host belongs to.
-vas_version - The complete version-string for the vas-client.
-vasmajversion - The Major version of the vas-client.
+- vas_usersallow - A list of entries in /etc/opt/quest/vas/users.allow.
+- vas_domain - The domain that the host belongs to.
+- vas_server_type - The server types (GC, DC, PDC).
+- vas_servers - List of servers that VAS is using for authentication.
+- vas_site - The AD-site that the host belongs to.
+- vas_version - The complete version-string for the vas-client.
+- vasmajversion - The Major version of the vas-client.
 
 
 # Parameters
