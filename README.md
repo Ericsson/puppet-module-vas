@@ -44,16 +44,15 @@ vas::nismaps_ou: 'ou=nismaps,dc=example,dc=com'
 vas::realm: 'realm.example.com'
 </pre>
 
-
 # Facts
 The module creates facts as below:
-vas_usersallow - A list of entries in /etc/opt/quest/vas/users.allow.
-vas_domain - The domain that the host belongs to.
-vas_server_type - The server types (GC, DC, PDC).
-vas_servers - List of servers that VAS is using for authentication.
-vas_site - The AD-site that the host belongs to.
-vas_version - The complete version-string for the vas-client.
-vasmajversion - The Major version of the vas-client.
+- vas_usersallow - A list of entries in /etc/opt/quest/vas/users.allow.
+- vas_domain - The domain that the host belongs to.
+- vas_server_type - The server types (GC, DC, PDC).
+- vas_servers - List of servers that VAS is using for authentication.
+- vas_site - The AD-site that the host belongs to.
+- vas_version - The complete version-string for the vas-client.
+- vasmajversion - The Major version of the vas-client.
 
 
 # Parameters
@@ -781,7 +780,7 @@ Only has any effect if set to false.
 kdcs
 ----
 An array of kdcs that are to be entered under the [realms] section
-If set has the same effect as issuing "vastool configure realm ericsson.se erisero01.ericsson.se erisero02.ericsson.se". (example)
+If set has the same effect as issuing "vastool configure realm domain.tld srv1.domain.tld srv2.domain.tld". (example)
 
 - *Default*: []
 
@@ -805,3 +804,32 @@ An integer containing the kpasswd server port.
 Has no effect unless kpasswd_servers or kdcs is populated with servernames.
 
 - *Default*: 464
+
+# API
+
+See documentation contained within that project and the available documentation
+in Confluence as reference: https://confluence.lmera.ericsson.se/display/LUOG/VAS+API
+
+api_enable
+----------
+A boolean to control, whether the API function is called. If called, the API
+will return a list of entries for the users.allow file. This result will be
+merged with whatever content is provided otherwise provided; i.e. it will be
+concatenated with the content created by parameters users_allow_entries and
+users_allow_hiera_merge.
+
+If you enable this parameter you need to provide the following two parameters as well.
+
+- *Default*: false
+
+api_users_allow_url
+-------------------
+The URL towards the API.
+
+- *Default*: undef
+
+api_token
+---------
+Security token for authenticated access to the API.
+
+- *Default*: undef

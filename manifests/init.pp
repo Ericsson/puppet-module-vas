@@ -530,7 +530,7 @@ class vas (
     $users_allow_entries_real1 = $users_allow_entries
   }
 
-  if $api_enable_real {
+  if $api_enable_real == true {
     $api_users_allow_entries = api_fetch($api_users_allow_url, $api_token)
 
     $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_entries)
