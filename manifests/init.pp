@@ -36,6 +36,7 @@ class vas (
   $vas_conf_group_update_mode                           = 'none',
   $vas_conf_root_update_mode                            = 'none',
   $vas_conf_disabled_user_pwhash                        = undef,
+  $vas_conf_expired_account_pwhash                      = undef,
   $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',
   $vas_conf_update_process                              = '/opt/quest/libexec/vas/mapupdate_2307',
@@ -248,6 +249,10 @@ class vas (
 
   if $vas_conf_disabled_user_pwhash != undef {
     validate_string($vas_conf_disabled_user_pwhash)
+  }
+
+  if $vas_conf_expired_account_pwhash != undef {
+    validate_string($vas_conf_expired_account_pwhash)
   }
 
   if $vas_conf_locked_out_pwhash != undef {
