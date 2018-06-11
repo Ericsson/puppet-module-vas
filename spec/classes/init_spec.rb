@@ -206,6 +206,7 @@ describe 'vas' do
           :vas_conf_libdefaults_default_cc_name                 => 'FILE:/dev/null/krb5cc_${uid}',
           :vas_conf_client_addrs                                => '10.10.0.0/24 10.50.0.0/24',
           :vas_conf_disabled_user_pwhash                        => 'disabled',
+          :vas_conf_expired_account_pwhash                      => 'expired',
           :vas_conf_locked_out_pwhash                           => 'locked',
           :vas_conf_update_process                              => '/opt/quest/libexec/vas/mapupdate',
           :vas_conf_vasypd_update_interval                      => '2200',
@@ -323,6 +324,7 @@ describe 'vas' do
         | group-update-mode = none
         | root-update-mode = none
         | disabled-user-pwhash = disabled
+        | expired-account-pwhash = expired
         | locked-out-pwhash = locked
         | lowercase-names = true
         | lowercase-homedirs = true
@@ -455,6 +457,16 @@ describe 'vas' do
     context 'with vas_conf_disabled_user_pwhash set to invalid type (non-string)' do
       let :params do
         { :vas_conf_disabled_user_pwhash => ['array'] }
+      end
+
+      it 'should fail' do
+        expect { should contain_class('vas') }.to raise_error(Puppet::Error, /is not a string/)
+      end
+    end
+
+    context 'with vas_conf_expired_account_pwhash set to invalid type (non-string)' do
+      let :params do
+        { :vas_conf_expired_account_pwhash => ['array'] }
       end
 
       it 'should fail' do

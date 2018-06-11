@@ -262,6 +262,12 @@ String to be used for disabled-user-pwhash option in vas.conf. If undef, line wi
 
 - *Default*: undef
 
+vas_conf_expired_account_pwhash
+-----------------------------
+String to be used for expired-account-pwhash option in vas.conf. If undef, line will be suppressed.
+
+- *Default*: undef
+
 vas_conf_locked_out_pwhash
 --------------------------
 String to be used for locked-out-pwhash option in vas.conf. If undef, line will be suppressed.

@@ -154,6 +154,9 @@
 <% if @vas_conf_disabled_user_pwhash != nil -%>
  disabled-user-pwhash = <%= @vas_conf_disabled_user_pwhash  %>
 <% end -%>
+<% if @vas_conf_expired_account_pwhash != nil -%>
+ expired-account-pwhash = <%= @vas_conf_expired_account_pwhash  %>
+<% end -%>
 <% if @vas_conf_locked_out_pwhash != nil -%>
  locked-out-pwhash = <%= @vas_conf_locked_out_pwhash %>
 <% end -%>
