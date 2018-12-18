@@ -34,3 +34,5 @@ gem 'rake',                   '~> 10.0'  if RUBY_VERSION >= '1.8.7' && RUBY_VERS
 gem 'rake',                   '< 12.3'   if RUBY_VERSION >= '1.9' && RUBY_VERSION < '2.0'
 gem 'rake'                               if RUBY_VERSION >= '2.0'
 gem 'rspec',                  '~> 2.0'   if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '1.9'
+
+gem 'public_suffix',          '~> 1.4.6' if RUBY_VERSION < '2.0'
