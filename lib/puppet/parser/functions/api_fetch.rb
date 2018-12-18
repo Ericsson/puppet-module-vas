@@ -23,6 +23,27 @@ module Puppet::Parser::Functions
 
     uri = URI.parse(url)
 
+    # Added to support both Ruby 1.9 and 1.9+ spec tests.. Net::{Read,Open}Timeout
+    # Taken from https://github.com/hashicorp/vault-ruby/blob/d7170032bc0f9d5bf018c62a8deae05ae1ec7b2e/lib/vault/client.rb#L31
+    RESCUED_EXCEPTIONS = [].tap do |a|
+      # Failure to even open the socket (usually permissions)
+      a << SocketError
+
+      # Failed to reach the server (aka bad URL)
+      a << Errno::ECONNREFUSED
+
+      # Failed to read body or no response body given
+      a << EOFError
+
+      # Timeout (Ruby 1.9-)
+      a << Timeout::Error
+
+      # Timeout (Ruby 1.9+) - Ruby 1.9 does not define these constants so we
+      # only add them if they are defiend
+      a << Net::ReadTimeout if defined?(Net::ReadTimeout)
+      a << Net::OpenTimeout if defined?(Net::OpenTimeout)
+    end.freeze unless defined? RESCUED_EXCEPTIONS
+
     req = Net::HTTP::Get.new(uri.to_s)
     req['Authorization'] = "Bearer #{token}"
     req['Accept'] = 'text/plain'
@@ -41,7 +62,7 @@ module Puppet::Parser::Functions
       if response.kind_of? Net::HTTPSuccess and response.body.length > 0
         puts response.body.split("\n")
       end
-    rescue Net::OpenTimeout, Net::ReadTimeout
+    rescue RESCUED_EXCEPTIONS
       return Array.new
     end
 
