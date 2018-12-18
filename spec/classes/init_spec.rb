@@ -1294,7 +1294,7 @@ describe 'vas' do
           context "when #{var_name} (#{type}) is set to valid (but failing) #{validf} (as #{validf.class})" do
             let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => validf, }].reduce(:merge) }
             it 'should fail' do
-              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /Error while evaluating a Function Call/)
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /(Error while evaluating a Function Call|getaddrinfo: Name or service not known|Connection refused - connect)/)
             end
           end
         end

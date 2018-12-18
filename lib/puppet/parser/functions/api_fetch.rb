@@ -38,10 +38,13 @@ module Puppet::Parser::Functions
         cx.request(req)
       end
 
-      if response.kind_of? Net::HTTPSuccess and response.body.length > 0
-        return response.body.split("\n")
+      case response
+      when Net::HTTPSuccess
+        if response.body.length > 0
+          return response.body.split("\n")
+        end
       end
-    rescue Net::OpenTimeout, Net::ReadTimeout
+    rescue Timeout::Error
       return Array.new
     end
 
