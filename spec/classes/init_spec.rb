@@ -1202,42 +1202,65 @@ describe 'vas' do
       'netgroup_mode' => {
         :name    => %w(vas_conf_vasd_netgroup_mode),
         :valid   => ['UNSET', 'NSS', 'NIS', 'OFF'],
+        :validf  => [],
         :invalid => [{ 'ha' => 'sh' }, 3, 2.42, true, false, 'nss', 'nis', 'off'],
         :message => 'Valid values are NSS, NIS and OFF|is not a string'
       },
       'array' => {
         :name    => %w(kdcs kpasswd_servers),
         :valid   => [%w(array)],
+        :validf  => [],
         :invalid => ['string', { 'ha' => 'sh' }, 3, 2.42, false, nil],
         :message => 'is not an Array',
       },
       'array/string' => {
         :name    => %w(join_domain_controllers),
         :valid   => [%w(array), 'string'],
+        :validf  => [],
         :invalid => [{ 'ha' => 'sh' }, 3, 2.42, true, false],
         :message => 'is not an array nor a string',
       },
       'boolean' => {
         :name    => %w(user_override_hiera_merge group_override_hiera_merge domain_change unjoin_vas vas_conf_vas_auth_allow_disconnected_auth vas_conf_vas_auth_expand_ac_groups use_srv_infocache),
         :valid   => [true, false, 'true', 'false'],
+        :validf  => [],
         :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
         :message => '(is not a boolean|Unknown type of boolean)',
       },
       'integer/stringified' => {
         :name    => %w(vas_conf_vasypd_update_interval kdc_port kpasswd_server_port),
         :valid   => [242,'242'],
+        :validf  => [],
         :invalid => ['string', %w(array), { 'ha' => 'sh' }, 2.42, false, nil],
         :message => 'Expected.*to be an Integer',
       },
       'integer (range 1-65535)' => {
         :name    => %w(kdc_port kpasswd_server_port),
         :valid   => [1, 65535],
+        :validf  => [],
         :invalid => [0, 65536],
         :message => 'Expected \d+ to be (smaller|greater) or equal to (1|65535)',
       },
       'string' => {
         :name    => %w(vas_conf_libdefaults_default_cc_name vas_conf_libdefaults_default_etypes vas_conf_libdefaults_tgs_default_enctypes vas_conf_libdefaults_tkt_default_enctypes),
         :valid   => ['string'],
+        :validf  => [],
+        :invalid => [%w(array), { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
+        :message => 'is not a string',
+      },
+      'boolean/API' => {
+        :name    => %w(api_enable),
+        :params  => { :'api_users_allow_url' => 'https://api.example.local', :'api_token' => 'somesecret', },
+        :valid   => [false, 'false'],
+        :validf  => [true, 'true'], # This is valid; but depending on an external function call; thus will fail. :(
+        :invalid => ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
+        :message => '(is not a boolean|Unknown type of boolean)',
+      },
+      'string/API' => {
+        :name    => %w(api_users_allow_url api_token),
+        :params  => { :'api_enable' => true, :'api_users_allow_url' => 'https://api.example.local', :'api_token' => 'somesecret', },
+        :valid   => [],
+        :validf  => ['string'], # This is valid; but depending on an external function call; thus will fail. :(
         :invalid => [%w(array), { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
         :message => 'is not a string',
       },
@@ -1250,6 +1273,18 @@ describe 'vas' do
           context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
             let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => valid, }].reduce(:merge) }
             it { should compile }
+          end
+        end
+
+        # For the API parts, we have a dependency on a function included in the module, which will _not_
+        # work during spec-tests. For this scenario, this special exception halding for "valid but failing"
+        # has been added.
+        var[:validf].each do |validf|
+          context "when #{var_name} (#{type}) is set to valid (but failing) #{validf} (as #{validf.class})" do
+            let(:params) { [mandatory_params, var[:params], { :"#{var_name}" => validf, }].reduce(:merge) }
+            it 'should fail' do
+              expect { should contain_class(subject) }.to raise_error(Puppet::Error, /Error while evaluating a Function Call/)
+            end
           end
         end
 
