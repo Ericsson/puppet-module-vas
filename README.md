@@ -805,3 +805,27 @@ An integer containing the kpasswd server port.
 Has no effect unless kpasswd_servers or kdcs is populated with servernames.
 
 - *Default*: 464
+
+api_enable
+----------
+A boolean to control, whether the API function is called. If called, the API
+will return a list of entries for the users.allow file. This result will be
+merged with whatever content is provided otherwise provided; i.e. it will be
+concatenated with the content created by parameters users_allow_entries and
+users_allow_hiera_merge.
+
+If you enable this parameter you need to provide the following two parameters as well.
+
+- *Default*: false
+
+api_users_allow_url
+-------------------
+The URL towards the API.
+
+- *Default*: undef
+
+api_token
+---------
+Security token for authenticated access to the API.
+
+- *Default*: undef
