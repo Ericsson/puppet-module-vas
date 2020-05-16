@@ -707,6 +707,14 @@ class vas (
       mode   => $keytab_mode,
     }
 
+   exec { 'Process check Vasypd' :
+     path    => '/usr/bin:/bin',
+     command => "rm -f /var/opt/quest/vas/vasypd/.vasypd.pid",
+     unless  => "ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd",
+     before  => Service['vasypd'],
+     notify  => Service['vasypd'],
+    }
+
     service { 'vasd':
       ensure  => 'running',
       enable  => true,
