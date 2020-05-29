@@ -39,7 +39,7 @@ module Puppet::Parser::Functions
       end
 
       if response.kind_of? Net::HTTPSuccess and response.body.length > 0
-        puts response.body.split("\n")
+        return response.body.split("\n")
       end
     rescue Net::OpenTimeout, Net::ReadTimeout
       return Array.new
