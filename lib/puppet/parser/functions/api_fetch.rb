@@ -41,13 +41,15 @@ module Puppet::Parser::Functions
       case response
       when Net::HTTPSuccess
         if response.body.length > 0
-          return response.body.split("\n")
+          return response.code, response.body.split("\n")
+        else
+          return response.code, Array.new
         end
+      else
+        return response.code, nil
       end
-    rescue Timeout::Error
-      return Array.new
+    rescue => error
+      return 0, error
     end
-
-    return Array.new
   end
 end

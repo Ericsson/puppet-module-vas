@@ -536,10 +536,17 @@ class vas (
   }
 
   if $api_enable_real == true {
-    $api_users_allow_entries = api_fetch($api_users_allow_url, $api_token)
-
-    $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_entries)
+    $api_users_allow_data  = api_fetch($api_users_allow_url, $api_token)
+    if $api_users_allow_data[0] == '200' {
+      $manage_users_allow = true
+      $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_data[1])
+    } else {
+      # VAS API is configured but down. Don't manage users_allow to prevent removal of entries.
+      $manage_users_allow = false
+      warning("VAS API Error. Code: ${api_users_allow_data[0]}, Error: ${api_users_allow_data[1]}")
+    }
   } else {
+    $manage_users_allow = true
     $users_allow_entries_real = $users_allow_entries_real1
   }
 
@@ -644,14 +651,17 @@ class vas (
       'UNSET' => $_vas_users_allow_path_default,
       default => $vas_users_allow_path,
     }
-    file { 'vas_users_allow':
-      ensure  => file,
-      path    => $_vas_users_allow_path,
-      owner   => $vas_users_allow_owner,
-      group   => $vas_users_allow_group,
-      mode    => $vas_users_allow_mode,
-      content => template('vas/users.allow.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
+
+    if $manage_users_allow {
+      file { 'vas_users_allow':
+        ensure  => file,
+        path    => $_vas_users_allow_path,
+        owner   => $vas_users_allow_owner,
+        group   => $vas_users_allow_group,
+        mode    => $vas_users_allow_mode,
+        content => template('vas/users.allow.erb'),
+        require => Package['vasclnt','vasyp','vasgp'],
+      }
     }
 
     $_vas_users_deny_path = $vas_users_deny_path ? {
