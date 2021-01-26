@@ -537,7 +537,8 @@ class vas (
 
   if $api_enable_real == true {
     $api_users_allow_data  = api_fetch($api_users_allow_url, $api_token)
-    if $api_users_allow_data[0] == '200' {
+    # Return value is integer in Puppet 3 and string in Puppet 6
+    if $api_users_allow_data[0] == 200 or $api_users_allow_data[0] == '200' {
       $manage_users_allow = true
       $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_data[1])
     } else {
