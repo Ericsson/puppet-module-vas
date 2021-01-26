@@ -5,7 +5,7 @@
   "summary": "Manage VAS",
   "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
   "source": "https://github.com/Ericsson/puppet-module-vas.git",
-  "version": "0.30.0",
+  "version": "0.30.1",
   "project_page": "https://github.com/Ericsson/puppet-module-vas",
   "requirements": [
     {
