@@ -15,10 +15,16 @@ Puppet v4 (2.1.9), Puppet v5 (2.4.1) and Puppetv6 (2.5.1).
  * RHEL 5
  * RHEL 6
  * RHEL 7
+ * RHEL 8
  * Suse 10
  * Suse 11
+ * Suse 12
+ * Suse 15
  * Ubuntu 12.04
  * Ubuntu 14.04
+ * Ubuntu 16.04
+ * Ubuntu 18.04
+ * Ubuntu 20.04
  * Solaris 9
  * Solaris 10
  * Solaris 11
