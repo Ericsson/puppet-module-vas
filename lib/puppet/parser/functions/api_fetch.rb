@@ -7,7 +7,7 @@ require 'net/https'
 require 'openssl'
 
 module Puppet::Parser::Functions
-  newfunction(:api_fetch, :type => :rvalue) do |args|
+  newfunction(:api_fetch, type: :rvalue) do |args|
     raise(Puppet::ParseError, "api_fetch(): Wrong number of arguments given (#{args.size} for 2)") if args.size < 2
 
     url = args[0]
@@ -34,17 +34,14 @@ module Puppet::Parser::Functions
     https.read_timeout = 5
 
     begin
-      response = https.start() do |cx|
+      response = https.start do |cx|
         cx.request(req)
       end
 
       case response
       when Net::HTTPSuccess
-        if response.body.length > 0
-          return response.code, response.body.split("\n")
-        else
-          return response.code, Array.new
-        end
+        return response.code, response.body.split("\n") unless response.body.to_s.empty?
+        return response.code, []
       else
         return response.code, nil
       end

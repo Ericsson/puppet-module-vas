@@ -612,7 +612,8 @@ class vas (
             # the unjoin command into a log file and removes the once file to allow
             # the  vas_inst command to join the new AD server.
             # This is how the join command is built up by the vas module.
-            # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
+            # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} \
+            # -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
             # The sed regex will save everything up to but not including the join part.
             # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
             # It will save the part above and add to the end of it unjoin.
@@ -718,12 +719,12 @@ class vas (
       mode   => $keytab_mode,
     }
 
-   exec { 'Process check Vasypd' :
-     path    => '/usr/bin:/bin',
-     command => "rm -f /var/opt/quest/vas/vasypd/.vasypd.pid",
-     unless  => "ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd",
-     before  => Service['vasypd'],
-     notify  => Service['vasypd'],
+    exec { 'Process check Vasypd' :
+      path    => '/usr/bin:/bin',
+      command => 'rm -f /var/opt/quest/vas/vasypd/.vasypd.pid',
+      unless  => 'ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd',
+      before  => Service['vasypd'],
+      notify  => Service['vasypd'],
     }
 
     service { 'vasd':
@@ -768,7 +769,7 @@ class vas (
     }
 
     exec { 'vasinst':
-      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}", # lint:ignore:140chars
       path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
       timeout => 1800,
       creates => $once_file,
