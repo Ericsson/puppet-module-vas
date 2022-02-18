@@ -1,16 +1,27 @@
 {
   "name": "ericsson-vas",
-  "author": "ericsson",
-  "license": "Apache-2.0",
-  "summary": "Manage VAS",
-  "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
-  "source": "https://github.com/Ericsson/puppet-module-vas.git",
   "version": "0.30.1",
+  "author": "ericsson",
+  "summary": "Manage VAS",
+  "source": "https://github.com/Ericsson/puppet-module-vas.git",
   "project_page": "https://github.com/Ericsson/puppet-module-vas",
-  "requirements": [
+  "license": "Apache-2.0",
+  "dependencies": [
     {
-      "name": "puppet",
-      "version_requirement": ">=3.0 < 7.0.0"
+      "version_requirement": ">= 0.1.0",
+      "name": "ericsson/nisclient"
+    },
+    {
+      "version_requirement": ">= 2.0.0",
+      "name": "ghoneycutt/pam"
+    },
+    {
+      "version_requirement": ">= 1.0.0",
+      "name": "ghoneycutt/nsswitch"
+    },
+    {
+      "version_requirement": ">= 4.10.0",
+      "name": "puppetlabs/stdlib"
     }
   ],
   "operatingsystem_support": [
@@ -86,10 +97,14 @@
       ]
     }
   ],
-  "dependencies": [
-    { "version_requirement": ">= 0.1.0", "name": "ericsson/nisclient" },
-    { "version_requirement": ">= 2.0.0", "name": "ghoneycutt/pam" },
-    { "version_requirement": ">= 1.0.0", "name": "ghoneycutt/nsswitch" },
-    { "version_requirement": ">= 4.10.0", "name": "puppetlabs/stdlib" }
-  ]
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">=3.0 < 7.0.0"
+    }
+  ],
+  "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
+  "pdk-version": "2.3.0",
+  "template-url": "pdk-default#2.3.0",
+  "template-ref": "tags/2.3.0-0-g8aaceff"
 }
