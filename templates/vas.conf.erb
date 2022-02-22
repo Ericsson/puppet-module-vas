@@ -171,6 +171,9 @@
 <% if @vas_users_allow_path != 'UNSET' -%>
  users-allow-file = <%= @vas_users_allow_path %>
 <% end -%>
+<% if @vas_users_deny_path != 'UNSET' -%>
+ users-deny-file = <%= @vas_users_deny_path %>
+<% end -%>
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
 <% end -%>

@@ -433,11 +433,6 @@ class vas (
   }
   validate_bool($api_enable_real)
 
-  if $api_enable_real {
-    validate_string($api_users_allow_url)
-    validate_string($api_token)
-  }
-
   case type3x($join_domain_controllers) {
     'array': { $join_domain_controllers_real = join($join_domain_controllers, ' ') }
     'string': {
@@ -536,6 +531,12 @@ class vas (
   }
 
   if $api_enable_real == true {
+    if $api_users_allow_url == undef or $api_token == undef {
+      fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
+    }
+    validate_string($api_users_allow_url)
+    validate_string($api_token)
+
     $api_users_allow_data  = api_fetch($api_users_allow_url, $api_token)
     # Return value is integer in Puppet 3 and string in Puppet 6
     if $api_users_allow_data[0] == 200 or $api_users_allow_data[0] == '200' {
@@ -712,7 +713,7 @@ class vas (
 
     file { 'keytab':
       ensure => 'file',
-      name   => $keytab_path,
+      path   => $keytab_path,
       source => $keytab_source,
       owner  => $keytab_owner,
       group  => $keytab_group,

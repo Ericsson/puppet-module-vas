@@ -41,12 +41,14 @@ class vas::solaris inherits vas {
     provider     => 'sun',
   }
 
-  service { 'vas_deps':
-    ensure    => 'running',
-    name      => $deps,
-    enable    => true,
-    hasstatus => $hasstatus,
-    notify    => Service['vasypd'],
+  if $vas::unjoin_vas == false {
+    service { 'vas_deps':
+      ensure    => 'running',
+      name      => $deps,
+      enable    => true,
+      hasstatus => $hasstatus,
+      notify    => Service['vasypd'],
+    }
   }
 
   # No vasgpd service in VAS 4
