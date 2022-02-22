@@ -260,6 +260,111 @@ describe 'vas' do
         is_expected.not_to contain_file('vastool_symlink')
       }
 
+      describe 'with manage_nis set to false' do
+        let(:params) do
+          required_params.merge(
+            manage_nis: false,
+          )
+        end
+
+        package_require = [
+          'Package[vasclnt]',
+          'Package[vasgp]',
+        ]
+
+        service_require = [
+          'Service[vasd]',
+        ]
+
+        it {
+          is_expected.not_to contain_class('nisclient')
+        }
+
+        it {
+          is_expected.not_to contain_package('vasyp')
+        }
+
+        content_no_nis = <<-END.gsub(%r{^\s+\|}, '')
+          |# This file is being maintained by Puppet.
+          |# DO NOT EDIT
+          |[domain_realm]
+          | host.example.com = REALM.EXAMPLE.COM
+          |
+          |[libdefaults]
+          | default_realm = REALM.EXAMPLE.COM
+          | default_tgs_enctypes = arcfour-hmac-md5
+          | default_tkt_enctypes = arcfour-hmac-md5
+          | default_etypes = arcfour-hmac-md5
+          | forwardable = true
+          | renew_lifetime = 604800
+          |
+          | ticket_lifetime = 36000
+          | default_keytab_name = /etc/opt/quest/vas/host.keytab
+          |
+          |[libvas]
+          | vascache-ipc-timeout = 15
+          | use-server-referrals = true
+          | mscldap-timeout = 1
+          | use-dns-srv = true
+          | use-tcp-only = true
+          | auth-helper-timeout = 10
+          | site-only-servers = false
+          |
+          |[pam_vas]
+          | prompt-vas-ad-pw = "Enter Windows password: "
+          |
+          |[vasd]
+          | update-interval = 600
+          | workstation-mode = false
+          | auto-ticket-renew-interval = 32400
+          | lazy-cache-update-interval = 10
+          | upm-computerou-attr = department
+          |
+          |[nss_vas]
+          | group-update-mode = none
+          | root-update-mode = none
+          |
+          |[vas_auth]
+        END
+
+        it {
+          is_expected.to contain_file('vas_config').with(
+            'content' => content_no_nis,
+            'require' => package_require,
+          )
+        }
+
+        it {
+          is_expected.to contain_file('vas_users_allow').that_requires(package_require)
+        }
+
+        it {
+          is_expected.to contain_file('vas_users_deny').that_requires(package_require)
+        }
+
+        it {
+          is_expected.to contain_file('vas_user_override').with(
+            'require' => package_require,
+            'before' =>  service_require,
+          )
+        }
+
+        it {
+          is_expected.to contain_file('vas_group_override').with(
+            'require' => package_require,
+            'before' =>  service_require,
+          )
+        }
+
+        it {
+          is_expected.not_to contain_exec('Process check Vasypd')
+        }
+
+        it {
+          is_expected.not_to contain_service('vasypd')
+        }
+      end
+
       describe 'with package_version specified' do
         let(:params) do
           required_params.merge(

@@ -27,11 +27,13 @@ class vas::solaris inherits vas {
     provider     => 'sun',
   }
 
-  Package['vasyp'] {
-    source       => $vas::solaris_vasyppath,
-    adminfile    => $vas::solaris_adminpath,
-    responsefile => "${vas::solaris_responsepattern}.vasyp",
-    provider     => 'sun',
+  if $vas::manage_nis {
+    Package['vasyp'] {
+      source       => $vas::solaris_vasyppath,
+      adminfile    => $vas::solaris_adminpath,
+      responsefile => "${vas::solaris_responsepattern}.vasyp",
+      provider     => 'sun',
+    }
   }
 
   Package['vasgp'] {
@@ -42,12 +44,17 @@ class vas::solaris inherits vas {
   }
 
   if $vas::unjoin_vas == false {
+    $_notify = $vas::manage_nis ? {
+      true    => 'Service[vasypd]',
+      default => undef,
+    }
+
     service { 'vas_deps':
       ensure    => 'running',
       name      => $deps,
       enable    => true,
       hasstatus => $hasstatus,
-      notify    => Service['vasypd'],
+      notify    => $_notify,
     }
   }
 

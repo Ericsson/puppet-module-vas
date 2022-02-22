@@ -3,6 +3,7 @@
 # Puppet module to manage VAS - Quest Authentication Services
 #
 class vas (
+  $manage_nis                                           = true,
   $package_version                                      = undef,
   $enable_group_policies                                = true,
   $users_allow_entries                                  = ['UNSET'],
@@ -496,22 +497,6 @@ class vas (
     }
   }
 
-  include ::nisclient
-  include ::nsswitch
-  include ::pam
-
-  # Use nisdomainname is supplied. If not, use nisclient::domainname if it
-  # exists, last resort fall back to domain fact
-  if $nisdomainname == undef {
-    if $nisclient::domainname != undef {
-      $my_nisdomainname = $nisclient::domainname
-    } else {
-      $my_nisdomainname = $::domain
-    }
-  } else {
-    $my_nisdomainname = $nisdomainname
-  }
-
   if $package_version == undef {
     $package_ensure = 'installed'
   } else {
@@ -522,6 +507,57 @@ class vas (
     $gp_package_ensure = $package_ensure
   } else {
     $gp_package_ensure = 'absent'
+  }
+
+  package { 'vasclnt':
+    ensure => $package_ensure,
+  }
+
+  if $manage_nis {
+    include ::nisclient
+
+    $package_require = [
+      Package['vasclnt'],
+      Package['vasyp'],
+      Package['vasgp'],
+    ]
+
+    $service_require = [
+      Service['vasd'],
+      Service['vasypd'],
+    ]
+
+    package { 'vasyp':
+      ensure => $package_ensure,
+    }
+  } else {
+    $package_require = [
+      Package['vasclnt'],
+      Package['vasgp'],
+    ]
+
+    $service_require = [
+      Service['vasd'],
+    ]
+  }
+
+  package { 'vasgp':
+    ensure => $gp_package_ensure,
+  }
+
+  include ::nsswitch
+  include ::pam
+
+  # Use nisdomainname is supplied. If not, use nisclient::domainname if it
+  # exists, last resort fall back to domain fact
+  if $manage_nis and $nisdomainname == undef {
+    if $nisclient::domainname != undef {
+      $my_nisdomainname = $nisclient::domainname
+    } else {
+      $my_nisdomainname = $::domain
+    }
+  } else {
+    $my_nisdomainname = $nisdomainname
   }
 
   if $users_allow_hiera_merge_real == true {
@@ -570,30 +606,17 @@ class vas (
     $group_override_entries_real = $group_override_entries
   }
 
-  package { 'vasclnt':
-    ensure => $package_ensure,
-  }
-
-  package { 'vasyp':
-    ensure => $package_ensure,
-  }
-
-  package { 'vasgp':
-    ensure => $gp_package_ensure,
-  }
-
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
-
   if $unjoin_vas_real == true and $::vas_domain != undef {
-      exec { 'vas_unjoin':
-        command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
-        onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
-        provider => 'shell',
-        path     => '/bin:/usr/bin:/opt/quest/bin',
-        timeout  => 1800,
-        require  => [Package['vasclnt','vasyp','vasgp']],
-      }
+    exec { 'vas_unjoin':
+      command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
+      onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+      provider => 'shell',
+      path     => '/bin:/usr/bin:/opt/quest/bin',
+      timeout  => 1800,
+      require  => $package_require,
+    }
   } elsif $unjoin_vas_real == false {
     # no run if undef!
     # We should probably have better sanity checks for $realm parameter instead of this.
@@ -632,7 +655,7 @@ class vas (
             path     => '/bin:/usr/bin:/opt/quest/bin',
             timeout  => 1800,
             before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
-            require  => [Package['vasclnt','vasyp','vasgp']],
+            require  => $package_require,
           }
         } else {
           fail("VAS domain mismatch, got <${::vas_domain}> but wanted <${realm}>")
@@ -647,7 +670,7 @@ class vas (
       group   => $vas_config_group,
       mode    => $vas_config_mode,
       content => template('vas/vas.conf.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
+      require => $package_require,
     }
 
     $_vas_users_allow_path = $vas_users_allow_path ? {
@@ -663,7 +686,7 @@ class vas (
         group   => $vas_users_allow_group,
         mode    => $vas_users_allow_mode,
         content => template('vas/users.allow.erb'),
-        require => Package['vasclnt','vasyp','vasgp'],
+        require => $package_require,
       }
     }
 
@@ -678,7 +701,7 @@ class vas (
       group   => $vas_users_deny_group,
       mode    => $vas_users_deny_mode,
       content => template('vas/users.deny.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
+      require => $package_require,
     }
 
     $_vas_user_override_path = $vas_user_override_path ? {
@@ -692,8 +715,8 @@ class vas (
       group   => $vas_user_override_group,
       mode    => $vas_user_override_mode,
       content => template('vas/user-override.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
-      before  => Service['vasd','vasypd'],
+      require => $package_require,
+      before  => $service_require,
     }
 
     $_vas_group_override_path = $vas_group_override_path ? {
@@ -707,8 +730,8 @@ class vas (
       group   => $vas_group_override_group,
       mode    => $vas_group_override_mode,
       content => template('vas/group-override.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
-      before  => Service['vasd','vasypd'],
+      require => $package_require,
+      before  => $service_require,
     }
 
     file { 'keytab':
@@ -720,25 +743,27 @@ class vas (
       mode   => $keytab_mode,
     }
 
-    exec { 'Process check Vasypd' :
-      path    => '/usr/bin:/bin',
-      command => 'rm -f /var/opt/quest/vas/vasypd/.vasypd.pid',
-      unless  => 'ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd',
-      before  => Service['vasypd'],
-      notify  => Service['vasypd'],
-    }
-
     service { 'vasd':
       ensure  => 'running',
       enable  => true,
       require => Exec['vasinst'],
     }
 
-    service { 'vasypd':
-      ensure  => 'running',
-      enable  => true,
-      require => Service['vasd'],
-      before  => Class['nisclient'],
+    if $manage_nis {
+      exec { 'Process check Vasypd' :
+        path    => '/usr/bin:/bin',
+        command => 'rm -f /var/opt/quest/vas/vasypd/.vasypd.pid',
+        unless  => 'ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd',
+        before  => Service['vasypd'],
+        notify  => Service['vasypd'],
+      }
+
+      service { 'vasypd':
+        ensure  => 'running',
+        enable  => true,
+        require => Service['vasd'],
+        before  => Class['nisclient'],
+      }
     }
 
     if $sitenameoverride == 'UNSET' {
@@ -775,7 +800,10 @@ class vas (
       timeout => 1800,
       creates => $once_file,
       before  => Class['pam'],
-      require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
+      require => [
+        $package_require,
+        File['keytab']
+      ],
     }
 
     if is_string($symlink_vastool_binary) {
