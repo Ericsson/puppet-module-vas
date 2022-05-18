@@ -40,21 +40,23 @@
  prompt-ad-lockout-msg = "<%= @vas_conf_pam_vas_prompt_ad_lockout_msg %>"
 <% end -%>
 
+<% if @manage_nis -%>
 [vasypd]
  search-base = <%= @nismaps_ou %>
  split-groups = true
  update-interval = <%= @vas_conf_vasypd_update_interval_integer %>
  domainname-override = <%= @my_nisdomainname %>
-<% if !@vas_conf_update_process.empty? -%>
+<%  if !@vas_conf_update_process.empty? -%>
  update-process = <%= @vas_conf_update_process %>
-<% end -%>
-<% if @vas_conf_full_update_interval != 'UNSET' -%>
+<%  end -%>
+<%  if @vas_conf_full_update_interval != 'UNSET' -%>
  full-update-interval = <%= @vas_conf_full_update_interval %>
-<% end -%>
-<% if @vas_conf_client_addrs != 'UNSET' -%>
+<%  end -%>
+<%  if @vas_conf_client_addrs != 'UNSET' -%>
  client-addrs = <%= @vas_conf_client_addrs %>
-<% end -%>
+<%  end -%>
 
+<% end -%>
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
 <% if @upm_search_path_real -%>
@@ -154,6 +156,9 @@
 <% if @vas_conf_disabled_user_pwhash != nil -%>
  disabled-user-pwhash = <%= @vas_conf_disabled_user_pwhash  %>
 <% end -%>
+<% if @vas_conf_expired_account_pwhash != nil -%>
+ expired-account-pwhash = <%= @vas_conf_expired_account_pwhash  %>
+<% end -%>
 <% if @vas_conf_locked_out_pwhash != nil -%>
  locked-out-pwhash = <%= @vas_conf_locked_out_pwhash %>
 <% end -%>
@@ -167,6 +172,9 @@
 [vas_auth]
 <% if @vas_users_allow_path != 'UNSET' -%>
  users-allow-file = <%= @vas_users_allow_path %>
+<% end -%>
+<% if @vas_users_deny_path != 'UNSET' -%>
+ users-deny-file = <%= @vas_users_deny_path %>
 <% end -%>
 <% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>

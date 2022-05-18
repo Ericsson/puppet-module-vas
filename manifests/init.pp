@@ -3,6 +3,7 @@
 # Puppet module to manage VAS - Quest Authentication Services
 #
 class vas (
+  $manage_nis                                           = true,
   $package_version                                      = undef,
   $enable_group_policies                                = true,
   $users_allow_entries                                  = ['UNSET'],
@@ -36,6 +37,7 @@ class vas (
   $vas_conf_group_update_mode                           = 'none',
   $vas_conf_root_update_mode                            = 'none',
   $vas_conf_disabled_user_pwhash                        = undef,
+  $vas_conf_expired_account_pwhash                      = undef,
   $vas_conf_locked_out_pwhash                           = undef,
   $vas_conf_preload_nested_memberships                  = 'UNSET',
   $vas_conf_update_process                              = '/opt/quest/libexec/vas/mapupdate_2307',
@@ -124,6 +126,9 @@ class vas (
   $kdc_port                                             = 88,
   $kpasswd_servers                                      = [],
   $kpasswd_server_port                                  = 464,
+  $api_enable                                           = false,
+  $api_users_allow_url                                  = undef,
+  $api_token                                            = undef,
 ) {
 
   $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
@@ -245,6 +250,10 @@ class vas (
 
   if $vas_conf_disabled_user_pwhash != undef {
     validate_string($vas_conf_disabled_user_pwhash)
+  }
+
+  if $vas_conf_expired_account_pwhash != undef {
+    validate_string($vas_conf_expired_account_pwhash)
   }
 
   if $vas_conf_locked_out_pwhash != undef {
@@ -418,6 +427,13 @@ class vas (
     $kpasswd_servers_real = join(suffix($kpasswd_servers, ":${kpasswd_server_port}"), ' ')
   }
 
+  if is_string($api_enable) {
+    $api_enable_real = str2bool($api_enable)
+  } else {
+    $api_enable_real = $api_enable
+  }
+  validate_bool($api_enable_real)
+
   case type3x($join_domain_controllers) {
     'array': { $join_domain_controllers_real = join($join_domain_controllers, ' ') }
     'string': {
@@ -481,22 +497,6 @@ class vas (
     }
   }
 
-  include ::nisclient
-  include ::nsswitch
-  include ::pam
-
-  # Use nisdomainname is supplied. If not, use nisclient::domainname if it
-  # exists, last resort fall back to domain fact
-  if $nisdomainname == undef {
-    if $nisclient::domainname != undef {
-      $my_nisdomainname = $nisclient::domainname
-    } else {
-      $my_nisdomainname = $::domain
-    }
-  } else {
-    $my_nisdomainname = $nisdomainname
-  }
-
   if $package_version == undef {
     $package_ensure = 'installed'
   } else {
@@ -509,10 +509,83 @@ class vas (
     $gp_package_ensure = 'absent'
   }
 
-  if $users_allow_hiera_merge_real == true {
-    $users_allow_entries_real = hiera_array('vas::users_allow_entries')
+  package { 'vasclnt':
+    ensure => $package_ensure,
+  }
+
+  if $manage_nis {
+    include ::nisclient
+
+    $package_require = [
+      Package['vasclnt'],
+      Package['vasyp'],
+      Package['vasgp'],
+    ]
+
+    $service_require = [
+      Service['vasd'],
+      Service['vasypd'],
+    ]
+
+    package { 'vasyp':
+      ensure => $package_ensure,
+    }
   } else {
-    $users_allow_entries_real = $users_allow_entries
+    $package_require = [
+      Package['vasclnt'],
+      Package['vasgp'],
+    ]
+
+    $service_require = [
+      Service['vasd'],
+    ]
+  }
+
+  package { 'vasgp':
+    ensure => $gp_package_ensure,
+  }
+
+  include ::nsswitch
+  include ::pam
+
+  # Use nisdomainname is supplied. If not, use nisclient::domainname if it
+  # exists, last resort fall back to domain fact
+  if $manage_nis and $nisdomainname == undef {
+    if $nisclient::domainname != undef {
+      $my_nisdomainname = $nisclient::domainname
+    } else {
+      $my_nisdomainname = $::domain
+    }
+  } else {
+    $my_nisdomainname = $nisdomainname
+  }
+
+  if $users_allow_hiera_merge_real == true {
+    $users_allow_entries_real1 = hiera_array('vas::users_allow_entries')
+  } else {
+    $users_allow_entries_real1 = $users_allow_entries
+  }
+
+  if $api_enable_real == true {
+    if $api_users_allow_url == undef or $api_token == undef {
+      fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
+    }
+    validate_string($api_users_allow_url)
+    validate_string($api_token)
+
+    $api_users_allow_data  = api_fetch($api_users_allow_url, $api_token)
+    # Return value is integer in Puppet 3 and string in Puppet 6
+    if $api_users_allow_data[0] == 200 or $api_users_allow_data[0] == '200' {
+      $manage_users_allow = true
+      $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_data[1])
+    } else {
+      # VAS API is configured but down. Don't manage users_allow to prevent removal of entries.
+      $manage_users_allow = false
+      warning("VAS API Error. Code: ${api_users_allow_data[0]}, Error: ${api_users_allow_data[1]}")
+    }
+  } else {
+    $manage_users_allow = true
+    $users_allow_entries_real = $users_allow_entries_real1
   }
 
   if $users_deny_hiera_merge_real == true {
@@ -533,30 +606,17 @@ class vas (
     $group_override_entries_real = $group_override_entries
   }
 
-  package { 'vasclnt':
-    ensure => $package_ensure,
-  }
-
-  package { 'vasyp':
-    ensure => $package_ensure,
-  }
-
-  package { 'vasgp':
-    ensure => $gp_package_ensure,
-  }
-
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
-
   if $unjoin_vas_real == true and $::vas_domain != undef {
-      exec { 'vas_unjoin':
-        command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
-        onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
-        provider => 'shell',
-        path     => '/bin:/usr/bin:/opt/quest/bin',
-        timeout  => 1800,
-        require  => [Package['vasclnt','vasyp','vasgp']],
-      }
+    exec { 'vas_unjoin':
+      command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
+      onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+      provider => 'shell',
+      path     => '/bin:/usr/bin:/opt/quest/bin',
+      timeout  => 1800,
+      require  => $package_require,
+    }
   } elsif $unjoin_vas_real == false {
     # no run if undef!
     # We should probably have better sanity checks for $realm parameter instead of this.
@@ -576,7 +636,8 @@ class vas (
             # the unjoin command into a log file and removes the once file to allow
             # the  vas_inst command to join the new AD server.
             # This is how the join command is built up by the vas module.
-            # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
+            # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} \
+            # -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
             # The sed regex will save everything up to but not including the join part.
             # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
             # It will save the part above and add to the end of it unjoin.
@@ -594,7 +655,7 @@ class vas (
             path     => '/bin:/usr/bin:/opt/quest/bin',
             timeout  => 1800,
             before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
-            require  => [Package['vasclnt','vasyp','vasgp']],
+            require  => $package_require,
           }
         } else {
           fail("VAS domain mismatch, got <${::vas_domain}> but wanted <${realm}>")
@@ -609,21 +670,24 @@ class vas (
       group   => $vas_config_group,
       mode    => $vas_config_mode,
       content => template('vas/vas.conf.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
+      require => $package_require,
     }
 
     $_vas_users_allow_path = $vas_users_allow_path ? {
       'UNSET' => $_vas_users_allow_path_default,
       default => $vas_users_allow_path,
     }
-    file { 'vas_users_allow':
-      ensure  => file,
-      path    => $_vas_users_allow_path,
-      owner   => $vas_users_allow_owner,
-      group   => $vas_users_allow_group,
-      mode    => $vas_users_allow_mode,
-      content => template('vas/users.allow.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
+
+    if $manage_users_allow {
+      file { 'vas_users_allow':
+        ensure  => file,
+        path    => $_vas_users_allow_path,
+        owner   => $vas_users_allow_owner,
+        group   => $vas_users_allow_group,
+        mode    => $vas_users_allow_mode,
+        content => template('vas/users.allow.erb'),
+        require => $package_require,
+      }
     }
 
     $_vas_users_deny_path = $vas_users_deny_path ? {
@@ -637,7 +701,7 @@ class vas (
       group   => $vas_users_deny_group,
       mode    => $vas_users_deny_mode,
       content => template('vas/users.deny.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
+      require => $package_require,
     }
 
     $_vas_user_override_path = $vas_user_override_path ? {
@@ -651,8 +715,8 @@ class vas (
       group   => $vas_user_override_group,
       mode    => $vas_user_override_mode,
       content => template('vas/user-override.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
-      before  => Service['vasd','vasypd'],
+      require => $package_require,
+      before  => $service_require,
     }
 
     $_vas_group_override_path = $vas_group_override_path ? {
@@ -666,13 +730,13 @@ class vas (
       group   => $vas_group_override_group,
       mode    => $vas_group_override_mode,
       content => template('vas/group-override.erb'),
-      require => Package['vasclnt','vasyp','vasgp'],
-      before  => Service['vasd','vasypd'],
+      require => $package_require,
+      before  => $service_require,
     }
 
     file { 'keytab':
       ensure => 'file',
-      name   => $keytab_path,
+      path   => $keytab_path,
       source => $keytab_source,
       owner  => $keytab_owner,
       group  => $keytab_group,
@@ -685,11 +749,21 @@ class vas (
       require => Exec['vasinst'],
     }
 
-    service { 'vasypd':
-      ensure  => 'running',
-      enable  => true,
-      require => Service['vasd'],
-      before  => Class['nisclient'],
+    if $manage_nis {
+      exec { 'Process check Vasypd' :
+        path    => '/usr/bin:/bin',
+        command => 'rm -f /var/opt/quest/vas/vasypd/.vasypd.pid',
+        unless  => 'ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd',
+        before  => Service['vasypd'],
+        notify  => Service['vasypd'],
+      }
+
+      service { 'vasypd':
+        ensure  => 'running',
+        enable  => true,
+        require => Service['vasd'],
+        before  => Class['nisclient'],
+      }
     }
 
     if $sitenameoverride == 'UNSET' {
@@ -721,12 +795,15 @@ class vas (
     }
 
     exec { 'vasinst':
-      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}",
+      command => "${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn} ${s_opts} ${realm} ${join_domain_controllers_real} > ${vasjoin_logfile} 2>&1 && touch ${once_file}", # lint:ignore:140chars
       path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
       timeout => 1800,
       creates => $once_file,
       before  => Class['pam'],
-      require => [Package['vasclnt','vasyp','vasgp'],File['keytab']],
+      require => [
+        $package_require,
+        File['keytab']
+      ],
     }
 
     if is_string($symlink_vastool_binary) {
