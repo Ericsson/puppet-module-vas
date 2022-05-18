@@ -819,9 +819,6 @@ Has no effect unless kpasswd_servers or kdcs is populated with servernames.
 
 # API
 
-See documentation contained within that project and the available documentation
-in Confluence as reference: https://confluence.lmera.ericsson.se/display/LUOG/VAS+API
-
 api_enable
 ----------
 A boolean to control, whether the API function is called. If called, the API
