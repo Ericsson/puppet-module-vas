@@ -109,11 +109,6 @@ class vas (
   $vas_users_deny_group                                 = 'root',
   $vas_users_deny_mode                                  = '0644',
   $vasjoin_logfile                                      = '/var/tmp/vasjoin.log',
-  $solaris_vasclntpath                                  = 'UNSET',
-  $solaris_vasyppath                                    = 'UNSET',
-  $solaris_vasgppath                                    = 'UNSET',
-  $solaris_adminpath                                    = 'UNSET',
-  $solaris_responsepattern                              = 'UNSET',
   $vastool_binary                                       = '/opt/quest/bin/vastool',
   $symlink_vastool_binary_target                        = '/usr/bin/vastool',
   $symlink_vastool_binary                               = false,
@@ -484,18 +479,7 @@ class vas (
     $group_search_path_real = $group_search_path
   }
 
-
-  case $::kernel {
-    'Linux': {
-      include ::vas::linux
-    }
-    'SunOS': {
-      include ::vas::solaris
-    }
-    default: {
-      fail("Vas module support Linux and SunOS kernels. Detected kernel is <${::kernel}>")
-    }
-  }
+  include ::vas::linux
 
   if $package_version == undef {
     $package_ensure = 'installed'
