@@ -23,11 +23,7 @@ describe 'vas' do
       it { is_expected.to compile }
 
       it {
-        if os_facts[:kernel] == 'Linux'
-          is_expected.to contain_class('vas::linux')
-        else
-          is_expected.to contain_class('vas::solaris')
-        end
+        is_expected.to contain_class('vas::linux')
       }
 
       it {

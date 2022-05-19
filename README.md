@@ -25,9 +25,6 @@ Puppet v4 (2.1.9), Puppet v5 (2.4.1) and Puppetv6 (2.5.1).
  * Ubuntu 16.04
  * Ubuntu 18.04
  * Ubuntu 20.04
- * Solaris 9
- * Solaris 10
- * Solaris 11
 
 When using the users.allow functionality in VAS, make sure to set the following option:
 
@@ -723,34 +720,6 @@ vasjoin_logfile
 Path to logfile used by AD join commando.
 
 - *Default*: '/var/tmp/vasjoin.log'
-
-solaris_vasclntpath
--------------------
-*Solaris only* Path to Solaris vasclnt package.
-
-- *Default*: 'UNSET'
-
-solaris_vasyppath
------------------
-*Solaris only* Path to Solaris vasyp package.
-
-- *Default*: 'UNSET'
-
-solaris_vasgppath
------------------
-*Solaris only* Path to Solaris vasgp package.
-
-- *Default*: 'UNSET'
-
-solaris_adminpath
------------------
-*Solaris only* Path to Solaris package adminfile.
-
-- *Default*: 'UNSET'
-
-solaris_responsepattern
------------------------
-- *Default*: 'UNSET'
 
 vastool_binary
 --------------
