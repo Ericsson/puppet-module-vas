@@ -2,6 +2,5 @@
 ---
 vas_domain: 'realm.example.com'
 vas_version: '4.1.0.21518'
-fqdn: 'host.example.com'
 domain: 'example.com'
 virtual: 'physical'

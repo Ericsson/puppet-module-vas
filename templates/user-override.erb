@@ -1,13 +1,5 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
-<% if @user_override_entries_real -%>
-<% if @user_override_entries_real.is_a?(Array) -%>
 <% @user_override_entries_real.each do |overrideentry| -%>
-<% if overrideentry != 'UNSET' -%>
 <%= overrideentry %>
-<% end -%>
-<% end -%>
-<% else -%>
-<%= @user_override_entries_real %>
-<% end -%>
 <% end -%>

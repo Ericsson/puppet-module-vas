@@ -8,7 +8,7 @@ class vas::linux inherits vas {
     }
 
     'Debian','Suse','RedHat': {
-      if $vas::package_version != undef {
+      if $vas::package_version != 'installed' {
         $vasver = regsubst($vas::package_version, '-', '.')
       } else {
         $vasver = '' # lint:ignore:empty_string_assignment

@@ -10,33 +10,33 @@
  default_tgs_enctypes = <%= @vas_conf_libdefaults_tgs_default_enctypes %>
  default_tkt_enctypes = <%= @vas_conf_libdefaults_tkt_default_enctypes %>
  default_etypes = <%= @vas_conf_libdefaults_default_etypes %>
- forwardable = <%= @vas_conf_libdefaults_forwardable_real %>
+ forwardable = <%= @vas_conf_libdefaults_forwardable %>
  renew_lifetime = 604800
 
  ticket_lifetime = 36000
  default_keytab_name = /etc/opt/quest/vas/host.keytab
-<% if @vas_conf_libdefaults_default_cc_name != 'UNSET' -%>
+<% if @vas_conf_libdefaults_default_cc_name != nil -%>
  default_cc_name = <%= @vas_conf_libdefaults_default_cc_name %>
 <% end -%>
 
 [libvas]
  vascache-ipc-timeout = <%= @vas_conf_libvas_vascache_ipc_timeout %>
  use-server-referrals = <%= @vas_conf_libvas_use_server_referrals_real %>
-<% if @sitenameoverride != 'UNSET' -%>
+<% if @sitenameoverride != nil -%>
  site-name-override = <%= @sitenameoverride %>
 <% end -%>
  mscldap-timeout = <%= @vas_conf_libvas_mscldap_timeout %>
- use-dns-srv = <%= @vas_conf_libvas_use_dns_srv_real %>
- use-tcp-only = <%= @vas_conf_libvas_use_tcp_only_real %>
+ use-dns-srv = <%= @vas_conf_libvas_use_dns_srv %>
+ use-tcp-only = <%= @vas_conf_libvas_use_tcp_only %>
  auth-helper-timeout = <%= @vas_conf_libvas_auth_helper_timeout %>
- site-only-servers = <%= @vas_conf_libvas_site_only_servers_real %>
-<% if @use_srv_infocache_bool != nil -%>
- use-srvinfo-cache = <%= @use_srv_infocache_bool %>
+ site-only-servers = <%= @vas_conf_libvas_site_only_servers %>
+<% if @use_srv_infocache != nil -%>
+ use-srvinfo-cache = <%= @use_srv_infocache %>
 <% end -%>
 
 [pam_vas]
  prompt-vas-ad-pw = <%= @vas_conf_prompt_vas_ad_pw %>
-<% if @vas_conf_pam_vas_prompt_ad_lockout_msg != 'UNSET' -%>
+<% if @vas_conf_pam_vas_prompt_ad_lockout_msg != nil -%>
  prompt-ad-lockout-msg = "<%= @vas_conf_pam_vas_prompt_ad_lockout_msg %>"
 <% end -%>
 
@@ -44,15 +44,15 @@
 [vasypd]
  search-base = <%= @nismaps_ou %>
  split-groups = true
- update-interval = <%= @vas_conf_vasypd_update_interval_integer %>
+ update-interval = <%= @vas_conf_vasypd_update_interval %>
  domainname-override = <%= @my_nisdomainname %>
 <%  if !@vas_conf_update_process.empty? -%>
  update-process = <%= @vas_conf_update_process %>
 <%  end -%>
-<%  if @vas_conf_full_update_interval != 'UNSET' -%>
+<%  if @vas_conf_full_update_interval != nil -%>
  full-update-interval = <%= @vas_conf_full_update_interval %>
 <%  end -%>
-<%  if @vas_conf_client_addrs != 'UNSET' -%>
+<%  if @vas_conf_client_addrs != nil -%>
  client-addrs = <%= @vas_conf_client_addrs %>
 <%  end -%>
 
@@ -62,87 +62,87 @@
 <% if @upm_search_path_real -%>
  upm-search-path = <%= @upm_search_path_real %>
 <% end -%>
- workstation-mode = <%= @vas_conf_vasd_workstation_mode_real %>
-<% if @vas_conf_vasd_workstation_mode_real -%>
-<%   if @vas_conf_vasd_workstation_mode_users_preload != 'UNSET' -%>
+ workstation-mode = <%= @vas_conf_vasd_workstation_mode %>
+<% if @vas_conf_vasd_workstation_mode -%>
+<%   if @vas_conf_vasd_workstation_mode_users_preload != nil -%>
  workstation-mode-users-preload = <%= @vas_conf_vasd_workstation_mode_users_preload %>
 <%   end -%>
- workstation-mode-group-do-member = <%= @vas_conf_vasd_workstation_mode_group_do_member_real %>
- workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update_real %>
- ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid_real %>
+ workstation-mode-group-do-member = <%= @vas_conf_vasd_workstation_mode_group_do_member %>
+ workstation-mode-groups-skip-update = <%= @vas_conf_vasd_workstation_mode_groups_skip_update %>
+ ws-resolve-uid = <%= @vas_conf_vasd_ws_resolve_uid %>
 <% end -%>
-<% if @user_search_path_real -%>
- user-search-path = <%= @user_search_path_real %>
+<% if @user_search_path -%>
+ user-search-path = <%= @user_search_path %>
 <% end -%>
-<% if @group_search_path_real -%>
- group-search-path = <%= @group_search_path_real %>
+<% if @group_search_path -%>
+ group-search-path = <%= @group_search_path %>
 <% end -%>
-<% if @vas_user_override_path != 'UNSET' %>
+<% if @vas_user_override_path != nil %>
  user-override-file = <%= @vas_user_override_path %>
 <% end -%>
-<% if @vas_group_override_path != 'UNSET' %>
+<% if @vas_group_override_path != nil %>
  group-override-file = <%= @vas_group_override_path %>
 <% end -%>
  auto-ticket-renew-interval = <%= @vas_conf_vasd_auto_ticket_renew_interval %>
  lazy-cache-update-interval = <%= @vas_conf_vasd_lazy_cache_update_interval %>
-<% if @vas_conf_vasd_cross_domain_user_groups_member_search != 'UNSET' -%>
+<% if @vas_conf_vasd_cross_domain_user_groups_member_search != nil -%>
  cross-domain-user-groups-member-search = <%= @vas_conf_vasd_cross_domain_user_groups_member_search %>
 <% end -%>
-<% if @vas_conf_vasd_timesync_interval_real != 'UNSET' -%>
- timesync-interval = <%= @vas_conf_vasd_timesync_interval_real %>
+<% if @vas_conf_vasd_timesync_interval != nil -%>
+ timesync-interval = <%= @vas_conf_vasd_timesync_interval %>
 <% end -%>
-<% if @vas_conf_preload_nested_memberships != 'UNSET' -%>
+<% if @vas_conf_preload_nested_memberships != nil -%>
  preload-nested-memberships = <%= @vas_conf_preload_nested_memberships %>
 <% end -%>
 <% if !@vas_conf_upm_computerou_attr.empty?-%>
  upm-computerou-attr = <%= @vas_conf_upm_computerou_attr %>
 <% end -%>
-<% if @vas_conf_vasd_password_change_script != 'UNSET' -%>
+<% if @vas_conf_vasd_password_change_script != nil -%>
  password-change-script = <%= @vas_conf_vasd_password_change_script %>
 <% end -%>
-<% if @vas_conf_vasd_password_change_script_timelimit != 'UNSET' -%>
+<% if @vas_conf_vasd_password_change_script_timelimit != nil -%>
  password-change-script-timelimit = <%= @vas_conf_vasd_password_change_script_timelimit %>
 <% end -%>
-<% if @vas_conf_vasd_deluser_check_timelimit != 'UNSET' -%>
+<% if @vas_conf_vasd_deluser_check_timelimit != nil -%>
  deluser-check-timelimit = <%= @vas_conf_vasd_deluser_check_timelimit %>
 <% end -%>
-<% if @vas_conf_vasd_delusercheck_interval != 'UNSET' -%>
+<% if @vas_conf_vasd_delusercheck_interval != nil -%>
  delusercheck-interval = <%= @vas_conf_vasd_delusercheck_interval %>
 <% end -%>
-<% if @vas_conf_vasd_delusercheck_script != 'UNSET' -%>
+<% if @vas_conf_vasd_delusercheck_script != nil -%>
  delusercheck-script = <%= @vas_conf_vasd_delusercheck_script %>
 <% end -%>
-<% if @vas_conf_vasd_netgroup_mode != 'UNSET' -%>
+<% if @vas_conf_vasd_netgroup_mode != nil -%>
  netgroup-mode = <%= @vas_conf_vasd_netgroup_mode %>
 <% end -%>
-<% if @vas_conf_vasd_username_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_username_attr_name != nil -%>
  username-attr-name = <%= @vas_conf_vasd_username_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_groupname_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_groupname_attr_name != nil -%>
  groupname-attr-name = <%= @vas_conf_vasd_groupname_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_uid_number_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_uid_number_attr_name != nil -%>
  uid-number-attr-name = <%= @vas_conf_vasd_uid_number_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_gid_number_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_gid_number_attr_name != nil -%>
  gid-number-attr-name = <%= @vas_conf_vasd_gid_number_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_gecos_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_gecos_attr_name != nil -%>
  gecos-attr-name = <%= @vas_conf_vasd_gecos_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_home_dir_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_home_dir_attr_name != nil -%>
  home-dir-attr-name = <%= @vas_conf_vasd_home_dir_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_login_shell_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_login_shell_attr_name != nil -%>
  login-shell-attr-name = <%= @vas_conf_vasd_login_shell_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_group_member_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_group_member_attr_name != nil -%>
  group-member-attr-name = <%= @vas_conf_vasd_group_member_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_memberof_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_memberof_attr_name != nil -%>
  memberof-attr-name = <%= @vas_conf_vasd_memberof_attr_name %>
 <% end -%>
-<% if @vas_conf_vasd_unix_password_attr_name != 'UNSET' -%>
+<% if @vas_conf_vasd_unix_password_attr_name != nil -%>
  unix-password-attr-name = <%= @vas_conf_vasd_unix_password_attr_name %>
 <% end -%>
 
@@ -162,28 +162,28 @@
 <% if @vas_conf_locked_out_pwhash != nil -%>
  locked-out-pwhash = <%= @vas_conf_locked_out_pwhash %>
 <% end -%>
-<% if @vas_conf_lowercase_names_real != nil -%>
- lowercase-names = <%= @vas_conf_lowercase_names_real %>
+<% if @vas_conf_lowercase_names != nil -%>
+ lowercase-names = <%= @vas_conf_lowercase_names %>
 <% end -%>
-<% if @vas_conf_lowercase_homedirs_real != nil -%>
- lowercase-homedirs = <%= @vas_conf_lowercase_homedirs_real %>
+<% if @vas_conf_lowercase_homedirs != nil -%>
+ lowercase-homedirs = <%= @vas_conf_lowercase_homedirs %>
 <% end -%>
 
 [vas_auth]
-<% if @vas_users_allow_path != 'UNSET' -%>
+<% if @vas_users_allow_path != nil -%>
  users-allow-file = <%= @vas_users_allow_path %>
 <% end -%>
-<% if @vas_users_deny_path != 'UNSET' -%>
+<% if @vas_users_deny_path != nil -%>
  users-deny-file = <%= @vas_users_deny_path %>
 <% end -%>
-<% if @vas_conf_vas_auth_uid_check_limit != 'UNSET' -%>
+<% if @vas_conf_vas_auth_uid_check_limit != nil -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
 <% end -%>
-<% if @vas_conf_vas_auth_allow_disconnected_auth_string != nil -%>
- allow-disconnected-auth = <%= @vas_conf_vas_auth_allow_disconnected_auth_string %>
+<% if @vas_conf_vas_auth_allow_disconnected_auth != nil -%>
+ allow-disconnected-auth = <%= @vas_conf_vas_auth_allow_disconnected_auth %>
 <% end -%>
-<% if @vas_conf_vas_auth_expand_ac_groups_string != nil -%>
- expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups_string %>
+<% if @vas_conf_vas_auth_expand_ac_groups != nil -%>
+ expand-ac-groups = <%= @vas_conf_vas_auth_expand_ac_groups %>
 <% end -%>
 <% if @kdcs_real != '' -%>
 
