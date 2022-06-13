@@ -526,7 +526,7 @@ class vas (
   Optional[String[1]] $vas_conf_locked_out_pwhash            = undef,
   Optional[Boolean] $vas_conf_preload_nested_memberships     = undef,
   Stdlib::Absolutepath $vas_conf_update_process              = '/opt/quest/libexec/vas/mapupdate_2307',
-  String[1] $vas_conf_upm_computerou_attr                    = 'department',
+  Optional[String[1]] $vas_conf_upm_computerou_attr          = undef,
   Integer[0] $vas_conf_vasd_update_interval                  = 600,
   Integer[0] $vas_conf_vasd_auto_ticket_renew_interval       = 32400,
   Integer[0] $vas_conf_vasd_lazy_cache_update_interval       = 10,

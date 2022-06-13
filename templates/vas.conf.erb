@@ -94,7 +94,7 @@
 <% if @vas_conf_preload_nested_memberships != nil -%>
  preload-nested-memberships = <%= @vas_conf_preload_nested_memberships %>
 <% end -%>
-<% if !@vas_conf_upm_computerou_attr.empty?-%>
+<% if @vas_conf_upm_computerou_attr != nil -%>
  upm-computerou-attr = <%= @vas_conf_upm_computerou_attr %>
 <% end -%>
 <% if @vas_conf_vasd_password_change_script != nil -%>

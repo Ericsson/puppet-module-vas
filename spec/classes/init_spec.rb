@@ -98,7 +98,6 @@ describe 'vas' do
         | workstation-mode = false
         | auto-ticket-renew-interval = 32400
         | lazy-cache-update-interval = 10
-        | upm-computerou-attr = department
         |
         |[nss_vas]
         | group-update-mode = none
