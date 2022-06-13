@@ -1,0 +1,14 @@
+---
+# hiera data needed for variable data type and content validations
+
+vas::group_override_entries:
+  - 'EXAMPLE\testing_group:tstgrp::'
+
+vas::user_override_entries:
+  - 'user_override@example.com:1235:12346::::/bin/bash'
+
+vas::users_allow_entries:
+  - 'users_allow@example.com'
+
+vas::users_deny_entries:
+  - 'users_deny@example.com'

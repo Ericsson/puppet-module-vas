@@ -1,13 +1,5 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
-<% if @users_deny_entries_real -%>
-<% if @users_deny_entries_real.is_a?(Array) -%>
 <% @users_deny_entries_real.each do |denyentry| -%>
-<% if denyentry != 'UNSET' -%>
 <%= denyentry %>
-<% end -%>
-<% end -%>
-<% else -%>
-<%= @users_deny_entries_real %>
-<% end -%>
 <% end -%>

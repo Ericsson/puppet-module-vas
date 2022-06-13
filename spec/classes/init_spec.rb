@@ -12,8 +12,7 @@ describe 'vas' do
     context "on #{os}" do
       let(:facts) do
         os_facts.merge(
-          # Satisfy nisclient
-          lsbmajdistrelease: os_facts[:os]['release']['major'],
+          lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
         )
       end
       let(:params) do
@@ -62,7 +61,7 @@ describe 'vas' do
         |# This file is being maintained by Puppet.
         |# DO NOT EDIT
         |[domain_realm]
-        | host.example.com = REALM.EXAMPLE.COM
+        | foo.example.com = REALM.EXAMPLE.COM
         |
         |[libdefaults]
         | default_realm = REALM.EXAMPLE.COM
@@ -99,7 +98,6 @@ describe 'vas' do
         | workstation-mode = false
         | auto-ticket-renew-interval = 32400
         | lazy-cache-update-interval = 10
-        | upm-computerou-attr = department
         |
         |[nss_vas]
         | group-update-mode = none
@@ -237,7 +235,7 @@ describe 'vas' do
       it {
         is_expected.to contain_exec('vasinst').with(
           # rubocop:disable Layout/LineLength
-          'command' => '/opt/quest/bin/vastool -u username -k /etc/vasinst.key -d3 join -f  -c ou=computers,dc=domain,dc=tld    -n host.example.com  realm.example.com  > /var/tmp/vasjoin.log 2>&1 && touch /etc/opt/quest/vas/puppet_joined',
+          'command' => '/opt/quest/bin/vastool -u username -k /etc/vasinst.key -d3 join -f  -c ou=computers,dc=domain,dc=tld    -n foo.example.com  realm.example.com  > /var/tmp/vasjoin.log 2>&1 && touch /etc/opt/quest/vas/puppet_joined',
           # rubocop:enable Layout/LineLength
           'path'    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
           'timeout' => 1800,
@@ -256,194 +254,7 @@ describe 'vas' do
         is_expected.not_to contain_file('vastool_symlink')
       }
 
-      describe 'with manage_nis set to false' do
-        let(:params) do
-          required_params.merge(
-            manage_nis: false,
-          )
-        end
-
-        package_require = [
-          'Package[vasclnt]',
-          'Package[vasgp]',
-        ]
-
-        service_require = [
-          'Service[vasd]',
-        ]
-
-        it {
-          is_expected.not_to contain_class('nisclient')
-        }
-
-        it {
-          is_expected.not_to contain_package('vasyp')
-        }
-
-        content_no_nis = <<-END.gsub(%r{^\s+\|}, '')
-          |# This file is being maintained by Puppet.
-          |# DO NOT EDIT
-          |[domain_realm]
-          | host.example.com = REALM.EXAMPLE.COM
-          |
-          |[libdefaults]
-          | default_realm = REALM.EXAMPLE.COM
-          | default_tgs_enctypes = arcfour-hmac-md5
-          | default_tkt_enctypes = arcfour-hmac-md5
-          | default_etypes = arcfour-hmac-md5
-          | forwardable = true
-          | renew_lifetime = 604800
-          |
-          | ticket_lifetime = 36000
-          | default_keytab_name = /etc/opt/quest/vas/host.keytab
-          |
-          |[libvas]
-          | vascache-ipc-timeout = 15
-          | use-server-referrals = true
-          | mscldap-timeout = 1
-          | use-dns-srv = true
-          | use-tcp-only = true
-          | auth-helper-timeout = 10
-          | site-only-servers = false
-          |
-          |[pam_vas]
-          | prompt-vas-ad-pw = "Enter Windows password: "
-          |
-          |[vasd]
-          | update-interval = 600
-          | workstation-mode = false
-          | auto-ticket-renew-interval = 32400
-          | lazy-cache-update-interval = 10
-          | upm-computerou-attr = department
-          |
-          |[nss_vas]
-          | group-update-mode = none
-          | root-update-mode = none
-          |
-          |[vas_auth]
-        END
-
-        it {
-          is_expected.to contain_file('vas_config').with(
-            'content' => content_no_nis,
-            'require' => package_require,
-          )
-        }
-
-        it {
-          is_expected.to contain_file('vas_users_allow').that_requires(package_require)
-        }
-
-        it {
-          is_expected.to contain_file('vas_users_deny').that_requires(package_require)
-        }
-
-        it {
-          is_expected.to contain_file('vas_user_override').with(
-            'require' => package_require,
-            'before' =>  service_require,
-          )
-        }
-
-        it {
-          is_expected.to contain_file('vas_group_override').with(
-            'require' => package_require,
-            'before' =>  service_require,
-          )
-        }
-
-        it {
-          is_expected.not_to contain_exec('Process check Vasypd')
-        }
-
-        it {
-          is_expected.not_to contain_service('vasypd')
-        }
-      end
-
-      describe 'with package_version specified' do
-        let(:params) do
-          required_params.merge(
-            package_version: '4.0.3-206',
-          )
-        end
-
-        it { is_expected.to contain_package('vasclnt').with('ensure' => '4.0.3-206') }
-        it { is_expected.to contain_package('vasyp').with('ensure' => '4.0.3-206') }
-        it { is_expected.to contain_package('vasgp').with('ensure' => '4.0.3-206') }
-      end
-
-      describe 'with enable_group_policies set to false' do
-        let(:params) do
-          required_params.merge(
-            enable_group_policies: false,
-          )
-        end
-
-        it { is_expected.to contain_package('vasgp').with('ensure' => 'absent') }
-      end
-
       describe 'with users.{allow,deny} configured' do
-        context 'specified as a string' do
-          let(:params) do
-            required_params.merge(
-              users_allow_entries: 'gooduser@example.com',
-              users_deny_entries: 'baduser@example.com',
-            )
-          end
-
-          users_allow_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |gooduser@example.com
-          END
-
-          users_deny_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |baduser@example.com
-          END
-
-          it {
-            is_expected.to contain_file('vas_users_allow').with_content(users_allow_content)
-          }
-
-          it {
-            is_expected.to contain_file('vas_users_deny').with_content(users_deny_content)
-          }
-        end
-
-        context 'specified as an array' do
-          let(:params) do
-            required_params.merge(
-              users_allow_entries: ['gooduser@example.com', 'EXAMPLE\gooduser2'],
-              users_deny_entries: ['baduser@example.com', 'EXAMPLE\baduser2'],
-            )
-          end
-
-          users_allow_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |gooduser@example.com
-            |EXAMPLE\\gooduser2
-          END
-
-          users_deny_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |baduser@example.com
-            |EXAMPLE\\baduser2
-          END
-
-          it {
-            is_expected.to contain_file('vas_users_allow').with_content(users_allow_content)
-          }
-
-          it {
-            is_expected.to contain_file('vas_users_deny').with_content(users_deny_content)
-          }
-        end
-
         context 'with API enabled' do
           api_enabled = { 'api_enable': true }
           let(:params) do
@@ -457,7 +268,7 @@ describe 'vas' do
           context 'param "api_users_allow_url" set' do
             let(:params) do
               api_enabled.merge(
-                'api_users_allow_url': 'host.domain.tld',
+                'api_users_allow_url': 'https://host.domain.tld',
               )
             end
 
@@ -481,7 +292,7 @@ describe 'vas' do
           context 'with required parameters' do
             let(:params) do
               api_enabled.merge(
-                'api_users_allow_url': 'host.domain.tld',
+                'api_users_allow_url': 'https://host.domain.tld',
                 'api_token': 'mytoken',
               )
             end
@@ -505,7 +316,7 @@ describe 'vas' do
                 context 'and users_allow parameter specified' do
                   let(:params) do
                     api_enabled.merge(
-                      'api_users_allow_url': 'host.domain.tld',
+                      'api_users_allow_url': 'https://host.domain.tld',
                       'api_token': 'mytoken',
                       'users_allow_entries': ['user1@example.com', 'user2@example.com'],
                     )
@@ -543,7 +354,7 @@ describe 'vas' do
                 context 'and users_allow parameter specified' do
                   let(:params) do
                     api_enabled.merge(
-                      'api_users_allow_url': 'host.domain.tld',
+                      'api_users_allow_url': 'https://host.domain.tld',
                       'api_token': 'mytoken',
                       'users_allow_entries': ['user1@example.com', 'user2@example.com'],
                     )
@@ -617,70 +428,6 @@ describe 'vas' do
       end
 
       describe 'with users/group override configured' do
-        context 'specified as a string' do
-          let(:params) do
-            required_params.merge(
-              {
-                user_override_entries: 'jdoe@example.com::::::/bin/sh',
-                group_override_entries: 'DOMAIN\adgroup:group::',
-              },
-            )
-          end
-
-          user_override_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |jdoe@example.com::::::/bin/sh
-          END
-
-          group_override_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |DOMAIN\\adgroup:group::
-          END
-
-          it {
-            is_expected.to contain_file('vas_user_override').with_content(user_override_content)
-          }
-
-          it {
-            is_expected.to contain_file('vas_group_override').with_content(group_override_content)
-          }
-        end
-
-        context 'specified as an array' do
-          let(:params) do
-            required_params.merge(
-              {
-                user_override_entries: ['jdoe@example.com::::::/bin/sh', 'jane@example.com:::::/local/home/jane:'],
-                group_override_entries: ['DOMAIN\adgroup:group::', 'DOMAIN\adgroup2:group2::'],
-              },
-            )
-          end
-
-          user_override_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |jdoe@example.com::::::/bin/sh
-            |jane@example.com:::::/local/home/jane:
-          END
-
-          group_override_content = <<-END.gsub(%r{^\s+\|}, '')
-            |# This file is being maintained by Puppet.
-            |# DO NOT EDIT
-            |DOMAIN\\adgroup:group::
-            |DOMAIN\\adgroup2:group2::
-          END
-
-          it {
-            is_expected.to contain_file('vas_user_override').with_content(user_override_content)
-          }
-
-          it {
-            is_expected.to contain_file('vas_group_override').with_content(group_override_content)
-          }
-        end
-
         context 'with file attribute changes' do
           let(:params) do
             required_params.merge(
@@ -754,7 +501,7 @@ describe 'vas' do
         context 'with changes to join arguments' do
           let(:facts) do
             os_facts.merge(
-              lsbmajdistrelease: os_facts[:os]['release']['major'],
+              lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
               vas_domain: 'realm2.example.com',
             )
           end
@@ -776,7 +523,7 @@ describe 'vas' do
 
           it {
             # rubocop:disable Layout/LineLength
-            is_expected.to contain_exec('vasinst').with_command('/opt/bin/vastool -u joinuser -k /etc/vasinst.key -d3 join -f  -c ou=mycomputers,dc=example,dc=com -u OU=unix,DC=example,DC=com;OU=unix,DC=sub,DC=example,DC=com -g OU=unix,DC=example,DC=com;OU=unix,DC=sub,DC=example,DC=com  -n host.example.com -s foobar realm2.example.com dc1.example.com dc2.example.com > /var/tmp/vasjoin.log 2>&1 && touch /etc/opt/quest/vas/puppet_joined')
+            is_expected.to contain_exec('vasinst').with_command('/opt/bin/vastool -u joinuser -k /etc/vasinst.key -d3 join -f  -c ou=mycomputers,dc=example,dc=com -u OU=unix,DC=example,DC=com;OU=unix,DC=sub,DC=example,DC=com -g OU=unix,DC=example,DC=com;OU=unix,DC=sub,DC=example,DC=com  -n foo.example.com -s foobar realm2.example.com dc1.example.com dc2.example.com > /var/tmp/vasjoin.log 2>&1 && touch /etc/opt/quest/vas/puppet_joined')
             # rubocop:enable Layout/LineLength
           }
         end
@@ -795,90 +542,7 @@ describe 'vas' do
 
           it { is_expected.to contain_exec('vasinst').with_command(%r{-p OU=UPM,DC=example,DC=com}) }
           it { is_expected.to contain_exec('vasinst').with_command(%r{-c OU=Computers,DC=example,DC=com}) }
-          it { is_expected.to contain_exec('vasinst').with_command(%r{-n host.example.com}) }
-        end
-
-        context 'with workstation mode' do
-          let(:params) do
-            {
-              vas_conf_vasd_workstation_mode: true
-            }
-          end
-
-          it {
-            is_expected.to contain_exec('vasinst').with_command(%r{ -w })
-          }
-        end
-
-        context 'with domain_change set to false' do
-          context 'and matching domain' do
-            let(:params) do
-              {
-                domain_change: false,
-                realm: 'realm.example.com',
-              }
-            end
-
-            it { is_expected.to contain_class('vas') }
-            it { is_expected.not_to contain_exec('vas_change_domain') }
-          end
-
-          context 'and mismatching domains' do
-            let(:params) do
-              {
-                domain_change: false,
-                realm: 'example.io',
-              }
-            end
-
-            it 'fails' do
-              expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{VAS domain mismatch})
-            end
-          end
-        end
-
-        context 'with domain_change set to true' do
-          context 'and matching domains' do
-            let(:params) do
-              {
-                domain_change: true,
-                realm: 'realm.example.com',
-              }
-            end
-
-            it { is_expected.not_to contain_exec('vas_change_domain') }
-          end
-
-          context 'and mismatching domains' do
-            let(:params) do
-              {
-                domain_change: true,
-                realm: 'example.io',
-              }
-            end
-
-            it {
-              is_expected.to contain_exec('vas_change_domain').with(
-                'command'  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f /etc/opt/quest/vas/puppet_joined",
-                'onlyif'   => '/usr/bin/test -f /etc/vasinst.key && /usr/bin/test -f /etc/opt/quest/vas/lastjoin',
-                'provider' => 'shell',
-                'path'     => '/bin:/usr/bin:/opt/quest/bin',
-                'timeout'  => 1800,
-                'before'   => [
-                  'File[vas_config]',
-                  'File[keytab]',
-                  'Exec[vasinst]',
-                ],
-                'require' => [
-                  'Package[vasclnt]',
-                  'Package[vasyp]',
-                  'Package[vasgp]',
-                ],
-              )
-            }
-            it { is_expected.to contain_exec('vasinst') }
-            it { is_expected.to contain_exec('vasinst').that_requires('Exec[vas_change_domain]') }
-          end
+          it { is_expected.to contain_exec('vasinst').with_command(%r{-n foo.example.com}) }
         end
       end
 
@@ -914,7 +578,7 @@ describe 'vas' do
         context 'with all (most) parameters' do
           let(:facts) do
             os_facts.merge(
-              lsbmajdistrelease: os_facts[:os]['release']['major'],
+              lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
               vas_domain: 'realm2.example.com',
             )
           end
@@ -932,30 +596,30 @@ describe 'vas' do
                 realm: 'realm2.example.com',
                 sitenameoverride: 'foobar',
                 vas_conf_client_addrs: '10.10.0.0/24 10.50.0.0/24',
-                vas_conf_vasypd_update_interval: '2200',
-                vas_conf_full_update_interval: '3600',
+                vas_conf_vasypd_update_interval: 2200,
+                vas_conf_full_update_interval: 3600,
                 vas_conf_group_update_mode: 'none',
                 vas_conf_root_update_mode: 'none',
                 vas_conf_disabled_user_pwhash: 'disabled',
                 vas_conf_expired_account_pwhash: 'expired',
                 vas_conf_locked_out_pwhash: 'locked',
-                vas_conf_preload_nested_memberships: 'false',
+                vas_conf_preload_nested_memberships: false,
                 vas_conf_update_process: '/opt/quest/libexec/vas/mapupdate',
                 vas_conf_upm_computerou_attr: 'managedBy',
-                vas_conf_vasd_update_interval: '1200',
-                vas_conf_vasd_auto_ticket_renew_interval: '540',
-                vas_conf_vasd_lazy_cache_update_interval: '20',
-                vas_conf_vasd_timesync_interval: '0',
-                vas_conf_vasd_cross_domain_user_groups_member_search: 'true',
+                vas_conf_vasd_update_interval: 1200,
+                vas_conf_vasd_auto_ticket_renew_interval: 540,
+                vas_conf_vasd_lazy_cache_update_interval: 20,
+                vas_conf_vasd_timesync_interval: 0,
+                vas_conf_vasd_cross_domain_user_groups_member_search: true,
                 vas_conf_vasd_password_change_script: '/opt/quest/libexec/vas-set-samba-password',
-                vas_conf_vasd_password_change_script_timelimit: '30',
-                vas_conf_vasd_workstation_mode: 'true',
+                vas_conf_vasd_password_change_script_timelimit: 30,
+                vas_conf_vasd_workstation_mode: true,
                 vas_conf_vasd_workstation_mode_users_preload: 'usergroup',
-                vas_conf_vasd_workstation_mode_group_do_member: 'true',
-                vas_conf_vasd_workstation_mode_groups_skip_update: 'true',
-                vas_conf_vasd_ws_resolve_uid: 'true',
-                vas_conf_vasd_deluser_check_timelimit: '60',
-                vas_conf_vasd_delusercheck_interval: '1440',
+                vas_conf_vasd_workstation_mode_group_do_member: true,
+                vas_conf_vasd_workstation_mode_groups_skip_update: true,
+                vas_conf_vasd_ws_resolve_uid: true,
+                vas_conf_vasd_deluser_check_timelimit: 60,
+                vas_conf_vasd_delusercheck_interval: 1440,
                 vas_conf_vasd_delusercheck_script: '/opt/quest/libexec/vas/vasd/delusercheck2',
                 vas_conf_vasd_username_attr_name: 'userprincipalname',
                 vas_conf_vasd_groupname_attr_name: 'groupprincipalname',
@@ -970,21 +634,21 @@ describe 'vas' do
                 vas_conf_vasd_netgroup_mode: 'NIS',
                 vas_conf_prompt_vas_ad_pw: 'Enter pw',
                 vas_conf_pam_vas_prompt_ad_lockout_msg: 'Account is locked',
-                vas_conf_libdefaults_forwardable: 'false',
+                vas_conf_libdefaults_forwardable: false,
                 vas_conf_libdefaults_tgs_default_enctypes: 'arcfour-hmac-md5',
                 vas_conf_libdefaults_tkt_default_enctypes: 'arcfour-hmac-md5',
                 vas_conf_libdefaults_default_etypes: 'arcfour-hmac-md5',
                 vas_conf_libdefaults_default_cc_name: 'FILE:/dev/null/krb5cc_${uid}',
-                vas_conf_vas_auth_uid_check_limit: '100000',
+                vas_conf_vas_auth_uid_check_limit: 100_000,
                 vas_conf_vas_auth_allow_disconnected_auth: false,
                 vas_conf_vas_auth_expand_ac_groups: false,
-                vas_conf_libvas_vascache_ipc_timeout: '10',
+                vas_conf_libvas_vascache_ipc_timeout: 10,
                 vas_conf_libvas_use_server_referrals: true,
-                vas_conf_libvas_auth_helper_timeout: '120',
-                vas_conf_libvas_mscldap_timeout: '10',
-                vas_conf_libvas_site_only_servers: 'false',
-                vas_conf_libvas_use_dns_srv: 'false',
-                vas_conf_libvas_use_tcp_only: 'false',
+                vas_conf_libvas_auth_helper_timeout: 120,
+                vas_conf_libvas_mscldap_timeout: 10,
+                vas_conf_libvas_site_only_servers: false,
+                vas_conf_libvas_use_dns_srv: false,
+                vas_conf_libvas_use_tcp_only: false,
                 vas_conf_lowercase_names: true,
                 vas_conf_lowercase_homedirs: true,
                 vas_config_path: '/etc/opt/quest/vas2.conf',
@@ -1110,21 +774,9 @@ describe 'vas' do
           }
         end
 
-        context 'with vas_conf_vasd_netgroup_mode set to valid string NSS' do
-          let(:params) { { vas_conf_vasd_netgroup_mode: 'NSS', } }
-
-          it { is_expected.to contain_file('vas_config').with_content(%r{^[ ]*netgroup-mode = NSS$}) }
-        end
-
-        context 'with vas_conf_vasd_netgroup_mode set to valid string UNSET' do
-          let(:params) { { vas_conf_vasd_netgroup_mode: 'UNSET', } }
-
-          it { is_expected.to contain_file('vas_config').without_content(%r{^[ ]*netgroup-mode}) }
-        end
-
         context 'with use_server_referrals enabled by vas version' do
           let(:params) do
-            { vas_conf_libvas_use_server_referrals: 'USE_DEFAULTS' }
+            { vas_conf_libvas_use_server_referrals: '' }
           end
 
           it {
@@ -1135,128 +787,18 @@ describe 'vas' do
         context 'with use_server_referrals disabled by vas version' do
           let(:facts) do
             os_facts.merge(
-              lsbmajdistrelease: os_facts[:os]['release']['major'],
+              lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
               vas_version: '4.1.0.21517',
             )
           end
 
           let(:params) do
-            { vas_conf_libvas_use_server_referrals: 'USE_DEFAULTS' }
+            { vas_conf_libvas_use_server_referrals: '' }
           end
 
           it {
             is_expected.to contain_file('vas_config').with_content(%r{use-server-referrals = true})
           }
-        end
-
-        context 'with use_server_referrals set to invalid value' do
-          let(:params) do
-            { vas_conf_libvas_use_server_referrals: 42 }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{is not a boolean})
-          end
-        end
-
-        context 'with vas_fqdn to invalid domainname' do
-          let(:params) do
-            { vas_fqdn: 'bad!@#hostname' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{vas::vas_fqdn is not a valid FQDN. Detected value is <bad!@#hostname>.})
-          end
-        end
-
-        context 'with enable_group_policies to invalid type (not bool or string)' do
-          let(:params) do
-            { enable_group_policies: '600invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{Unknown type of boolean given})
-          end
-        end
-
-        context 'with vas_conf_vasd_auto_ticket_renew_interval to invalid string (non-integer)' do
-          let(:params) do
-            { vas_conf_vasd_auto_ticket_renew_interval: '600invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{validate_integer})
-          end
-        end
-
-        context 'with vas_conf_vasd_update_interval set to invalid string (non-integer)' do
-          let(:params) do
-            { vas_conf_vasd_update_interval: '600invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{validate_integer})
-          end
-        end
-
-        context 'with vstenas_conf_prompt_vas_ad_pw set to invalid type (non-string)' do
-          let(:params) do
-            { vas_conf_prompt_vas_ad_pw: ['array'] }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{is not a string})
-          end
-        end
-
-        context 'with vas_conf_disabled_user_pwhash set to invalid type (non-string)' do
-          let(:params) do
-            { vas_conf_disabled_user_pwhash: ['array'] }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{is not a string})
-          end
-        end
-
-        context 'with vas_conf_expired_account_pwhash set to invalid type (non-string)' do
-          let(:params) do
-            { vas_conf_expired_account_pwhash: ['array'] }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{is not a string})
-          end
-        end
-
-        context 'with vas_conf_locked_out_pwhash set to invalid type (non-string)' do
-          let(:params) do
-            { vas_conf_locked_out_pwhash: ['array'] }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{is not a string})
-          end
-        end
-
-        context 'with vas_conf_libvas_use_dns_srv set to invalid non-boolean string' do
-          let(:params) do
-            { vas_conf_libvas_use_dns_srv: 'invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error)
-          end
-        end
-
-        context 'with vas_conf_libvas_use_tcp_only set to invalid non-boolean string' do
-          let(:params) do
-            { vas_conf_libvas_use_tcp_only: 'invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error)
-          end
         end
 
         context 'with vas_conf_lowercase_homedirs set to invalid non-boolean string' do
@@ -1276,38 +818,6 @@ describe 'vas' do
 
           it 'fails' do
             expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error)
-          end
-        end
-
-        context 'with vas_conf_libvas_site_only_servers set to invalid non-boolean string' do
-          let(:params) do
-            { vas_conf_libvas_site_only_servers: 'invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error)
-          end
-        end
-
-        context 'with vas_conf_libvas_auth_helper_timeout set to invalid string (non-integer)' do
-          let(:params) do
-            { vas_conf_libvas_auth_helper_timeout: '10invalid' }
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{validate_integer})
-          end
-        end
-
-        context 'with vas_conf_client_addrs set to a string too long (>1024 bytes)' do
-          let(:params) do
-            # rubocop:disable Layout/LineLength
-            { vas_conf_client_addrs: '100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100 100.100.100.100' }
-            # rubocop:enable Layout/LineLength
-          end
-
-          it 'fails' do
-            expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{validate_slength})
           end
         end
 
@@ -1371,119 +881,4 @@ describe 'vas' do
       end
     end
   end
-
-  test_on = {
-    supported_os: [
-      {
-        'operatingsystem'        => 'RedHat',
-        'operatingsystemrelease' => ['8'],
-      },
-    ],
-  }
-
-  on_supported_os(test_on).each do |_os, os_facts|
-    describe 'variable data type and content validations' do
-      # set needed custom facts and variables
-      let(:facts) do
-        os_facts.merge(
-          lsbmajdistrelease: os_facts[:os]['release']['major'],
-          fqdn: 'hieramerge.example.local',
-        )
-      end
-
-      validations = {
-        'netgroup_mode' => {
-          name: ['vas_conf_vasd_netgroup_mode'],
-          valid: ['UNSET', 'NSS', 'NIS', 'OFF'],
-          validf: [],
-          invalid: [{ 'ha' => 'sh' }, 3, 2.42, true, false, 'nss', 'nis', 'off'],
-          message: 'Valid values are NSS, NIS and OFF|is not a string'
-        },
-        'array' => {
-          name: ['kdcs', 'kpasswd_servers'],
-          valid: [['array']],
-          validf: [],
-          invalid: ['string', { 'ha' => 'sh' }, 3, 2.42, false, nil],
-          message: 'is not an Array',
-        },
-        'array/string' => {
-          name: ['join_domain_controllers'],
-          valid: [['array'], 'string'],
-          validf: [],
-          invalid: [{ 'ha' => 'sh' }, 3, 2.42, true, false],
-          message: 'is not an array nor a string',
-        },
-        'boolean' => {
-          name: ['domain_change', 'unjoin_vas', 'vas_conf_vas_auth_allow_disconnected_auth', 'vas_conf_vas_auth_expand_ac_groups',
-                 'use_srv_infocache'],
-          valid: [true, false, 'true', 'false'],
-          validf: [],
-          invalid: ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
-          message: '(is not a boolean|Unknown type of boolean)',
-        },
-        'integer/stringified' => {
-          name: ['vas_conf_vasypd_update_interval', 'kdc_port', 'kpasswd_server_port'],
-          valid: [242, '242'],
-          validf: [],
-          invalid: ['string', ['array'], { 'ha' => 'sh' }, 2.42, false, nil],
-          message: 'Expected.*to be an Integer',
-        },
-        'integer (range 1-65535)' => {
-          name: ['kdc_port', 'kpasswd_server_port'],
-          valid: [1, 65_535],
-          validf: [],
-          invalid: [0, 65_536],
-          message: 'Expected \d+ to be (smaller|greater) or equal to (1|65535)',
-        },
-        'string' => {
-          name: ['vas_conf_libdefaults_default_cc_name', 'vas_conf_libdefaults_default_etypes', 'vas_conf_libdefaults_tgs_default_enctypes', 'vas_conf_libdefaults_tkt_default_enctypes'],
-          valid: ['string'],
-          validf: [],
-          invalid: [['array'], { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
-          message: 'is not a string',
-        },
-        'boolean/API' => {
-          name: ['api_enable'],
-          params: { api_users_allow_url: 'https://api.example.local', api_token: 'somesecret', },
-          valid: [true, 'true'],
-          invalid: ['string', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
-          message: '(is not a boolean|Unknown type of boolean)',
-        },
-        'string/API' => {
-          name: ['api_users_allow_url', 'api_token'],
-          params: { api_enable: true, api_users_allow_url: 'https://api.example.local', api_token: 'somesecret', },
-          valid: ['string'],
-          invalid: [['array'], { 'ha' => 'sh' }, true], # removed integer and float for Puppet 3 compatibility
-          message: 'is not a string',
-        },
-      }
-      validations.sort.each do |type, var|
-        mandatory_params = {} if mandatory_params.nil?
-        var[:name].each do |var_name|
-          var[:params] = {} if var[:params].nil?
-          var[:valid].each do |valid|
-            context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
-              let(:params) { [mandatory_params, var[:params], { "#{var_name}": valid, }].reduce(:merge) }
-
-              it { is_expected.to compile }
-            end
-          end
-
-          var[:invalid].each do |invalid|
-            context "when #{var_name} (#{type}) is set to invalid #{invalid} (as #{invalid.class})" do
-              let(:params) { [mandatory_params, var[:params], { "#{var_name}": invalid, }].reduce(:merge) }
-
-              it 'fails' do
-                expect { is_expected.to contain_class(:subject) }.to raise_error(Puppet::Error, %r{#{var[:message]}})
-              end
-            end
-          end
-        end # var[:name].each
-      end # validations.sort.each
-    end # describe 'variable type and content validations'
-  end
 end
-
-#
-#
-# end

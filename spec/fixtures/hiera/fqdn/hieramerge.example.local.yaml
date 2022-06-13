@@ -4,7 +4,13 @@
 # - variable type and content validations
 
 vas::user_override_entries:
-  - 'user2@example.com:1235:12346::::/bin/bash'
+  - 'fqdn@test.ing:242:242::::/bin/bash'
 
 vas::group_override_entries:
-  - 'EXAMPLE\Engineering_Group:enggrp::'
+  - 'TEST\ing:::localuser,fqdn@test.ing'
+
+vas::users_allow_entries:
+  - 'fqdn@test.ing:242:242::::/bin/bash'
+
+vas::users_deny_entries:
+  - 'fqdn@test.ing:242:242::::/bin/bash'
