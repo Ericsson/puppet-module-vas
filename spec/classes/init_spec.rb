@@ -116,8 +116,8 @@ describe 'vas' do
           'content' => content,
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -132,8 +132,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -148,8 +148,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -164,8 +164,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
           'before' => [
             'Service[vasd]',
@@ -184,8 +184,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
           'before' => [
             'Service[vasd]',
@@ -243,9 +243,9 @@ describe 'vas' do
           'before'  => 'Class[Pam]',
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
             'File[keytab]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -564,8 +564,8 @@ describe 'vas' do
             'timeout'  => 1800,
             'require'  => [
               'Package[vasclnt]',
-              'Package[vasyp]',
               'Package[vasgp]',
+              'Package[vasyp]',
             ],
           )
         }

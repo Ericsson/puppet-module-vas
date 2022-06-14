@@ -45,7 +45,7 @@
  search-base = <%= @nismaps_ou %>
  split-groups = true
  update-interval = <%= @vas_conf_vasypd_update_interval %>
- domainname-override = <%= @my_nisdomainname %>
+ domainname-override = <%= @nisdomainname_real %>
 <%  if !@vas_conf_update_process.empty? -%>
  update-process = <%= @vas_conf_update_process %>
 <%  end -%>
@@ -59,7 +59,7 @@
 <% end -%>
 [vasd]
  update-interval = <%= @vas_conf_vasd_update_interval %>
-<% if @upm_search_path_real -%>
+<% if @upm_search_path_real != '' -%>
  upm-search-path = <%= @upm_search_path_real %>
 <% end -%>
  workstation-mode = <%= @vas_conf_vasd_workstation_mode %>

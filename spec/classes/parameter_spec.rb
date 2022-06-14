@@ -48,7 +48,7 @@ describe 'vas' do
 
           case value
           when true
-            package_require = ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]']
+            package_require = ['Package[vasclnt]', 'Package[vasgp]', 'Package[vasyp]']
             service_require = ['Service[vasd]', 'Service[vasypd]']
 
             it { is_expected.to contain_class('nisclient') }
@@ -138,7 +138,7 @@ describe 'vas' do
                       'path'     => '/bin:/usr/bin:/opt/quest/bin',
                       'timeout'  => 1800,
                       'before'   => ['File[vas_config]', 'File[keytab]', 'Exec[vasinst]'],
-                      'require'  => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]'],
+                      'require'  => ['Package[vasclnt]', 'Package[vasgp]', 'Package[vasyp]'],
                     )
                   end
 
@@ -314,7 +314,7 @@ describe 'vas' do
                 'provider' => 'shell',
                 'path'     => '/bin:/usr/bin:/opt/quest/bin',
                 'timeout'  => 1800,
-                'require'  => ['Package[vasclnt]', 'Package[vasyp]', 'Package[vasgp]'],
+                'require'  => ['Package[vasclnt]', 'Package[vasgp]', 'Package[vasyp]'],
               )
             end
           else
