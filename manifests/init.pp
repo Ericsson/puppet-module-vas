@@ -38,34 +38,16 @@
 # @param users_allow_entries
 #  List of users.allow entries. All users are allowed by default.
 #
-# @param users_allow_hiera_merge
-#   Boolean to control merges of all found instances of vas::users_allow_entries
-#   in Hiera. This is useful for specifying users.allow entries at different
-#   levels of the hierarchy and having them all included in the catalog.
-#   This will default to 'true' in future versions.
-#
 # @param users_deny_entries
 #   List of users.deny entries. No users are denied by default.
-#
-# @param users_deny_hiera_merge
-#   Boolean to control merges of all found instances of vas::users_deny_entries
-#   in Hiera. This is useful for specifying users.deny entries at different
-#   levels of the hierarchy and having them all included in the catalog.
-#   This will default to 'true' in future versions.
 #
 # @param user_override_entries
 #   List of user-override entries. Used to override specific user data fields;
 #   UID, GID, GECOS, HOME_DIR and SHELL.
 #
-# @param user_override_hiera_merge
-#   FIXME Missing description
-#
 # @param group_override_entries
 #   List of group-override entries. Used to override specific group data fields;
 #   GROUP_NAME, GID and GROUP_MEMBERSHIP.
-#
-# @param group_override_hiera_merge
-#   FIXME Missing description
 #
 # @param username
 #   Name of user account used to join Active Directory.
@@ -478,8 +460,7 @@
 #   A boolean to control, whether the API function is called. If called, the API
 #   will return a list of entries for the users.allow file. This result will be
 #   merged with whatever content is provided otherwise provided; i.e. it will be
-#   concatenated with the content created by parameters users_allow_entries and
-#   users_allow_hiera_merge.
+#   concatenated with the content created by parameters users_allow_entries.
 #
 # @param api_users_allow_url
 #   The URL towards the API.
@@ -492,13 +473,9 @@ class vas (
   String[1] $package_version                                              = 'installed',
   Boolean $enable_group_policies                                          = true,
   Array[String[1]] $users_allow_entries                                   = [],
-  Boolean $users_allow_hiera_merge                                        = false,
   Array[String[1]] $users_deny_entries                                    = [],
-  Boolean $users_deny_hiera_merge                                         = false,
   Array[String[1]] $user_override_entries                                 = [],
-  Boolean $user_override_hiera_merge                                      = false,
   Array[String[1]] $group_override_entries                                = [],
-  Boolean $group_override_hiera_merge                                     = false,
   String[1] $username                                                     = 'username',
   Stdlib::Absolutepath $keytab_path                                       = '/etc/vasinst.key',
   Optional[String[1]] $keytab_source                                      = undef,
@@ -709,12 +686,6 @@ class vas (
     $my_nisdomainname = $nisdomainname
   }
 
-  if $users_allow_hiera_merge == true {
-    $users_allow_entries_real1 = hiera_array('vas::users_allow_entries')
-  } else {
-    $users_allow_entries_real1 = $users_allow_entries
-  }
-
   if $api_enable == true {
     if $api_users_allow_url == undef or $api_token == undef {
       fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
@@ -724,7 +695,7 @@ class vas (
     # Return value is integer in Puppet 3 and string in Puppet 6
     if $api_users_allow_data[0] == 200 or $api_users_allow_data[0] == '200' {
       $manage_users_allow = true
-      $users_allow_entries_real = concat($users_allow_entries_real1, $api_users_allow_data[1])
+      $users_allow_entries_real = concat($users_allow_entries, $api_users_allow_data[1])
     } else {
       # VAS API is configured but down. Don't manage users_allow to prevent removal of entries.
       $manage_users_allow = false
@@ -732,25 +703,7 @@ class vas (
     }
   } else {
     $manage_users_allow = true
-    $users_allow_entries_real = $users_allow_entries_real1
-  }
-
-  if $users_deny_hiera_merge == true {
-    $users_deny_entries_real = hiera_array('vas::users_deny_entries')
-  } else {
-    $users_deny_entries_real = $users_deny_entries
-  }
-
-  if $user_override_hiera_merge == true {
-    $user_override_entries_real = hiera_array('vas::user_override_entries')
-  } else {
-    $user_override_entries_real = $user_override_entries
-  }
-
-  if $group_override_hiera_merge == true {
-    $group_override_entries_real = hiera_array('vas::group_override_entries')
-  } else {
-    $group_override_entries_real = $group_override_entries
+    $users_allow_entries_real = $users_allow_entries
   }
 
   $once_file = '/etc/opt/quest/vas/puppet_joined'

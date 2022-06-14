@@ -1,3 +1,0 @@
----
-vas::group_override_entries:
-  - 'TEST\ing:::localuser,param@test.ing'

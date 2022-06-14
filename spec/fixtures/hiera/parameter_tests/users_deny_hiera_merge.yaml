@@ -1,3 +1,0 @@
----
-vas::users_deny_entries:
-  - 'param@test.ing:3:3::::/bin/bash'
