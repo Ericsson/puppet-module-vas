@@ -77,12 +77,8 @@
 <% if @group_search_path -%>
  group-search-path = <%= @group_search_path %>
 <% end -%>
-<% if @vas_user_override_path != nil %>
  user-override-file = <%= @vas_user_override_path %>
-<% end -%>
-<% if @vas_group_override_path != nil %>
  group-override-file = <%= @vas_group_override_path %>
-<% end -%>
  auto-ticket-renew-interval = <%= @vas_conf_vasd_auto_ticket_renew_interval %>
  lazy-cache-update-interval = <%= @vas_conf_vasd_lazy_cache_update_interval %>
 <% if @vas_conf_vasd_cross_domain_user_groups_member_search != nil -%>
@@ -170,12 +166,8 @@
 <% end -%>
 
 [vas_auth]
-<% if @vas_users_allow_path != nil -%>
  users-allow-file = <%= @vas_users_allow_path %>
-<% end -%>
-<% if @vas_users_deny_path != nil -%>
  users-deny-file = <%= @vas_users_deny_path %>
-<% end -%>
 <% if @vas_conf_vas_auth_uid_check_limit != nil -%>
  uid-check-limit = <%= @vas_conf_vas_auth_uid_check_limit %>
 <% end -%>

@@ -96,6 +96,9 @@ describe 'vas' do
         |[vasd]
         | update-interval = 600
         | workstation-mode = false
+        | user-override-file = /etc/opt/quest/vas/user-override
+        | group-override-file = /etc/opt/quest/vas/group-override
+
         | auto-ticket-renew-interval = 32400
         | lazy-cache-update-interval = 10
         |
@@ -104,6 +107,8 @@ describe 'vas' do
         | root-update-mode = none
         |
         |[vas_auth]
+        | users-allow-file = /etc/opt/quest/vas/users.allow
+        | users-deny-file = /etc/opt/quest/vas/users.deny
       END
 
       it {
@@ -718,6 +723,8 @@ describe 'vas' do
             | ws-resolve-uid = true
             | user-search-path = OU=unix,DC=example,DC=com; OU=unix,DC=sub,DC=example,DC=com
             | group-search-path = OU=unix,DC=example,DC=com; OU=unix,DC=sub,DC=example,DC=com
+            | user-override-file = /etc/opt/quest/vas/user-override
+            | group-override-file = /etc/opt/quest/vas/group-override
             | auto-ticket-renew-interval = 540
             | lazy-cache-update-interval = 20
             | cross-domain-user-groups-member-search = true
@@ -751,6 +758,8 @@ describe 'vas' do
             | lowercase-homedirs = true
             |
             |[vas_auth]
+            | users-allow-file = /etc/opt/quest/vas/users.allow
+            | users-deny-file = /etc/opt/quest/vas/users.deny
             | uid-check-limit = 100000
             | allow-disconnected-auth = false
             | expand-ac-groups = false

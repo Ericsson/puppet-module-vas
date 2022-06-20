@@ -554,19 +554,19 @@ class vas (
   String[1] $vas_config_owner                                             = 'root',
   String[1] $vas_config_group                                             = 'root',
   Stdlib::Filemode $vas_config_mode                                       = '0644',
-  Optional[Stdlib::Absolutepath] $vas_user_override_path                  = undef,
+  Stdlib::Absolutepath $vas_user_override_path                            = '/etc/opt/quest/vas/user-override',
   String[1] $vas_user_override_owner                                      = 'root',
   String[1] $vas_user_override_group                                      = 'root',
   Stdlib::Filemode $vas_user_override_mode                                = '0644',
-  Optional[Stdlib::Absolutepath] $vas_group_override_path                 = undef,
+  Stdlib::Absolutepath $vas_group_override_path                           = '/etc/opt/quest/vas/group-override',
   String[1] $vas_group_override_owner                                     = 'root',
   String[1] $vas_group_override_group                                     = 'root',
   Stdlib::Filemode $vas_group_override_mode                               = '0644',
-  Optional[Stdlib::Absolutepath] $vas_users_allow_path                    = undef,
+  Stdlib::Absolutepath $vas_users_allow_path                              = '/etc/opt/quest/vas/users.allow',
   String[1] $vas_users_allow_owner                                        = 'root',
   String[1] $vas_users_allow_group                                        = 'root',
   Stdlib::Filemode $vas_users_allow_mode                                  = '0644',
-  Optional[Stdlib::Absolutepath] $vas_users_deny_path                     = undef,
+  Stdlib::Absolutepath $vas_users_deny_path                               = '/etc/opt/quest/vas/users.deny',
   String[1] $vas_users_deny_owner                                         = 'root',
   String[1] $vas_users_deny_group                                         = 'root',
   Stdlib::Filemode $vas_users_deny_mode                                   = '0644',
@@ -761,15 +761,10 @@ class vas (
       require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
 
-    $_vas_users_allow_path = $vas_users_allow_path ? {
-      undef   => '/etc/opt/quest/vas/users.allow',
-      default => $vas_users_allow_path,
-    }
-
     if $manage_users_allow {
       file { 'vas_users_allow':
         ensure  => file,
-        path    => $_vas_users_allow_path,
+        path    => $vas_users_allow_path,
         owner   => $vas_users_allow_owner,
         group   => $vas_users_allow_group,
         mode    => $vas_users_allow_mode,
@@ -778,13 +773,9 @@ class vas (
       }
     }
 
-    $_vas_users_deny_path = $vas_users_deny_path ? {
-      undef   => '/etc/opt/quest/vas/users.deny',
-      default => $vas_users_deny_path,
-    }
     file { 'vas_users_deny':
       ensure  => file,
-      path    => $_vas_users_deny_path,
+      path    => $vas_users_deny_path,
       owner   => $vas_users_deny_owner,
       group   => $vas_users_deny_group,
       mode    => $vas_users_deny_mode,
@@ -792,13 +783,9 @@ class vas (
       require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
 
-    $_vas_user_override_path = $vas_user_override_path ? {
-      undef   => '/etc/opt/quest/vas/user-override',
-      default => $vas_user_override_path,
-    }
     file { 'vas_user_override':
       ensure  => file,
-      path    => $_vas_user_override_path,
+      path    => $vas_user_override_path,
       owner   => $vas_user_override_owner,
       group   => $vas_user_override_group,
       mode    => $vas_user_override_mode,
@@ -807,13 +794,9 @@ class vas (
       before  => [Service['vasd'], $require_yp_service],
     }
 
-    $_vas_group_override_path = $vas_group_override_path ? {
-      undef   => '/etc/opt/quest/vas/group-override',
-      default => $vas_group_override_path,
-    }
     file { 'vas_group_override':
       ensure  => file,
-      path    => $_vas_group_override_path,
+      path    => $vas_group_override_path,
       owner   => $vas_group_override_owner,
       group   => $vas_group_override_group,
       mode    => $vas_group_override_mode,

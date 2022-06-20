@@ -61,8 +61,7 @@ describe 'vas' do
           message: 'expects a Integer|Error while evaluating a Resource Statement',
         },
         'Optional[Stdlib::Absolutepath]' => {
-          name:    ['vas_conf_vasd_delusercheck_script', 'vas_user_override_path', 'vas_group_override_path', 'vas_users_allow_path',
-                    'vas_users_deny_path', 'vas_conf_vasd_password_change_script'],
+          name:    ['vas_conf_vasd_delusercheck_script', 'vas_conf_vasd_password_change_script'],
           valid:   ['/absolute/filepath', '/absolute/directory/', :undef],
           invalid: ['../invalid', ['array'], { 'ha' => 'sh' }, 3, 2.42, false],
           message: 'expects a Stdlib::Absolutepath',
@@ -116,7 +115,8 @@ describe 'vas' do
         },
         'Stdlib::Absolutepath' => {
           name:    ['keytab_path', 'vas_conf_update_process', 'vas_config_path', 'vasjoin_logfile', 'vastool_binary',
-                    'symlink_vastool_binary_target'],
+                    'symlink_vastool_binary_target', 'vas_users_allow_path', 'vas_users_deny_path', 'vas_user_override_path',
+                    'vas_group_override_path'],
           valid:   ['/absolute/filepath', '/absolute/directory/'], # cant test undef :(
           invalid: ['relative/path', 3, 2.42, ['array'], { 'ha' => 'sh' }],
           message: 'expects a Stdlib::Absolutepath',
