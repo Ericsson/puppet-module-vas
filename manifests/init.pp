@@ -634,19 +634,11 @@ class vas (
   if $manage_nis {
     include ::nisclient
 
+    # Use nisdomainname if supplied, or nisclient::domainname as alternative. Use domain fact as fall back only.
+    $nisdomainname_real = pick($nisdomainname, $nisclient::domainname, $::domain)
+
     package { 'vasyp':
       ensure => $package_version,
-    }
-
-    # Use nisdomainname is supplied. If not, use nisclient::domainname if it
-    # exists, last resort fall back to domain fact
-    if $nisdomainname == undef {
-      case $nisclient::domainname {
-        undef:   { $nisdomainname_real = $::domain }
-        default: { $nisdomainname_real = $nisclient::domainname }
-      }
-    } else {
-      $nisdomainname_real = $nisdomainname
     }
 
     if $unjoin_vas == false {
@@ -673,7 +665,9 @@ class vas (
     $require_yp_service = undef
   }
 
-  if $api_enable == true and $api_users_allow_url != undef and $api_token != undef {
+  if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
+    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
+  } elsif $api_enable == true {
     # VAS API is configured so we call it
     $api_users_allow_data = api_fetch($api_users_allow_url, $api_token)
 
@@ -689,11 +683,9 @@ class vas (
         warning("VAS API Error. Code: ${api_users_allow_data[0]}, Error: ${api_users_allow_data[1]}")
       }
     }
-  } elsif $api_enable == false {
+  } else {
     $manage_users_allow = true
     $users_allow_entries_real = $users_allow_entries
-  } else {
-    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
   }
 
   if $unjoin_vas == true and $::vas_domain != undef {
@@ -708,7 +700,8 @@ class vas (
   } elsif $unjoin_vas == false {
     # no run if undef!
     # We should probably have better sanity checks for $realm parameter instead of this.
-    if $realm != undef {
+
+    if $realm != undef and $::vas_domain != undef and $::vas_domain != $realm {
       # So we use the fact vas_domain to identify if vas is already joined to a AD
       # server. It will make sure and check that ::vas_domain is not undef before doing this
       # to prevent something from happening at first run.
@@ -717,8 +710,10 @@ class vas (
       # it will join the domain with help of the lastjoin file.
       # If the domain_change fact is false, it will fail the compilation and warn
       # of the mismatching realm.
-      if $::vas_domain != $realm and $::vas_domain != undef {
-        if $domain_change == true {
+
+      case $domain_change {
+        false:   { fail("VAS domain mismatch, got <${::vas_domain}> but wanted <${realm}>") }
+        default: {
           # This command executes the result of the sed command, puts the log from
           # the unjoin command into a log file and removes the once file to allow
           # the  vas_inst command to join the new AD server.
@@ -745,8 +740,6 @@ class vas (
             before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
             require  => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
           }
-        } else {
-          fail("VAS domain mismatch, got <${::vas_domain}> but wanted <${realm}>")
         }
       }
     }
