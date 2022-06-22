@@ -22,10 +22,6 @@ describe 'vas' do
       it { is_expected.to compile }
 
       it {
-        is_expected.to contain_class('vas::linux')
-      }
-
-      it {
         is_expected.to contain_class('nisclient')
       }
 
@@ -47,6 +43,10 @@ describe 'vas' do
 
       it {
         is_expected.to contain_package('vasgp').with('ensure' => 'installed')
+      }
+
+      it {
+        is_expected.not_to contain_service('vasgpd')
       }
 
       it {
@@ -887,6 +887,23 @@ describe 'vas' do
             )
           }
         end
+      end
+
+      describe 'with VAS version 3.x' do
+        let(:facts) do
+          os_facts.merge(
+            lsbmajdistrelease: os_facts[:os]['release']['major'],
+            vas_version: '3.1.2',
+          )
+        end
+
+        it {
+          is_expected.to contain_service('vasgpd').with(
+            'ensure'    => 'running',
+            'enable'    => true,
+            'subscribe' => 'Exec[vasinst]',
+          )
+        }
       end
     end
   end

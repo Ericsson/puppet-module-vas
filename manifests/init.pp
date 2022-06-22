@@ -588,6 +588,10 @@ class vas (
   Optional[String[1]] $api_token                                          = undef,
 ) {
 
+  if $facts['os']['family'] !~ /Debian|Suse|RedHat/ {
+    fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${::osfamily}>")
+  }
+
   # variable preparations
   case empty($kpasswd_servers) {
     true:    { $kpasswd_servers_real = join(suffix($kdcs, ":${kpasswd_server_port}"), ' ') }
@@ -614,7 +618,20 @@ class vas (
   # functionality
   include ::nsswitch
   include ::pam
-  include ::vas::linux
+
+  $vasver = $vas::package_version ? {
+    'installed' => '',
+    default     => regsubst($vas::package_version, '-', '.'),
+  }
+
+  if "${::vas_version}" =~ /^3/ and ($::vas_version !=undef or $vasver <= $::vas_version) {
+    # vasgpd service only in VAS 3
+    service { 'vasgpd':
+      ensure    => running,
+      enable    => true,
+      subscribe => Exec['vasinst'],
+    }
+  }
 
   $license_files_defaults = {
     'ensure' => 'file',
