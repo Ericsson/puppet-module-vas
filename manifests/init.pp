@@ -80,9 +80,6 @@
 # @param nismaps_ou
 #   Path to OU where to load nismaps initially.
 #
-# @param nismaps_ou
-#   Path to OU where to load nismaps initially.
-#
 # @param user_search_path
 #   LDAP search path for user profiles. This will limit the scope where QAS will
 #   search for users when operating in RFC2307 mode.
@@ -114,6 +111,10 @@
 # @param vas_conf_vasypd_update_interval
 #   Integer for number of seconds vasypd will wait between checks for updated
 #   NIS Map information in Active Directory. See VAS.CONF(5).
+#
+# @param vas_conf_full_update_interval
+#   Integer for number of seconds vasypd will wait until it fully reloads all
+#   the NIS maps. See VAS.CONF(5)
 #
 # @param vas_conf_group_update_mode
 #   The value of group-update-mode in the [nss_vas] configuration section.
@@ -482,7 +483,7 @@ class vas (
   String[1] $keytab_owner                                                 = 'root',
   String[1] $keytab_group                                                 = 'root',
   Stdlib::Filemode $keytab_mode                                           = '0400',
-  Stdlib::Fqdn $vas_fqdn                                                  = $::fqdn,
+  Stdlib::Fqdn $vas_fqdn                                                  = $facts['networking']['fqdn'],
   Optional[String[1]] $computers_ou                                       = undef,
   Optional[String[1]] $users_ou                                           = undef,
   String[1] $nismaps_ou                                                   = 'ou=nismaps,dc=example,dc=com',
@@ -587,7 +588,6 @@ class vas (
   Optional[Stdlib::HTTPSUrl] $api_users_allow_url                         = undef,
   Optional[String[1]] $api_token                                          = undef,
 ) {
-
   if $facts['os']['family'] !~ /Debian|Suse|RedHat/ {
     fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${$facts['os']['family']}>")
   }
@@ -603,28 +603,28 @@ class vas (
     default: { $gp_package_ensure = 'absent' }
   }
 
-  case versioncmp($::vas_version, $vas_conf_libvas_use_server_referrals_version_switch) {
+  case versioncmp($facts['vas_version'], $vas_conf_libvas_use_server_referrals_version_switch) {
     0, 1:    { $vas_conf_libvas_use_server_referrals_default = false } # vas_version is equal (0) or greater (1)
     default: { $vas_conf_libvas_use_server_referrals_default = true }  # vas_version is smaller (-1)
   }
 
   case $vas::package_version {
-    installed: { $vasver = '' }
-    default:   { $vasver = regsubst($vas::package_version, '-', '.') }
+    'installed': { $vasver = '' }
+    default:     { $vasver = regsubst($package_version, '-', '.') }
   }
 
   $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, $vas_conf_libvas_use_server_referrals_default)
   $upm_search_path_real = pick_default($upm_search_path, $users_ou) # Define search paths
   $join_domain_controllers_real = join($join_domain_controllers, ' ')
   $kdcs_real = join(suffix($kdcs, ":${kdc_port}"), ' ')
-  $domain_realms_real = merge({"${vas_fqdn}" => $realm}, $domain_realms)
+  $domain_realms_real = merge( { "${vas_fqdn}" => $realm }, $domain_realms )
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   # functionality
-  include ::nsswitch
-  include ::pam
+  include nsswitch
+  include pam
 
-  if "${::vas_version}" =~ /^3/ and ($::vas_version !=undef or $vasver <= $::vas_version) {
+  if "${facts['vas_version']}" =~ /^3/ and ($facts['vas_version'] !=undef or $vasver <= $facts['vas_version']) { # lint:ignore:only_variable_string lint:ignore:140chars
     # vasgpd service only in VAS 3
     service { 'vasgpd':
       ensure    => running,
@@ -649,10 +649,10 @@ class vas (
   }
 
   if $manage_nis {
-    include ::nisclient
+    include nisclient
 
     # Use nisdomainname if supplied, or nisclient::domainname as alternative. Use domain fact as fall back only.
-    $nisdomainname_real = pick($nisdomainname, $nisclient::domainname, $::domain)
+    $nisdomainname_real = pick($nisdomainname, $nisclient::domainname, $facts['networking']['domain'])
 
     package { 'vasyp':
       ensure => $package_version,
@@ -705,7 +705,7 @@ class vas (
     $users_allow_entries_real = $users_allow_entries
   }
 
-  if $unjoin_vas == true and $::vas_domain != undef {
+  if $unjoin_vas == true and $facts['vas_domain'] != undef {
     exec { 'vas_unjoin':
       command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
       onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
@@ -718,7 +718,7 @@ class vas (
     # no run if undef!
     # We should probably have better sanity checks for $realm parameter instead of this.
 
-    if $realm != undef and $::vas_domain != undef and $::vas_domain != $realm {
+    if $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != $realm {
       # So we use the fact vas_domain to identify if vas is already joined to a AD
       # server. It will make sure and check that ::vas_domain is not undef before doing this
       # to prevent something from happening at first run.
@@ -729,7 +729,7 @@ class vas (
       # of the mismatching realm.
 
       case $domain_change {
-        false:   { fail("VAS domain mismatch, got <${::vas_domain}> but wanted <${realm}>") }
+        false:   { fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>") }
         default: {
           # This command executes the result of the sed command, puts the log from
           # the unjoin command into a log file and removes the once file to allow
@@ -832,7 +832,7 @@ class vas (
 
     case $sitenameoverride {
       undef:   { $s_opts = undef }
-      default: { $s_opts = "-s ${sitenameoverride}"}
+      default: { $s_opts = "-s ${sitenameoverride}" }
     }
 
     case $user_search_path {
