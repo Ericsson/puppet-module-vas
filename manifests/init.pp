@@ -608,6 +608,11 @@ class vas (
     default: { $vas_conf_libvas_use_server_referrals_default = true }  # vas_version is smaller (-1)
   }
 
+  case $vas::package_version {
+    installed: { $vasver = '' }
+    default:   { $vasver = regsubst($vas::package_version, '-', '.') }
+  }
+
   $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, $vas_conf_libvas_use_server_referrals_default)
   $upm_search_path_real = pick_default($upm_search_path, $users_ou) # Define search paths
   $join_domain_controllers_real = join($join_domain_controllers, ' ')
@@ -618,11 +623,6 @@ class vas (
   # functionality
   include ::nsswitch
   include ::pam
-
-  $vasver = $vas::package_version ? {
-    'installed' => '',
-    default     => regsubst($vas::package_version, '-', '.'),
-  }
 
   if "${::vas_version}" =~ /^3/ and ($::vas_version !=undef or $vasver <= $::vas_version) {
     # vasgpd service only in VAS 3
@@ -830,29 +830,29 @@ class vas (
       require => Exec['vasinst'],
     }
 
-    $s_opts = $sitenameoverride ? {
-      undef   => undef,
-      default => "-s ${sitenameoverride}",
+    case $sitenameoverride {
+      undef:   { $s_opts = undef }
+      default: { $s_opts = "-s ${sitenameoverride}"}
     }
 
-    $user_search_path_exec = $user_search_path ? {
-      undef   => undef,
-      default => "-u ${user_search_path}",
+    case $user_search_path {
+      undef:   { $user_search_path_exec = undef }
+      default: { $user_search_path_exec = "-u ${user_search_path}" }
     }
 
-    $group_search_path_exec = $group_search_path ? {
-      undef   => undef,
-      default => "-g ${group_search_path}",
+    case $group_search_path {
+      undef:   { $group_search_path_exec = undef }
+      default: { $group_search_path_exec = "-g ${group_search_path}" }
     }
 
-    $workstation_exec = $vas_conf_vasd_workstation_mode ? {
-      false   => undef,
-      default => '-w',
+    case $vas_conf_vasd_workstation_mode {
+      false:   { $workstation_exec = undef }
+      default: { $workstation_exec = '-w' }
     }
 
-    $upm_search_path_exec = $upm_search_path_real ? {
-      ''      => undef,
-      default => "-p ${upm_search_path_real}",
+    case $upm_search_path_real {
+      '':      { $upm_search_path_exec = undef }
+      default: { $upm_search_path_exec = "-p ${upm_search_path_real}" }
     }
 
     exec { 'vasinst':
