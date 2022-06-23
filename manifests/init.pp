@@ -589,7 +589,7 @@ class vas (
 ) {
 
   if $facts['os']['family'] !~ /Debian|Suse|RedHat/ {
-    fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${::osfamily}>")
+    fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${$facts['os']['family']}>")
   }
 
   # variable preparations

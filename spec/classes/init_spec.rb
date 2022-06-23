@@ -907,4 +907,16 @@ describe 'vas' do
       end
     end
   end
+
+  describe 'on unsupported osfamily' do
+    let(:facts) do
+      {
+        os: { family: 'unsupported' },
+      }
+    end
+
+    it 'fails' do
+      expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{Vas supports Debian, Suse, and RedHat})
+    end
+  end
 end
