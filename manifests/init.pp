@@ -620,11 +620,26 @@ class vas (
   $domain_realms_real = merge( { "${vas_fqdn}" => $realm }, $domain_realms )
   $once_file = '/etc/opt/quest/vas/puppet_joined'
 
+  if $facts['vas_version'] =~ /^3/ and ($facts['vas_version'] !=undef or $vasver <= $facts['vas_version']) {
+    $_vas_is_v3 = true
+  } else {
+    $_vas_is_v3 = false
+  }
+
+  if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
+    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
+  } else {
+    case $api_enable {
+      true:    { $_api_configuration_complete = true }
+      default: { $_api_configuration_complete = false }
+    }
+  }
+
   # functionality
   include nsswitch
   include pam
 
-  if "${facts['vas_version']}" =~ /^3/ and ($facts['vas_version'] !=undef or $vasver <= $facts['vas_version']) { # lint:ignore:only_variable_string lint:ignore:140chars
+  if $_vas_is_v3 == true {
     # vasgpd service only in VAS 3
     service { 'vasgpd':
       ensure    => running,
@@ -682,10 +697,7 @@ class vas (
     $require_yp_service = undef
   }
 
-  if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
-    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
-  } elsif $api_enable == true {
-    # VAS API is configured so we call it
+  if $_api_configuration_complete == true {
     $api_users_allow_data = api_fetch($api_users_allow_url, $api_token)
 
     case $api_users_allow_data[0] {
