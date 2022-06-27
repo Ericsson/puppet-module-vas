@@ -8,6 +8,10 @@
 
 * [`vas`](#vas): Manages Dell Authentication Services previously known as VAS / QAS.
 
+### Functions
+
+* [`api_fetch`](#api_fetch)
+
 ## Classes
 
 ### <a name="vas"></a>`vas`
@@ -62,7 +66,6 @@ The following parameters are available in the `vas` class:
 * [`computers_ou`](#computers_ou)
 * [`users_ou`](#users_ou)
 * [`nismaps_ou`](#nismaps_ou)
-* [`nismaps_ou`](#nismaps_ou)
 * [`user_search_path`](#user_search_path)
 * [`group_search_path`](#group_search_path)
 * [`upm_search_path`](#upm_search_path)
@@ -72,6 +75,7 @@ The following parameters are available in the `vas` class:
 * [`sitenameoverride`](#sitenameoverride)
 * [`vas_conf_client_addrs`](#vas_conf_client_addrs)
 * [`vas_conf_vasypd_update_interval`](#vas_conf_vasypd_update_interval)
+* [`vas_conf_full_update_interval`](#vas_conf_full_update_interval)
 * [`vas_conf_group_update_mode`](#vas_conf_group_update_mode)
 * [`vas_conf_root_update_mode`](#vas_conf_root_update_mode)
 * [`vas_conf_disabled_user_pwhash`](#vas_conf_disabled_user_pwhash)
@@ -162,7 +166,6 @@ The following parameters are available in the `vas` class:
 * [`api_enable`](#api_enable)
 * [`api_users_allow_url`](#api_users_allow_url)
 * [`api_token`](#api_token)
-* [`vas_conf_full_update_interval`](#vas_conf_full_update_interval)
 
 ##### <a name="manage_nis"></a>`manage_nis`
 
@@ -277,7 +280,7 @@ Data type: `Stdlib::Fqdn`
 
 FQDN to join to VAS as.
 
-Default value: `$::fqdn`
+Default value: `$facts['networking']['fqdn']`
 
 ##### <a name="computers_ou"></a>`computers_ou`
 
@@ -299,12 +302,6 @@ Default value: ``undef``
 ##### <a name="nismaps_ou"></a>`nismaps_ou`
 
 Data type: `String[1]`
-
-Path to OU where to load nismaps initially.
-
-Default value: `'ou=nismaps,dc=example,dc=com'`
-
-##### <a name="nismaps_ou"></a>`nismaps_ou`
 
 Path to OU where to load nismaps initially.
 
@@ -386,6 +383,15 @@ Integer for number of seconds vasypd will wait between checks for updated
 NIS Map information in Active Directory. See VAS.CONF(5).
 
 Default value: `1800`
+
+##### <a name="vas_conf_full_update_interval"></a>`vas_conf_full_update_interval`
+
+Data type: `Optional[Integer]`
+
+Integer for number of seconds vasypd will wait until it fully reloads all
+the NIS maps. See VAS.CONF(5)
+
+Default value: ``undef``
 
 ##### <a name="vas_conf_group_update_mode"></a>`vas_conf_group_update_mode`
 
@@ -1190,11 +1196,17 @@ Security token for authenticated access to the API.
 
 Default value: ``undef``
 
-##### <a name="vas_conf_full_update_interval"></a>`vas_conf_full_update_interval`
+## Functions
 
-Data type: `Optional[Integer]`
+### <a name="api_fetch"></a>`api_fetch`
 
+Type: Ruby 3.x API
 
+The api_fetch function.
 
-Default value: ``undef``
+#### `api_fetch()`
+
+The api_fetch function.
+
+Returns: `Any`
 
