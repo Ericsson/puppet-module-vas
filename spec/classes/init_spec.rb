@@ -22,10 +22,6 @@ describe 'vas' do
       it { is_expected.to compile }
 
       it {
-        is_expected.to contain_class('vas::linux')
-      }
-
-      it {
         is_expected.to contain_class('nisclient')
       }
 
@@ -47,6 +43,10 @@ describe 'vas' do
 
       it {
         is_expected.to contain_package('vasgp').with('ensure' => 'installed')
+      }
+
+      it {
+        is_expected.not_to contain_service('vasgpd')
       }
 
       it {
@@ -96,6 +96,9 @@ describe 'vas' do
         |[vasd]
         | update-interval = 600
         | workstation-mode = false
+        | user-override-file = /etc/opt/quest/vas/user-override
+        | group-override-file = /etc/opt/quest/vas/group-override
+
         | auto-ticket-renew-interval = 32400
         | lazy-cache-update-interval = 10
         |
@@ -104,6 +107,8 @@ describe 'vas' do
         | root-update-mode = none
         |
         |[vas_auth]
+        | users-allow-file = /etc/opt/quest/vas/users.allow
+        | users-deny-file = /etc/opt/quest/vas/users.deny
       END
 
       it {
@@ -116,8 +121,8 @@ describe 'vas' do
           'content' => content,
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -132,8 +137,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -148,8 +153,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -164,8 +169,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
           'before' => [
             'Service[vasd]',
@@ -184,8 +189,8 @@ describe 'vas' do
           'content' => "# This file is being maintained by Puppet.\n# DO NOT EDIT\n",
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
+            'Package[vasyp]',
           ],
           'before' => [
             'Service[vasd]',
@@ -243,9 +248,9 @@ describe 'vas' do
           'before'  => 'Class[Pam]',
           'require' => [
             'Package[vasclnt]',
-            'Package[vasyp]',
             'Package[vasgp]',
             'File[keytab]',
+            'Package[vasyp]',
           ],
         )
       }
@@ -564,8 +569,8 @@ describe 'vas' do
             'timeout'  => 1800,
             'require'  => [
               'Package[vasclnt]',
-              'Package[vasyp]',
               'Package[vasgp]',
+              'Package[vasyp]',
             ],
           )
         }
@@ -718,6 +723,8 @@ describe 'vas' do
             | ws-resolve-uid = true
             | user-search-path = OU=unix,DC=example,DC=com; OU=unix,DC=sub,DC=example,DC=com
             | group-search-path = OU=unix,DC=example,DC=com; OU=unix,DC=sub,DC=example,DC=com
+            | user-override-file = /etc/opt/quest/vas/user-override
+            | group-override-file = /etc/opt/quest/vas/group-override
             | auto-ticket-renew-interval = 540
             | lazy-cache-update-interval = 20
             | cross-domain-user-groups-member-search = true
@@ -751,6 +758,8 @@ describe 'vas' do
             | lowercase-homedirs = true
             |
             |[vas_auth]
+            | users-allow-file = /etc/opt/quest/vas/users.allow
+            | users-deny-file = /etc/opt/quest/vas/users.deny
             | uid-check-limit = 100000
             | allow-disconnected-auth = false
             | expand-ac-groups = false
@@ -879,6 +888,35 @@ describe 'vas' do
           }
         end
       end
+
+      describe 'with VAS version 3.x' do
+        let(:facts) do
+          os_facts.merge(
+            lsbmajdistrelease: os_facts[:os]['release']['major'],
+            vas_version: '3.1.2',
+          )
+        end
+
+        it {
+          is_expected.to contain_service('vasgpd').with(
+            'ensure'    => 'running',
+            'enable'    => true,
+            'subscribe' => 'Exec[vasinst]',
+          )
+        }
+      end
+    end
+  end
+
+  describe 'on unsupported osfamily' do
+    let(:facts) do
+      {
+        os: { family: 'unsupported' },
+      }
+    end
+
+    it 'fails' do
+      expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{Vas supports Debian, Suse, and RedHat})
     end
   end
 end
