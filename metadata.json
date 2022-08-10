@@ -1,6 +1,6 @@
 {
   "name": "ericsson-vas",
-  "version": "0.30.1",
+  "version": "1.0.0",
   "author": "ericsson",
   "summary": "Manage VAS",
   "license": "Apache-2.0",
