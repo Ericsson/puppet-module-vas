@@ -588,11 +588,17 @@ class vas (
   Optional[Stdlib::HTTPSUrl] $api_users_allow_url                         = undef,
   Optional[String[1]] $api_token                                          = undef,
 ) {
+  # variable preparations
+  $once_file = '/etc/opt/quest/vas/puppet_joined'
+  $upm_search_path_real = pick_default($upm_search_path, $users_ou) # Define search paths
+  $join_domain_controllers_real = join($join_domain_controllers, ' ')
+  $kdcs_real = join(suffix($kdcs, ":${kdc_port}"), ' ')
+  $domain_realms_real = merge( { "${vas_fqdn}" => $realm }, $domain_realms )
+
   if $facts['os']['family'] !~ /Debian|Suse|RedHat/ {
     fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${$facts['os']['family']}>")
   }
 
-  # variable preparations
   case empty($kpasswd_servers) {
     true:    { $kpasswd_servers_real = join(suffix($kdcs, ":${kpasswd_server_port}"), ' ') }
     default: { $kpasswd_servers_real = join(suffix($kpasswd_servers, ":${kpasswd_server_port}"), ' ') }
@@ -604,21 +610,14 @@ class vas (
   }
 
   case versioncmp($facts['vas_version'], $vas_conf_libvas_use_server_referrals_version_switch) {
-    0, 1:    { $vas_conf_libvas_use_server_referrals_default = false } # vas_version is equal (0) or greater (1)
-    default: { $vas_conf_libvas_use_server_referrals_default = true }  # vas_version is smaller (-1)
+    0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) or greater (1)
+    default: { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, true) }  # smaller (-1)
   }
 
-  case $vas::package_version {
+  case $package_version {
     'installed': { $vasver = '' }
     default:     { $vasver = regsubst($package_version, '-', '.') }
   }
-
-  $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, $vas_conf_libvas_use_server_referrals_default)
-  $upm_search_path_real = pick_default($upm_search_path, $users_ou) # Define search paths
-  $join_domain_controllers_real = join($join_domain_controllers, ' ')
-  $kdcs_real = join(suffix($kdcs, ":${kdc_port}"), ' ')
-  $domain_realms_real = merge( { "${vas_fqdn}" => $realm }, $domain_realms )
-  $once_file = '/etc/opt/quest/vas/puppet_joined'
 
   if $facts['vas_version'] =~ /^3/ and ($facts['vas_version'] !=undef or $vasver <= $facts['vas_version']) {
     $_vas_is_v3 = true
@@ -626,69 +625,37 @@ class vas (
     $_vas_is_v3 = false
   }
 
-  if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
-    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
-  } else {
-    case $api_enable {
-      true:    { $_api_configuration_complete = true }
-      default: { $_api_configuration_complete = false }
-    }
+  case $sitenameoverride {
+    undef:   { $s_opts = undef }
+    default: { $s_opts = "-s ${sitenameoverride}" }
   }
 
-  # functionality
-  include nsswitch
-  include pam
-
-  if $_vas_is_v3 == true {
-    # vasgpd service only in VAS 3
-    service { 'vasgpd':
-      ensure    => running,
-      enable    => true,
-      subscribe => Exec['vasinst'],
-    }
+  case $user_search_path {
+    undef:   { $user_search_path_exec = undef }
+    default: { $user_search_path_exec = "-u ${user_search_path}" }
   }
 
-  $license_files_defaults = {
-    'ensure' => 'file',
-    'path' => '/etc/opt/quest/vas/.licenses/VAS_license',
-    'require' => Package['vasclnt'],
-  }
-  create_resources(file, $license_files, $license_files_defaults)
-
-  package { 'vasgp':
-    ensure => $gp_package_ensure,
+  case $group_search_path {
+    undef:   { $group_search_path_exec = undef }
+    default: { $group_search_path_exec = "-g ${group_search_path}" }
   }
 
-  package { 'vasclnt':
-    ensure => $package_version,
+  case $vas_conf_vasd_workstation_mode {
+    false:   { $workstation_exec = undef }
+    default: { $workstation_exec = '-w' }
+  }
+
+  case $upm_search_path_real {
+    '':      { $upm_search_path_exec = undef }
+    default: { $upm_search_path_exec = "-p ${upm_search_path_real}" }
   }
 
   if $manage_nis {
+    # nisclient needs to be included here already because the following pick() needs it
     include nisclient
 
     # Use nisdomainname if supplied, or nisclient::domainname as alternative. Use domain fact as fall back only.
     $nisdomainname_real = pick($nisdomainname, $nisclient::domainname, $facts['networking']['domain'])
-
-    package { 'vasyp':
-      ensure => $package_version,
-    }
-
-    if $unjoin_vas == false {
-      exec { 'Process check Vasypd' :
-        path    => '/usr/bin:/bin',
-        command => 'rm -f /var/opt/quest/vas/vasypd/.vasypd.pid',
-        unless  => 'ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd',
-        before  => Service['vasypd'],
-        notify  => Service['vasypd'],
-      }
-
-      service { 'vasypd':
-        ensure  => 'running',
-        enable  => true,
-        require => Service['vasd'],
-        before  => Class['nisclient'],
-      }
-    }
 
     $require_yp_package = Package['vasyp']
     $require_yp_service = Service['vasypd']
@@ -697,7 +664,10 @@ class vas (
     $require_yp_service = undef
   }
 
-  if $_api_configuration_complete == true {
+  # functionality
+  if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
+    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
+  } elsif $api_enable == true {
     $api_users_allow_data = api_fetch($api_users_allow_url, $api_token)
 
     case $api_users_allow_data[0] {
@@ -726,53 +696,99 @@ class vas (
       timeout  => 1800,
       require  => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
-  } elsif $unjoin_vas == false {
-    # no run if undef!
-    # We should probably have better sanity checks for $realm parameter instead of this.
 
-    if $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != $realm {
-      # So we use the fact vas_domain to identify if vas is already joined to a AD
-      # server. It will make sure and check that ::vas_domain is not undef before doing this
-      # to prevent something from happening at first run.
-      # If the vas_domain fact is not the same as the realm specified in hiera it
-      # will then check if the domain_change parameter is set to true. If it is
-      # it will join the domain with help of the lastjoin file.
-      # If the domain_change fact is false, it will fail the compilation and warn
-      # of the mismatching realm.
+    # So we use the fact vas_domain to identify if vas is already joined to a AD
+    # server. It will make sure and check that ::vas_domain is not undef before doing this
+    # to prevent something from happening at first run.
+    # If the vas_domain fact is not the same as the realm specified in hiera it
+    # will then check if the domain_change parameter is set to true. If it is
+    # it will join the domain with help of the lastjoin file.
+    # If the domain_change fact is false, it will fail the compilation and warn
+    # of the mismatching realm.
+  } elsif $unjoin_vas == false and $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != $realm and $domain_change == true { #lint:ignore:140chars
+    # This command executes the result of the sed command, puts the log from
+    # the unjoin command into a log file and removes the once file to allow
+    # the  vas_inst command to join the new AD server.
+    # This is how the join command is built up by the vas module.
+    # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} \
+    # -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
+    # The sed regex will save everything up to but not including the join part.
+    # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
+    # It will save the part above and add to the end of it unjoin.
+    # The result would be ${vastool_binary} -u ${username} -k ${keytab_path} -d3 unjoin
+    #
+    # This sed command is required because we need to use the old credentials
+    # and old username to unjoin the currently joined AD.
+    # It could be that you need to use a newly created keytab file for perhaps
+    # the same/new user required to join the new AD Server. So to join the
+    # new AD server we would need updated hiera information for that. Preventing
+    # us from using the new hiera data to unjoin the current AD Server.
+    exec { 'vas_change_domain':
+      command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
+      onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
+      provider => 'shell',
+      path     => '/bin:/usr/bin:/opt/quest/bin',
+      timeout  => 1800,
+      before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
+      require  => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
+    }
+  } elsif $unjoin_vas == false and $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != $realm and $domain_change == false { #lint:ignore:140chars
+    fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>")
+  }
 
-      case $domain_change {
-        false:   { fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>") }
-        default: {
-          # This command executes the result of the sed command, puts the log from
-          # the unjoin command into a log file and removes the once file to allow
-          # the  vas_inst command to join the new AD server.
-          # This is how the join command is built up by the vas module.
-          # ${vastool_binary} -u ${username} -k ${keytab_path} -d3 join -f ${workstation_flag} \
-          # -c ${computers_ou} ${user_search_path_parm} ${group_search_path_parm} ${upm_search_path_parm} -n ${vas_fqdn}
-          # The sed regex will save everything up to but not including the join part.
-          # (${vastool_binary} -u ${username} -k ${keytab_path} -d3 )
-          # It will save the part above and add to the end of it unjoin.
-          # The result would be ${vastool_binary} -u ${username} -k ${keytab_path} -d3 unjoin
-          #
-          # This sed command is required because we need to use the old credentials
-          # and old username to unjoin the currently joined AD.
-          # It could be that you need to use a newly created keytab file for perhaps
-          # the same/new user required to join the new AD Server. So to join the
-          # new AD server we would need updated hiera information for that. Preventing
-          # us from using the new hiera data to unjoin the current AD Server.
-          exec { 'vas_change_domain':
-            command  => "$(sed 's/\\(.*\\)join.*/\\1unjoin/' /etc/opt/quest/vas/lastjoin) > /tmp/vas_unjoin.txt 2>&1 && rm -f ${once_file}",
-            onlyif   => "/usr/bin/test -f ${keytab_path} && /usr/bin/test -f /etc/opt/quest/vas/lastjoin",
-            provider => 'shell',
-            path     => '/bin:/usr/bin:/opt/quest/bin',
-            timeout  => 1800,
-            before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
-            require  => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
-          }
-        }
-      }
+  include nsswitch
+  include pam
+
+  if $_vas_is_v3 == true {
+    # vasgpd service only in VAS 3
+    service { 'vasgpd':
+      ensure    => running,
+      enable    => true,
+      subscribe => Exec['vasinst'],
+    }
+  }
+
+  $license_files_defaults = {
+    'ensure' => 'file',
+    'path' => '/etc/opt/quest/vas/.licenses/VAS_license',
+    'require' => Package['vasclnt'],
+  }
+  create_resources(file, $license_files, $license_files_defaults)
+
+  package { 'vasgp':
+    ensure => $gp_package_ensure,
+  }
+
+  package { 'vasclnt':
+    ensure => $package_version,
+  }
+
+  if $manage_nis {
+    package { 'vasyp':
+      ensure => $package_version,
     }
 
+    if $unjoin_vas == false {
+      exec { 'Process check Vasypd' :
+        path    => '/usr/bin:/bin',
+        command => 'rm -f /var/opt/quest/vas/vasypd/.vasypd.pid',
+        unless  => 'ps -p `cat /var/opt/quest/vas/vasypd/.vasypd.pid` | grep .vasypd',
+        before  => Service['vasypd'],
+        notify  => Service['vasypd'],
+      }
+
+      service { 'vasypd':
+        ensure  => 'running',
+        enable  => true,
+        require => Service['vasd'],
+        before  => Class['nisclient'],
+      }
+    }
+  }
+
+  # no run if undef!
+  # We should probably have better sanity checks for $realm parameter instead of this.
+  if $unjoin_vas == false {
     file { 'vas_config':
       ensure  => file,
       path    => $vas_config_path,
@@ -840,31 +856,6 @@ class vas (
       ensure  => 'running',
       enable  => true,
       require => Exec['vasinst'],
-    }
-
-    case $sitenameoverride {
-      undef:   { $s_opts = undef }
-      default: { $s_opts = "-s ${sitenameoverride}" }
-    }
-
-    case $user_search_path {
-      undef:   { $user_search_path_exec = undef }
-      default: { $user_search_path_exec = "-u ${user_search_path}" }
-    }
-
-    case $group_search_path {
-      undef:   { $group_search_path_exec = undef }
-      default: { $group_search_path_exec = "-g ${group_search_path}" }
-    }
-
-    case $vas_conf_vasd_workstation_mode {
-      false:   { $workstation_exec = undef }
-      default: { $workstation_exec = '-w' }
-    }
-
-    case $upm_search_path_real {
-      '':      { $upm_search_path_exec = undef }
-      default: { $upm_search_path_exec = "-p ${upm_search_path_real}" }
     }
 
     exec { 'vasinst':
