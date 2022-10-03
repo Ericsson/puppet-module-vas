@@ -609,9 +609,13 @@ class vas (
     default: { $gp_package_ensure = 'absent' }
   }
 
-  case versioncmp($facts['vas_version'], $vas_conf_libvas_use_server_referrals_version_switch) {
-    0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) or greater (1)
-    default: { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, true) }  # smaller (-1)
+  if $facts['vas_version'] {
+    case versioncmp($facts['vas_version'], $vas_conf_libvas_use_server_referrals_version_switch) {
+      0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) or greater (1)
+      default: { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, true) }  # smaller (-1)
+    }
+  } else {
+    $vas_conf_libvas_use_server_referrals_default = false
   }
 
   case $package_version {
@@ -619,7 +623,7 @@ class vas (
     default:     { $vasver = regsubst($package_version, '-', '.') }
   }
 
-  if $facts['vas_version'] =~ /^3/ and ($facts['vas_version'] !=undef or $vasver <= $facts['vas_version']) {
+  if $facts['vas_version'] and ($facts['vas_version'] =~ /^3/ and ($facts['vas_version'] !=undef or $vasver <= $facts['vas_version'])) {
     $_vas_is_v3 = true
   } else {
     $_vas_is_v3 = false
