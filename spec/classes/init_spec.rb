@@ -259,6 +259,17 @@ describe 'vas' do
         is_expected.not_to contain_file('vastool_symlink')
       }
 
+      describe 'with fact vas_version missing' do
+        vas_version_missing = { vas_version: nil }
+        let(:facts) do
+          os_facts.merge(
+            vas_version_missing,
+          )
+        end
+
+        it { is_expected.to compile }
+      end
+
       describe 'with users.{allow,deny} configured' do
         context 'with API enabled' do
           api_enabled = { 'api_enable': true }
