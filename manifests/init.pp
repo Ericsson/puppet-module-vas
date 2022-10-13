@@ -736,7 +736,7 @@ class vas (
       before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
       require  => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
-  } elsif $unjoin_vas == false and $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != $realm and $domain_change == false { #lint:ignore:140chars
+  } elsif $unjoin_vas == false and $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != '' and $facts['vas_domain'] != $realm and $domain_change == false { #lint:ignore:140chars
     fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>")
   }
 
