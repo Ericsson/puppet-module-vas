@@ -611,7 +611,7 @@ class vas (
 
   if $facts['vas_version'] {
     case versioncmp($facts['vas_version'], $vas_conf_libvas_use_server_referrals_version_switch) {
-      0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) or greater (1)
+      0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) & greater (1)
       default: { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, true) }  # smaller (-1)
     }
   } else {
