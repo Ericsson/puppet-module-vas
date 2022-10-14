@@ -611,7 +611,7 @@ class vas (
 
   if $facts['vas_version'] {
     case versioncmp($facts['vas_version'], $vas_conf_libvas_use_server_referrals_version_switch) {
-      0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) or greater (1)
+      0, 1:    { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, false) } # equal (0) & greater (1)
       default: { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, true) }  # smaller (-1)
     }
   } else {
@@ -736,7 +736,7 @@ class vas (
       before   => [File['vas_config'], File['keytab'], Exec['vasinst']],
       require  => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
-  } elsif $unjoin_vas == false and $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != $realm and $domain_change == false { #lint:ignore:140chars
+  } elsif $unjoin_vas == false and $realm != undef and $facts['vas_domain'] != undef and $facts['vas_domain'] != '' and $facts['vas_domain'] != $realm and $domain_change == false { #lint:ignore:140chars
     fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>")
   }
 
