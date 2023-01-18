@@ -593,7 +593,7 @@ class vas (
   $upm_search_path_real = pick_default($upm_search_path, $users_ou) # Define search paths
   $join_domain_controllers_real = join($join_domain_controllers, ' ')
   $kdcs_real = join(suffix($kdcs, ":${kdc_port}"), ' ')
-  $domain_realms_real = merge( { "${vas_fqdn}" => $realm }, $domain_realms )
+  $domain_realms_real = merge({ "${vas_fqdn}" => $realm }, $domain_realms )
 
   if $facts['os']['family'] !~ /Debian|Suse|RedHat/ {
     fail("Vas supports Debian, Suse, and RedHat. Detected osfamily is <${$facts['os']['family']}>")
