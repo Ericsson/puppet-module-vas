@@ -93,7 +93,7 @@
     }
   ],
   "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
-  "pdk-version": "2.6.0",
+  "pdk-version": "2.6.1",
   "template-url": "pdk-default#2.7.1",
   "template-ref": "tags/2.7.1-0-g9a16c87"
 }
