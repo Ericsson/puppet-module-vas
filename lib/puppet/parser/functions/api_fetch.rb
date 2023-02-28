@@ -30,8 +30,8 @@ module Puppet::Parser::Functions
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
     https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    https.open_timeout = 5
-    https.read_timeout = 5
+    https.open_timeout = 2
+    https.read_timeout = 2
 
     begin
       response = https.start do |cx|
