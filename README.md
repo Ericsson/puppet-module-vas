@@ -12,6 +12,7 @@ This module aims to support the current and previous major Puppet versions.
  * RedHat OS family 6
  * RedHat OS family 7
  * RedHat OS family 8
+ * RedHat OS family 9
  * Suse OS family 11
  * Suse OS family 12
  * Suse OS family 15
