@@ -16,7 +16,7 @@
       "name": "ghoneycutt/nsswitch"
     },
     {
-      "version_requirement": ">= 3.7.0 < 4.0.0",
+      "version_requirement": ">= 3.10.0 < 4.0.0",
       "name": "ghoneycutt/pam"
     },
     {
@@ -34,7 +34,8 @@
       "operatingsystemrelease": [
         "6",
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
@@ -42,7 +43,8 @@
       "operatingsystemrelease": [
         "6",
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
@@ -50,7 +52,8 @@
       "operatingsystemrelease": [
         "6",
         "7",
-        "8"
+        "8",
+        "9"
       ]
     },
     {
@@ -82,7 +85,8 @@
       "operatingsystemrelease": [
         "16.04",
         "18.04",
-        "20.04"
+        "20.04",
+        "22.04"
       ]
     }
   ],
