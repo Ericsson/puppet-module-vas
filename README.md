@@ -19,6 +19,7 @@ This module aims to support the current and previous major Puppet versions.
  * Ubuntu 16.04
  * Ubuntu 18.04
  * Ubuntu 20.04
+ * Ubuntu 22.04
 
 RedHat OS family members are: RedHat/CentOS/Scientific/OracleLinux
 Suse OS family members are: SLED/SLES
