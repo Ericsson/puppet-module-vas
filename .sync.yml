@@ -20,6 +20,10 @@ Gemfile:
       - gem: 'github_changelog_generator'
         version: '~> 1.15'
         condition: "Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.3.0')"
+      - gem: 'webmock'
+        #linter_options:
+        #  - 'no-parameter_types-check'
+        #  - 'no-legacy_facts'
     ':test':
       # provides metadata2gha, needed for unit tests
       - gem: 'puppet_metadata'

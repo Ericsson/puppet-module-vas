@@ -35,6 +35,7 @@ group :development do
   gem "rubocop-rspec", '= 2.0.1',                      require: false
   gem "rb-readline", '= 0.5.5',                        require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "github_changelog_generator", '~> 1.15',         require: false if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.3.0')
+  gem "webmock",                                       require: false
 end
 group :system_tests do
   gem "puppet_litmus", '< 1.0.0', require: false, platforms: [:ruby]
