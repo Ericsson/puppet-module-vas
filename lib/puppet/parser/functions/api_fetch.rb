@@ -46,7 +46,7 @@ module Puppet::Parser::Functions
         return response.code, nil
       end
     rescue => error
-      return 0, error
+      return 0, error.message
     end
   end
 end

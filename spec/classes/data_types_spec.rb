@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'webmock/rspec'
 
 describe 'vas' do
   test_on = {
@@ -10,6 +11,13 @@ describe 'vas' do
         'operatingsystemrelease' => ['8'],
       },
     ],
+  }
+
+  headers = {
+    'Accept' => 'text/plain',
+    'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+    'Authorization' => 'Bearer somesecret',
+    'User-Agent' => 'Ruby'
   }
 
   on_supported_os(test_on).each do |_os, os_facts|
@@ -174,7 +182,15 @@ describe 'vas' do
             context "when #{var_name} (#{type}) is set to valid #{valid} (as #{valid.class})" do
               let(:params) { [mandatory_params, var[:params], { "#{var_name}": valid, }].reduce(:merge) }
 
-              it { is_expected.to compile }
+              it do
+                stub_request(:get, 'https://test.ing/')
+                  .with(headers: headers)
+
+                stub_request(:get, 'https://api.example.local')
+                  .with(headers: headers)
+
+                is_expected.to compile
+              end
             end
           end
 
