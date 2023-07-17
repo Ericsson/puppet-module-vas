@@ -18,7 +18,7 @@ describe 'api_fetch' do
       it do
         is_expected.to run
           .with_params
-          .and_raise_error(Puppet::ParseError, 'api_fetch(): Wrong number of arguments given (0 for 2)')
+          .and_raise_error(ArgumentError, '\'api_fetch\' expects 2 arguments, got none')
       end
     end
 
@@ -26,7 +26,7 @@ describe 'api_fetch' do
       it do
         is_expected.to run
           .with_params(url)
-          .and_raise_error(Puppet::ParseError, 'api_fetch(): Wrong number of arguments given (1 for 2)')
+          .and_raise_error(ArgumentError, '\'api_fetch\' expects 2 arguments, got 1')
       end
     end
   end
@@ -35,7 +35,7 @@ describe 'api_fetch' do
     it do
       is_expected.to run
         .with_params(1, 'somesecret')
-        .and_raise_error(%r{Argument must be a string})
+        .and_raise_error(ArgumentError, %r{'api_fetch' parameter 'url' expects a match for Stdlib::HTTPUrl.* got Integer})
     end
   end
 
@@ -43,7 +43,7 @@ describe 'api_fetch' do
     it do
       is_expected.to run
         .with_params(url, 1)
-        .and_raise_error(%r{Argument must be a string})
+        .and_raise_error(ArgumentError, '\'api_fetch\' parameter \'token\' expects a String value, got Integer')
     end
   end
 

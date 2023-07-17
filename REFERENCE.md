@@ -10,7 +10,7 @@
 
 ### Functions
 
-* [`api_fetch`](#api_fetch)
+* [`api_fetch`](#api_fetch): Query a remote HTTP-based service for entries to be added to users_allow.
 
 ## Classes
 
@@ -1200,13 +1200,41 @@ Default value: ``undef``
 
 ### <a name="api_fetch"></a>`api_fetch`
 
-Type: Ruby 3.x API
+Type: Ruby 4.x API
 
-The api_fetch function.
+Query a remote HTTP-based service for entries to be added to users_allow.
 
-#### `api_fetch()`
+#### Examples
 
-The api_fetch function.
+##### Calling the function
 
-Returns: `Any`
+```puppet
+vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
+```
+
+#### `api_fetch(Stdlib::HTTPUrl $url, String[1] $token)`
+
+Query a remote HTTP-based service for entries to be added to users_allow.
+
+Returns: `Stdlib::Http::Status` If a valid response and contains entries
+
+##### Examples
+
+###### Calling the function
+
+```puppet
+vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
+```
+
+##### `url`
+
+Data type: `Stdlib::HTTPUrl`
+
+URL to connect to
+
+##### `token`
+
+Data type: `String[1]`
+
+Token used for authentication
 
