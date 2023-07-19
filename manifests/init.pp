@@ -615,7 +615,7 @@ class vas (
       default: { $vas_conf_libvas_use_server_referrals_real = pick($vas_conf_libvas_use_server_referrals, true) }  # smaller (-1)
     }
   } else {
-    $vas_conf_libvas_use_server_referrals_default = false
+    $vas_conf_libvas_use_server_referrals_real = false
   }
 
   case $package_version {
@@ -664,6 +664,7 @@ class vas (
     $require_yp_package = Package['vasyp']
     $require_yp_service = Service['vasypd']
   } else {
+    $nisdomainname_real = $facts['networking']['domain']
     $require_yp_package = undef
     $require_yp_service = undef
   }
@@ -799,7 +800,90 @@ class vas (
       owner   => $vas_config_owner,
       group   => $vas_config_group,
       mode    => $vas_config_mode,
-      content => template('vas/vas.conf.erb'),
+      content => epp('vas/vas.conf.epp',
+        {
+          domain_realms                               => $domain_realms_real,
+          # libdefaults
+          realm                                       => $realm,
+          libdefaults_tgs_default_enctypes            => $vas_conf_libdefaults_tgs_default_enctypes,
+          libdefaults_tkt_default_enctypes            => $vas_conf_libdefaults_tkt_default_enctypes,
+          libdefaults_default_etypes                  => $vas_conf_libdefaults_default_etypes,
+          libdefaults_forwardable                     => $vas_conf_libdefaults_forwardable,
+          libdefaults_default_cc_name                 => $vas_conf_libdefaults_default_cc_name,
+          # libvas
+          libvas_vascache_ipc_timeout                 => $vas_conf_libvas_vascache_ipc_timeout,
+          libvas_use_server_referrals                 => $vas_conf_libvas_use_server_referrals_real,
+          sitenameoverride                            => $sitenameoverride,
+          libvas_mscldap_timeout                      => $vas_conf_libvas_mscldap_timeout,
+          libvas_use_dns_srv                          => $vas_conf_libvas_use_dns_srv,
+          libvas_use_tcp_only                         => $vas_conf_libvas_use_tcp_only,
+          libvas_auth_helper_timeout                  => $vas_conf_libvas_auth_helper_timeout,
+          libvas_site_only_servers                    => $vas_conf_libvas_site_only_servers,
+          use_srv_infocache                           => $use_srv_infocache,
+          # pam_vas
+          prompt_vas_ad_pw                            => $vas_conf_prompt_vas_ad_pw,
+          pam_vas_prompt_ad_lockout_msg               => $vas_conf_pam_vas_prompt_ad_lockout_msg,
+          manage_nis                                  => $manage_nis,
+          # nis
+          nismaps_ou                                  => $nismaps_ou,
+          vasypd_update_interval                      => $vas_conf_vasypd_update_interval,
+          nisdomainname                               => $nisdomainname_real,
+          update_process                              => $vas_conf_update_process,
+          full_update_interval                        => $vas_conf_full_update_interval,
+          client_addrs                                => $vas_conf_client_addrs,
+          # vasd
+          vasd_update_interval                        => $vas_conf_vasd_update_interval,
+          upm_search_path                             => $upm_search_path_real,
+          vasd_workstation_mode                       => $vas_conf_vasd_workstation_mode,
+          vasd_workstation_mode_users_preload         => $vas_conf_vasd_workstation_mode_users_preload,
+          vasd_workstation_mode_group_do_member       => $vas_conf_vasd_workstation_mode_group_do_member,
+          vasd_workstation_mode_groups_skip_update    => $vas_conf_vasd_workstation_mode_groups_skip_update,
+          vasd_ws_resolve_uid                         => $vas_conf_vasd_ws_resolve_uid,
+          user_search_path                            => $user_search_path,
+          group_search_path                           => $group_search_path,
+          vas_user_override_path                      => $vas_user_override_path,
+          vas_group_override_path                     => $vas_group_override_path,
+          vasd_auto_ticket_renew_interval             => $vas_conf_vasd_auto_ticket_renew_interval,
+          vasd_lazy_cache_update_interval             => $vas_conf_vasd_lazy_cache_update_interval,
+          vasd_cross_domain_user_groups_member_search => $vas_conf_vasd_cross_domain_user_groups_member_search,
+          vasd_timesync_interval                      => $vas_conf_vasd_timesync_interval,
+          preload_nested_memberships                  => $vas_conf_preload_nested_memberships,
+          upm_computerou_attr                         => $vas_conf_upm_computerou_attr,
+          vasd_password_change_script                 => $vas_conf_vasd_password_change_script,
+          vasd_password_change_script_timelimit       => $vas_conf_vasd_password_change_script_timelimit,
+          vasd_deluser_check_timelimit                => $vas_conf_vasd_deluser_check_timelimit,
+          vasd_delusercheck_interval                  => $vas_conf_vasd_delusercheck_interval,
+          vasd_delusercheck_script                    => $vas_conf_vasd_delusercheck_script,
+          vasd_netgroup_mode                          => $vas_conf_vasd_netgroup_mode,
+          vasd_username_attr_name                     => $vas_conf_vasd_username_attr_name,
+          vasd_groupname_attr_name                    => $vas_conf_vasd_groupname_attr_name,
+          vasd_uid_number_attr_name                   => $vas_conf_vasd_uid_number_attr_name,
+          vasd_gid_number_attr_name                   => $vas_conf_vasd_gid_number_attr_name,
+          vasd_gecos_attr_name                        => $vas_conf_vasd_gecos_attr_name,
+          vasd_home_dir_attr_name                     => $vas_conf_vasd_home_dir_attr_name,
+          vasd_login_shell_attr_name                  => $vas_conf_vasd_login_shell_attr_name,
+          vasd_group_member_attr_name                 => $vas_conf_vasd_group_member_attr_name,
+          vasd_memberof_attr_name                     => $vas_conf_vasd_memberof_attr_name,
+          vasd_unix_password_attr_name                => $vas_conf_vasd_unix_password_attr_name,
+          # nss_vas
+          group_update_mode                           => $vas_conf_group_update_mode,
+          root_update_mode                            => $vas_conf_root_update_mode,
+          disabled_user_pwhash                        => $vas_conf_disabled_user_pwhash,
+          expired_account_pwhash                      => $vas_conf_expired_account_pwhash,
+          locked_out_pwhash                           => $vas_conf_locked_out_pwhash,
+          lowercase_names                             => $vas_conf_lowercase_names,
+          lowercase_homedirs                          => $vas_conf_lowercase_homedirs,
+          # vas_auth
+          vas_users_allow_path                        => $vas_users_allow_path,
+          vas_users_deny_path                         => $vas_users_deny_path,
+          vas_auth_uid_check_limit                    => $vas_conf_vas_auth_uid_check_limit,
+          vas_auth_allow_disconnected_auth            => $vas_conf_vas_auth_allow_disconnected_auth,
+          vas_auth_expand_ac_groups                   => $vas_conf_vas_auth_expand_ac_groups,
+          # realms
+          kdcs                                        => $kdcs_real,
+          kpasswd_servers                             => $kpasswd_servers_real,
+        }
+      ),
       require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
 
@@ -810,7 +894,11 @@ class vas (
         owner   => $vas_users_allow_owner,
         group   => $vas_users_allow_group,
         mode    => $vas_users_allow_mode,
-        content => template('vas/users.allow.erb'),
+        content => epp('vas/arraylist.epp',
+          {
+            entries => $users_allow_entries_real,
+          }
+        ),
         require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
       }
     }
@@ -821,7 +909,11 @@ class vas (
       owner   => $vas_users_deny_owner,
       group   => $vas_users_deny_group,
       mode    => $vas_users_deny_mode,
-      content => template('vas/users.deny.erb'),
+      content => epp('vas/arraylist.epp',
+        {
+          entries => $users_deny_entries,
+        }
+      ),
       require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
     }
 
@@ -831,7 +923,11 @@ class vas (
       owner   => $vas_user_override_owner,
       group   => $vas_user_override_group,
       mode    => $vas_user_override_mode,
-      content => template('vas/user-override.erb'),
+      content => epp('vas/arraylist.epp',
+        {
+          entries => $user_override_entries,
+        }
+      ),
       require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
       before  => [Service['vasd'], $require_yp_service],
     }
@@ -842,7 +938,11 @@ class vas (
       owner   => $vas_group_override_owner,
       group   => $vas_group_override_group,
       mode    => $vas_group_override_mode,
-      content => template('vas/group-override.erb'),
+      content => epp('vas/arraylist.epp',
+        {
+          entries => $group_override_entries,
+        }
+      ),
       require => [Package['vasclnt'], Package['vasgp'], $require_yp_package],
       before  => [Service['vasd'], $require_yp_service],
     }

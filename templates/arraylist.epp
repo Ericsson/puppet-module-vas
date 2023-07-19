@@ -1,0 +1,7 @@
+<%- | Array[String] $entries,
+| -%>
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+<% $entries.each |$entry| { -%>
+<%= $entry %>
+<% } -%>

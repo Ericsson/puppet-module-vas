@@ -1,0 +1,277 @@
+<%- | Hash                                $domain_realms,
+      # libdefaults
+      Stdlib::Host                        $realm,
+      String[1]                           $libdefaults_tgs_default_enctypes,
+      String[1]                           $libdefaults_tkt_default_enctypes,
+      String[1]                           $libdefaults_default_etypes,
+      Boolean                             $libdefaults_forwardable,
+      Optional[String[1]]                 $libdefaults_default_cc_name,
+      # libvas
+      Integer[0]                          $libvas_vascache_ipc_timeout,
+      Variant[Boolean, Enum['']]          $libvas_use_server_referrals,
+      Optional[String[1]]                 $sitenameoverride,
+      Integer[0]                          $libvas_mscldap_timeout,
+      Boolean                             $libvas_use_dns_srv,
+      Boolean                             $libvas_use_tcp_only,
+      Integer[0]                          $libvas_auth_helper_timeout,
+      Boolean                             $libvas_site_only_servers,
+      Optional[Boolean]                   $use_srv_infocache,
+      # pam_vas
+      String[1]                           $prompt_vas_ad_pw,
+      Optional[String[1]]                 $pam_vas_prompt_ad_lockout_msg,
+      Boolean                             $manage_nis,
+      # nis
+      String[1]                           $nismaps_ou,
+      Integer[0]                          $vasypd_update_interval,
+      String[1]                           $nisdomainname,
+      Stdlib::Absolutepath                $update_process,
+      Optional[Integer]                   $full_update_interval,
+      Optional[String[1,1024]]            $client_addrs,
+      # vasd
+      Integer[0]                          $vasd_update_interval,
+      Optional[String]                    $upm_search_path,
+      Boolean                             $vasd_workstation_mode,
+      Optional[String[1]]                 $vasd_workstation_mode_users_preload,
+      Boolean                             $vasd_workstation_mode_group_do_member,
+      Boolean                             $vasd_workstation_mode_groups_skip_update,
+      Boolean                             $vasd_ws_resolve_uid,
+      Optional[String[1]]                 $user_search_path,
+      Optional[String[1]]                 $group_search_path,
+      Stdlib::Absolutepath                $vas_user_override_path,
+      Stdlib::Absolutepath                $vas_group_override_path,
+      Integer[0]                          $vasd_auto_ticket_renew_interval,
+      Integer[0]                          $vasd_lazy_cache_update_interval,
+      Optional[Boolean]                   $vasd_cross_domain_user_groups_member_search,
+      Optional[Integer]                   $vasd_timesync_interval,
+      Optional[Boolean]                   $preload_nested_memberships,
+      Optional[String[1]]                 $upm_computerou_attr,
+      Optional[Stdlib::Absolutepath]      $vasd_password_change_script,
+      Optional[Integer]                   $vasd_password_change_script_timelimit,
+      Optional[Integer]                   $vasd_deluser_check_timelimit,
+      Optional[Integer]                   $vasd_delusercheck_interval,
+      Optional[Stdlib::Absolutepath]      $vasd_delusercheck_script,
+      Optional[Enum['NSS', 'NIS', 'OFF']] $vasd_netgroup_mode,
+      Optional[String[1]]                 $vasd_username_attr_name,
+      Optional[String[1]]                 $vasd_groupname_attr_name,
+      Optional[String[1]]                 $vasd_uid_number_attr_name,
+      Optional[String[1]]                 $vasd_gid_number_attr_name,
+      Optional[String[1]]                 $vasd_gecos_attr_name,
+      Optional[String[1]]                 $vasd_home_dir_attr_name,
+      Optional[String[1]]                 $vasd_login_shell_attr_name,
+      Optional[String[1]]                 $vasd_group_member_attr_name,
+      Optional[String[1]]                 $vasd_memberof_attr_name,
+      Optional[String[1]]                 $vasd_unix_password_attr_name,
+      # nss_vas
+      String[1]                           $group_update_mode,
+      String[1]                           $root_update_mode,
+      Optional[String[1]]                 $disabled_user_pwhash,
+      Optional[String[1]]                 $expired_account_pwhash,
+      Optional[String[1]]                 $locked_out_pwhash,
+      Optional[Boolean]                   $lowercase_names,
+      Optional[Boolean]                   $lowercase_homedirs,
+      # vas_auth
+      Stdlib::Absolutepath                $vas_users_allow_path,
+      Stdlib::Absolutepath                $vas_users_deny_path,
+      Optional[Integer]                   $vas_auth_uid_check_limit,
+      Optional[Boolean]                   $vas_auth_allow_disconnected_auth,
+      Optional[Boolean]                   $vas_auth_expand_ac_groups,
+      # realms
+      String                              $kdcs,
+      String                              $kpasswd_servers,
+| -%>
+# This file is being maintained by Puppet.
+# DO NOT EDIT
+[domain_realm]
+<% $domain_realms.keys.sort.each |$key| { -%>
+ <%= $key %> = <%= $domain_realms[$key].upcase %>
+<% } -%>
+
+[libdefaults]
+ default_realm = <%= $realm.upcase %>
+ default_tgs_enctypes = <%= $libdefaults_tgs_default_enctypes %>
+ default_tkt_enctypes = <%= $libdefaults_tkt_default_enctypes %>
+ default_etypes = <%= $libdefaults_default_etypes %>
+ forwardable = <%= $libdefaults_forwardable %>
+ renew_lifetime = 604800
+
+ ticket_lifetime = 36000
+ default_keytab_name = /etc/opt/quest/vas/host.keytab
+<% if $libdefaults_default_cc_name { -%>
+ default_cc_name = <%= $libdefaults_default_cc_name %>
+<% } -%>
+
+[libvas]
+ vascache-ipc-timeout = <%= $libvas_vascache_ipc_timeout %>
+ use-server-referrals = <%= $libvas_use_server_referrals %>
+<% if $sitenameoverride { -%>
+ site-name-override = <%= $sitenameoverride %>
+<% } -%>
+ mscldap-timeout = <%= $libvas_mscldap_timeout %>
+ use-dns-srv = <%= $libvas_use_dns_srv %>
+ use-tcp-only = <%= $libvas_use_tcp_only %>
+ auth-helper-timeout = <%= $libvas_auth_helper_timeout %>
+ site-only-servers = <%= $libvas_site_only_servers %>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $use_srv_infocache != undef { -%>
+ use-srvinfo-cache = <%= $use_srv_infocache %>
+<% } -%>
+
+[pam_vas]
+ prompt-vas-ad-pw = <%= $prompt_vas_ad_pw %>
+<% if $pam_vas_prompt_ad_lockout_msg { -%>
+ prompt-ad-lockout-msg = "<%= $pam_vas_prompt_ad_lockout_msg %>"
+<% } -%>
+
+<% if $manage_nis { -%>
+[vasypd]
+ search-base = <%= $nismaps_ou %>
+ split-groups = true
+ update-interval = <%= $vasypd_update_interval %>
+ domainname-override = <%= $nisdomainname %>
+<%  if $update_process { -%>
+ update-process = <%= $update_process %>
+<%  } -%>
+<%  if $full_update_interval { -%>
+ full-update-interval = <%= $full_update_interval %>
+<%  } -%>
+<%  if $client_addrs { -%>
+ client-addrs = <%= $client_addrs %>
+<%  } -%>
+
+<% } -%>
+[vasd]
+ update-interval = <%= $vasd_update_interval %>
+<%# Comparing to empty string required due to pick_default() -%>
+<% if $upm_search_path != '' { -%>
+ upm-search-path = <%= $upm_search_path %>
+<% } -%>
+ workstation-mode = <%= $vasd_workstation_mode %>
+<% if $vasd_workstation_mode { -%>
+<%   if $vasd_workstation_mode_users_preload { -%>
+ workstation-mode-users-preload = <%= $vasd_workstation_mode_users_preload %>
+<%   } -%>
+ workstation-mode-group-do-member = <%= $vasd_workstation_mode_group_do_member %>
+ workstation-mode-groups-skip-update = <%= $vasd_workstation_mode_groups_skip_update %>
+ ws-resolve-uid = <%= $vasd_ws_resolve_uid %>
+<% } -%>
+<% if $user_search_path { -%>
+ user-search-path = <%= $user_search_path %>
+<% } -%>
+<% if $group_search_path { -%>
+ group-search-path = <%= $group_search_path %>
+<% } -%>
+ user-override-file = <%= $vas_user_override_path %>
+ group-override-file = <%= $vas_group_override_path %>
+ auto-ticket-renew-interval = <%= $vasd_auto_ticket_renew_interval %>
+ lazy-cache-update-interval = <%= $vasd_lazy_cache_update_interval %>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $vasd_cross_domain_user_groups_member_search != undef { -%>
+ cross-domain-user-groups-member-search = <%= $vasd_cross_domain_user_groups_member_search %>
+<% } -%>
+<% if $vasd_timesync_interval { -%>
+ timesync-interval = <%= $vasd_timesync_interval %>
+<% } -%>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $preload_nested_memberships != undef { -%>
+ preload-nested-memberships = <%= $preload_nested_memberships %>
+<% } -%>
+<% if $upm_computerou_attr { -%>
+ upm-computerou-attr = <%= $upm_computerou_attr %>
+<% } -%>
+<% if $vasd_password_change_script { -%>
+ password-change-script = <%= $vasd_password_change_script %>
+<% } -%>
+<% if $vasd_password_change_script_timelimit { -%>
+ password-change-script-timelimit = <%= $vasd_password_change_script_timelimit %>
+<% } -%>
+<% if $vasd_deluser_check_timelimit { -%>
+ deluser-check-timelimit = <%= $vasd_deluser_check_timelimit %>
+<% } -%>
+<% if $vasd_delusercheck_interval { -%>
+ delusercheck-interval = <%= $vasd_delusercheck_interval %>
+<% } -%>
+<% if $vasd_delusercheck_script { -%>
+ delusercheck-script = <%= $vasd_delusercheck_script %>
+<% } -%>
+<% if $vasd_netgroup_mode { -%>
+ netgroup-mode = <%= $vasd_netgroup_mode %>
+<% } -%>
+<% if $vasd_username_attr_name { -%>
+ username-attr-name = <%= $vasd_username_attr_name %>
+<% } -%>
+<% if $vasd_groupname_attr_name { -%>
+ groupname-attr-name = <%= $vasd_groupname_attr_name %>
+<% } -%>
+<% if $vasd_uid_number_attr_name { -%>
+ uid-number-attr-name = <%= $vasd_uid_number_attr_name %>
+<% } -%>
+<% if $vasd_gid_number_attr_name { -%>
+ gid-number-attr-name = <%= $vasd_gid_number_attr_name %>
+<% } -%>
+<% if $vasd_gecos_attr_name { -%>
+ gecos-attr-name = <%= $vasd_gecos_attr_name %>
+<% } -%>
+<% if $vasd_home_dir_attr_name { -%>
+ home-dir-attr-name = <%= $vasd_home_dir_attr_name %>
+<% } -%>
+<% if $vasd_login_shell_attr_name { -%>
+ login-shell-attr-name = <%= $vasd_login_shell_attr_name %>
+<% } -%>
+<% if $vasd_group_member_attr_name { -%>
+ group-member-attr-name = <%= $vasd_group_member_attr_name %>
+<% } -%>
+<% if $vasd_memberof_attr_name { -%>
+ memberof-attr-name = <%= $vasd_memberof_attr_name %>
+<% } -%>
+<% if $vasd_unix_password_attr_name { -%>
+ unix-password-attr-name = <%= $vasd_unix_password_attr_name %>
+<% } -%>
+
+[nss_vas]
+<% if $group_update_mode { -%>
+ group-update-mode = <%= $group_update_mode %>
+<% } -%>
+<% if $root_update_mode { -%>
+ root-update-mode = <%= $root_update_mode %>
+<% } -%>
+<% if $disabled_user_pwhash { -%>
+ disabled-user-pwhash = <%= $disabled_user_pwhash %>
+<% } -%>
+<% if $expired_account_pwhash { -%>
+ expired-account-pwhash = <%= $expired_account_pwhash %>
+<% } -%>
+<% if $locked_out_pwhash { -%>
+ locked-out-pwhash = <%= $locked_out_pwhash %>
+<% } -%>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $lowercase_names != undef { -%>
+ lowercase-names = <%= $lowercase_names %>
+<% } -%>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $lowercase_homedirs != undef { -%>
+ lowercase-homedirs = <%= $lowercase_homedirs %>
+<% } -%>
+
+[vas_auth]
+ users-allow-file = <%= $vas_users_allow_path %>
+ users-deny-file = <%= $vas_users_deny_path %>
+<% if $vas_auth_uid_check_limit { -%>
+ uid-check-limit = <%= $vas_auth_uid_check_limit %>
+<% } -%>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $vas_auth_allow_disconnected_auth != undef { -%>
+ allow-disconnected-auth = <%= $vas_auth_allow_disconnected_auth %>
+<% } -%>
+<%# Compared to undef because we want it printed if set in either boolean state -%>
+<% if $vas_auth_expand_ac_groups != undef { -%>
+ expand-ac-groups = <%= $vas_auth_expand_ac_groups %>
+<% } -%>
+<%# Comparing to empty string required due to join() -%>
+<% if $kdcs != '' { -%>
+
+[realms]
+ <%= $realm.upcase %> = {
+  kdc = <%= $kdcs %>
+  kpasswd_server = <%= $kpasswd_servers %>
+ }
+<% } -%>
