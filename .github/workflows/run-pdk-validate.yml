@@ -1,0 +1,17 @@
+---
+name: Run PDK validate
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v2
+
+    - name: Run pdk validate
+      # Modified puppets-epic-show-theatre with gcc and make installed
+      uses: kodguru/action-pdk-test-unit@buildtools
