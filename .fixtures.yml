@@ -10,7 +10,7 @@ fixtures:
       repo:      'https://github.com/kodguru/puppet-module-pam.git'
       ref:       'v3.9.0'
     'rpcbind':
-      repo:      'https://github.com/ghoneycutt/puppet-module-rpcbind.git'
+      repo:      'https://github.com/kodguru/puppet-module-rpcbind.git'
       ref:       'v3.0.0'
     'stdlib':
       repo:      'https://github.com/puppetlabs/puppetlabs-stdlib.git'
