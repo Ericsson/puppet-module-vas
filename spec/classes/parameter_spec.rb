@@ -22,6 +22,7 @@ describe 'vas' do
 
   on_supported_os(test_on).each do |_os, os_facts|
     describe 'parameter testing' do
+      let(:node) { 'foo.example.com' }
       let(:facts) do
         os_facts.merge(
           lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
