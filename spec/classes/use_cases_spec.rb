@@ -7,6 +7,7 @@ describe 'vas' do
 
   on_supported_os.each do |os, os_facts|
     context "on #{os} when value of vas_domain is an empty string (vasclnt package installed but not joined to an AD)" do
+      let(:node) { 'foo.example.com' }
       let(:facts) do
         os_facts.merge(
           vas_domain: '',
@@ -23,6 +24,7 @@ describe 'vas' do
 
   on_supported_os.each do |os, os_facts|
     context "on #{os} when value of vas_domain is undef (vasclnt package installed but not joined to an AD)" do
+      let(:node) { 'foo.example.com' }
       let(:facts) do
         os_facts.merge(
           vas_domain: nil,

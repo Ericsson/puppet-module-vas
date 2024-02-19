@@ -22,11 +22,11 @@ describe 'vas' do
 
   on_supported_os(test_on).each do |_os, os_facts|
     describe 'variable data type and content validations' do
+      let(:node) { 'data-types.example.com' }
       # set needed custom facts and variables
       let(:facts) do
         os_facts.merge(
           lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
-          fqdn: 'data-types.example.com',
         )
       end
 

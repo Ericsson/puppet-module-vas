@@ -10,6 +10,7 @@ describe 'vas' do
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
+      let(:node) { 'foo.example.com' }
       let(:facts) do
         os_facts.merge(
           lsbmajdistrelease: os_facts[:os]['release']['major'], # Satisfy nisclient
