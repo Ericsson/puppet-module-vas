@@ -147,7 +147,7 @@ describe 'vas' do
           params:  { domain_change: true },
           valid:   ['test', 'test.ing', 't.est.ing', '10.2.4.2'],
           invalid: ['test ing', 'http:/test', 'https:/test.ing', ['array'], { 'ha' => 'sh' }, 3, 2.42, false],
-          message: 'expect.*Stdlib::Fqdn.*Stdlib::Compat::Ip_address',
+          message: 'expect.*Stdlib::Fqdn',
         },
         'Stdlib::Port (optional)' => {
           name:    ['kdc_port', 'kpasswd_server_port'],

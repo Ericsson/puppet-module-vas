@@ -12,16 +12,16 @@
       "name": "ericsson/nisclient"
     },
     {
-      "version_requirement": ">= 1.0.0 < 2.0.0",
-      "name": "ghoneycutt/nsswitch"
+      "version_requirement": ">= 2.0.0 < 3.0.0",
+      "name": "kodguru/nsswitch"
     },
     {
-      "version_requirement": ">= 3.10.0 < 4.0.0",
-      "name": "ghoneycutt/pam"
+      "version_requirement": ">= 3.9.0 < 4.0.0",
+      "name": "kodguru/pam"
     },
     {
       "version_requirement": ">= 3.0.0 < 4.0.0",
-      "name": "ghoneycutt/rpcbind"
+      "name": "kodguru/rpcbind"
     },
     {
       "version_requirement": ">= 7.0.1 < 9.0.0",
