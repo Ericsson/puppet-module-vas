@@ -166,6 +166,7 @@ The following parameters are available in the `vas` class:
 * [`api_enable`](#-vas--api_enable)
 * [`api_users_allow_url`](#-vas--api_users_allow_url)
 * [`api_token`](#-vas--api_token)
+* [`api_ssl_verify`](#-vas--api_ssl_verify)
 
 ##### <a name="-vas--manage_nis"></a>`manage_nis`
 
@@ -1196,6 +1197,14 @@ Security token for authenticated access to the API.
 
 Default value: `undef`
 
+##### <a name="-vas--api_ssl_verify"></a>`api_ssl_verify`
+
+Data type: `Boolean`
+
+Whether TLS connections should be verified or not.
+
+Default value: `true`
+
 ## Functions
 
 ### <a name="vas--api_fetch"></a>`vas::api_fetch`
@@ -1212,7 +1221,7 @@ Query a remote HTTP-based service for entries to be added to users_allow.
 vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
 ```
 
-#### `vas::api_fetch(Stdlib::HTTPUrl $url, String[1] $token)`
+#### `vas::api_fetch(Stdlib::HTTPUrl $url, String[1] $token, Optional[Boolean] $ssl_verify)`
 
 Query a remote HTTP-based service for entries to be added to users_allow.
 
@@ -1237,4 +1246,10 @@ URL to connect to
 Data type: `String[1]`
 
 Token used for authentication
+
+##### `ssl_verify`
+
+Data type: `Optional[Boolean]`
+
+Whether TLS connections should be verified or not
 

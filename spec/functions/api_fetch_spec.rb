@@ -18,7 +18,7 @@ describe 'vas::api_fetch' do
       it do
         is_expected.to run
           .with_params
-          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects 2 arguments, got none')
+          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects between 2 and 3 arguments, got none')
       end
     end
 
@@ -26,7 +26,7 @@ describe 'vas::api_fetch' do
       it do
         is_expected.to run
           .with_params(url)
-          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects 2 arguments, got 1')
+          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects between 2 and 3 arguments, got 1')
       end
     end
   end

@@ -5,6 +5,7 @@ Puppet::Functions.create_function(:'vas::api_fetch') do
   require 'openssl'
   # @param url URL to connect to
   # @param token Token used for authentication
+  # @param ssl_verify Whether TLS connections should be verified or not
   # @return [Stdlib::Http::Status, Array[String]] If a valid response and contains entries
   # @return [Stdlib::Http::Status, Array[nil]] If a valid response, but no entries
   # @return [Stdlib::Http::Status, nil] If response is not of SUCCESS status code
@@ -14,9 +15,10 @@ Puppet::Functions.create_function(:'vas::api_fetch') do
   dispatch :api_fetch do
     param 'Stdlib::HTTPUrl', :url
     param 'String[1]', :token
+    optional_param 'Boolean', :ssl_verify
   end
 
-  def api_fetch(url, token)
+  def api_fetch(url, token, ssl_verify = false)
     uri = URI.parse(url)
 
     req = Net::HTTP::Get.new(uri.to_s)
@@ -25,7 +27,9 @@ Puppet::Functions.create_function(:'vas::api_fetch') do
 
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
-    https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    unless ssl_verify
+      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
     https.open_timeout = 2
     https.read_timeout = 2
 

@@ -469,6 +469,8 @@
 # @param api_token
 #   Security token for authenticated access to the API.
 #
+# @param api_ssl_verify
+#   Whether TLS connections should be verified or not.
 class vas (
   Boolean $manage_nis                                                     = true,
   String[1] $package_version                                              = 'installed',
@@ -587,6 +589,7 @@ class vas (
   Boolean $api_enable                                                     = false,
   Optional[Stdlib::HTTPSUrl] $api_users_allow_url                         = undef,
   Optional[String[1]] $api_token                                          = undef,
+  Boolean $api_ssl_verify                                                 = false,
 ) {
   # variable preparations
   $once_file = '/etc/opt/quest/vas/puppet_joined'
@@ -672,7 +675,7 @@ class vas (
   if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
     fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
   } elsif $api_enable == true {
-    $api_users_allow_data = vas::api_fetch($api_users_allow_url, $api_token)
+    $api_users_allow_data = vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify)
 
     case $api_users_allow_data[0] {
       200,'200': { # api_fetch() returns integer in Puppet 3 and string in Puppet 6

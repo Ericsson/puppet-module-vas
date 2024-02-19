@@ -918,7 +918,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token) { return [200, undef] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
         end
 
         it do
@@ -935,7 +935,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token) { return [200, \'apiuser@test.ing\'] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@test.ing\'] }'
         end
 
         it do
@@ -953,7 +953,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token) { return [200, undef] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
         end
 
         it do
@@ -971,7 +971,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token) { return [200, \'apiuser@test.ing\'] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@test.ing\'] }'
         end
 
         it do
@@ -1007,7 +1007,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token) { return [200, undef] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
         end
 
         it do
@@ -1024,7 +1024,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token) { return [200, \'apiuser@test.ing\'] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@test.ing\'] }'
         end
 
         it do
