@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
-describe 'api_fetch' do
+describe 'vas::api_fetch' do
   headers = {
     'Accept' => 'text/plain',
     'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -18,7 +18,7 @@ describe 'api_fetch' do
       it do
         is_expected.to run
           .with_params
-          .and_raise_error(Puppet::ParseError, 'api_fetch(): Wrong number of arguments given (0 for 2)')
+          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects between 2 and 3 arguments, got none')
       end
     end
 
@@ -26,7 +26,7 @@ describe 'api_fetch' do
       it do
         is_expected.to run
           .with_params(url)
-          .and_raise_error(Puppet::ParseError, 'api_fetch(): Wrong number of arguments given (1 for 2)')
+          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects between 2 and 3 arguments, got 1')
       end
     end
   end
@@ -35,7 +35,7 @@ describe 'api_fetch' do
     it do
       is_expected.to run
         .with_params(1, 'somesecret')
-        .and_raise_error(%r{Argument must be a string})
+        .and_raise_error(ArgumentError, %r{'vas::api_fetch' parameter 'url' expects a match for Stdlib::HTTPUrl.* got Integer})
     end
   end
 
@@ -43,7 +43,7 @@ describe 'api_fetch' do
     it do
       is_expected.to run
         .with_params(url, 1)
-        .and_raise_error(%r{Argument must be a string})
+        .and_raise_error(ArgumentError, '\'vas::api_fetch\' parameter \'token\' expects a String value, got Integer')
     end
   end
 

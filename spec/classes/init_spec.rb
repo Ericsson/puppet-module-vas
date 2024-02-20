@@ -317,7 +317,7 @@ describe 'vas' do
             context 'and returns 200' do
               context 'without data' do
                 let(:pre_condition) do
-                  'function api_fetch($api_users_allow_url, $api_token) { return [200, undef] }'
+                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
                 end
 
                 users_allow_api_nodata_content = <<-END.gsub(%r{^\s+\|}, '')
@@ -355,7 +355,7 @@ describe 'vas' do
 
               context 'with data' do
                 let(:pre_condition) do
-                  'function api_fetch($api_users_allow_url, $api_token) { return [200, \'apiuser@example.com\'] }'
+                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@example.com\'] }'
                 end
 
                 users_allow_api_data_content = <<-END.gsub(%r{^\s+\|}, '')
@@ -394,7 +394,7 @@ describe 'vas' do
 
             context 'and return non-200 code' do
               let(:pre_condition) do
-                'function api_fetch($api_users_allow_url, $api_token) { return [0, undef] }'
+                'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [0, undef] }'
               end
 
               it {
