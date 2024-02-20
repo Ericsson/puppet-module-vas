@@ -1203,7 +1203,7 @@ Data type: `Boolean`
 
 Whether TLS connections should be verified or not.
 
-Default value: `true`
+Default value: `false`
 
 ## Functions
 
