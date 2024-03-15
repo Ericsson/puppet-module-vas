@@ -6,16 +6,14 @@ Puppet::Functions.create_function(:'vas::api_fetch') do
   # @param url URL to connect to
   # @param token Token used for authentication
   # @param ssl_verify Whether TLS connections should be verified or not
-  # @return [Stdlib::Http::Status, Array[String]] If a valid response and contains entries
-  # @return [Stdlib::Http::Status, Array[nil]] If a valid response, but no entries
-  # @return [Stdlib::Http::Status, nil] If response is not of SUCCESS status code
-  # @return [0, String] If the query is unable to reach server or other error
+  # @return [Hash] Key 'content' with [Array] if API responds. Key 'errors' with [Array[String]] if errors happens.
   # @example Calling the function
   #   vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
   dispatch :api_fetch do
     param 'Stdlib::HTTPUrl', :url
     param 'String[1]', :token
     optional_param 'Boolean', :ssl_verify
+    return_type 'Hash'
   end
 
   def api_fetch(url, token, ssl_verify = false)
@@ -33,6 +31,7 @@ Puppet::Functions.create_function(:'vas::api_fetch') do
     https.open_timeout = 2
     https.read_timeout = 2
 
+    data = {}
     begin
       response = https.start do |cx|
         cx.request(req)
@@ -40,13 +39,18 @@ Puppet::Functions.create_function(:'vas::api_fetch') do
 
       case response
       when Net::HTTPSuccess
-        return response.code, response.body.split("\n") unless response.body.to_s.empty?
-        [response.code, []]
+        data['content'] = if response.body.empty?
+                            []
+                          else
+                            response.body.split("\n")
+                          end
       else
-        [response.code, nil]
+        (data['errors'] ||= []) << "#{url} returns HTTP code: #{response.code}"
       end
     rescue => error
-      [0, error.message]
+      (data['errors'] ||= []) << "#{url} connection failed: #{error.message}"
     end
+
+    data
   end
 end
