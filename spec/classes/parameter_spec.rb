@@ -905,7 +905,7 @@ describe 'vas' do
         end
 
         it 'fails' do
-          expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{api_token missing})
+          expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{api_config missing})
         end
       end
 
@@ -918,7 +918,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+          'function vas::api_fetch($api_data) {
             return { content => [] }
           }'
         end
@@ -937,7 +937,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+          'function vas::api_fetch($api_data) {
             return { content => ["apiuser@test.ing"] }
           }'
         end
@@ -957,7 +957,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+          'function vas::api_fetch($api_data) {
             return { content => [] }
           }'
         end
@@ -977,7 +977,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+          'function vas::api_fetch($api_data) {
             return { content => ["apiuser@test.ing"] }
           }'
         end
@@ -1002,7 +1002,7 @@ describe 'vas' do
         end
 
         it 'fails' do
-          expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{api_users_allow_url .* missing})
+          expect { is_expected.to contain_class('vas') }.to raise_error(Puppet::Error, %r{api_config missing})
         end
       end
 
@@ -1015,7 +1015,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+          'function vas::api_fetch($api_data) {
             return { content => [] }
           }'
         end
@@ -1034,7 +1034,7 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+          'function vas::api_fetch($api_data) {
             return { content => "apiuser@test.ing" }
           }'
         end

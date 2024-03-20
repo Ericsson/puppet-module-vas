@@ -12,6 +12,10 @@
 
 * [`vas::api_fetch`](#vas--api_fetch): Query a remote HTTP-based service for entries to be added to users_allow.
 
+### Data types
+
+* [`Vas::API::Config`](#Vas--API--Config): API configuration
+
 ## Classes
 
 ### <a name="vas"></a>`vas`
@@ -167,6 +171,7 @@ The following parameters are available in the `vas` class:
 * [`api_users_allow_url`](#-vas--api_users_allow_url)
 * [`api_token`](#-vas--api_token)
 * [`api_ssl_verify`](#-vas--api_ssl_verify)
+* [`api_config`](#-vas--api_config)
 
 ##### <a name="-vas--manage_nis"></a>`manage_nis`
 
@@ -1186,6 +1191,7 @@ Default value: `false`
 Data type: `Optional[Stdlib::HTTPSUrl]`
 
 The URL towards the API.
+Deprecated parameter, replaced by $api_config. Will be removed next major releaase.
 
 Default value: `undef`
 
@@ -1194,6 +1200,7 @@ Default value: `undef`
 Data type: `Optional[String[1]]`
 
 Security token for authenticated access to the API.
+Deprecated parameter, replaced by $api_config. Will be removed next major releaase.
 
 Default value: `undef`
 
@@ -1202,8 +1209,17 @@ Default value: `undef`
 Data type: `Boolean`
 
 Whether TLS connections should be verified or not.
+Deprecated parameter, replaced by $api_config. Will be removed next major releaase
 
 Default value: `false`
+
+##### <a name="-vas--api_config"></a>`api_config`
+
+Data type: `Optional[Vas::API::Config]`
+
+API configuration
+
+Default value: `undef`
 
 ## Functions
 
@@ -1218,10 +1234,19 @@ Query a remote HTTP-based service for entries to be added to users_allow.
 ##### Calling the function
 
 ```puppet
-vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
+vas::api_fetch([{'url' => "https://host.domain.tld/api/${facts['trusted.certname']}"}])
 ```
 
-#### `vas::api_fetch(Stdlib::HTTPUrl $url, String[1] $token, Optional[Boolean] $ssl_verify)`
+##### Multiple servers with different tokens, ssl_verify enabled
+
+```puppet
+vas::api_fetch([
+  {'url' => "https://host1.domain.tld/api/${facts['trusted.certname']}", 'token' => 'token123', 'ssl_verify' => true},
+  {'url' => "https://host2.domain.tld/api/${facts['trusted.certname']}", 'token' => 'token321', 'ssl_verify' => true},
+])
+```
+
+#### `vas::api_fetch(Vas::API::Config $config)`
 
 Query a remote HTTP-based service for entries to be added to users_allow.
 
@@ -1232,24 +1257,37 @@ Returns: `Hash` Key 'content' with [Array] if API responds. Key 'errors' with [A
 ###### Calling the function
 
 ```puppet
-vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
+vas::api_fetch([{'url' => "https://host.domain.tld/api/${facts['trusted.certname']}"}])
 ```
 
-##### `url`
+###### Multiple servers with different tokens, ssl_verify enabled
 
-Data type: `Stdlib::HTTPUrl`
+```puppet
+vas::api_fetch([
+  {'url' => "https://host1.domain.tld/api/${facts['trusted.certname']}", 'token' => 'token123', 'ssl_verify' => true},
+  {'url' => "https://host2.domain.tld/api/${facts['trusted.certname']}", 'token' => 'token321', 'ssl_verify' => true},
+])
+```
 
-URL to connect to
+##### `config`
 
-##### `token`
+Data type: `Vas::API::Config`
 
-Data type: `String[1]`
+Hash with API configuration
 
-Token used for authentication
+## Data types
 
-##### `ssl_verify`
+### <a name="Vas--API--Config"></a>`Vas::API::Config`
 
-Data type: `Optional[Boolean]`
+API configuration
 
-Whether TLS connections should be verified or not
+Alias of
+
+```puppet
+Array[Struct[
+    url        => Stdlib::HttpsUrl,
+    token      => Optional[String[1]],
+    ssl_verify => Optional[Boolean],
+  ]]
+```
 
