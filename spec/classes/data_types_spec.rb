@@ -13,13 +13,6 @@ describe 'vas' do
     ],
   }
 
-  headers = {
-    'Accept' => 'text/plain',
-    'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-    'Authorization' => 'Bearer somesecret',
-    'User-Agent' => 'Ruby'
-  }
-
   on_supported_os(test_on).each do |_os, os_facts|
     describe 'variable data type and content validations' do
       let(:node) { 'data-types.example.com' }
@@ -49,7 +42,7 @@ describe 'vas' do
         },
         'Boolean/API' => {
           name:    ['api_enable'],
-          params:  { api_users_allow_url: 'https://api.example.local', api_token: 'somesecret', },
+          params:  { api_config: [{ 'url': 'https://api.example.local', 'token': 'somesecret' }] },
           valid:   [true, false],
           invalid: ['true', 'false', ['array'], { 'ha' => 'sh' }, 3, 2.42, nil],
           message: 'expects a Boolean',
@@ -172,7 +165,15 @@ describe 'vas' do
           invalid: ['true', 'false', 'string', ['array'], { 'ha' => 'sh' }, 3, 2.42],
           message: 'expects a value of type Boolean or Enum',
         },
-
+        'Vas::API::Config' => {
+          name:    ['api_config'],
+          params:  { api_enable: true },
+          valid:   [[{ 'url': 'https://test.ing' }],
+                    [{ 'url': 'https://test.ing', 'token': 'mysecret', 'ssl_verify': true }],
+                    [{ 'url': 'https://test.ing', 'token': 'mysecret', 'ssl_verify': true }, { 'url': 'https://test.ing' }]],
+          invalid: ['http://str.ing', 'string', ['array'], { 'ha' => 'sh' }, 3, 2.42, false],
+          message: "(parameter 'api_config' expects a Vas::API::Config|parameter 'api_config' index 0 expects a Struct value)",
+        },
       }
       validations.sort.each do |type, var|
         mandatory_params = {} if mandatory_params.nil?
@@ -184,10 +185,8 @@ describe 'vas' do
 
               it do
                 stub_request(:get, 'https://test.ing/')
-                  .with(headers: headers)
 
                 stub_request(:get, 'https://api.example.local')
-                  .with(headers: headers)
 
                 is_expected.to compile
               end
