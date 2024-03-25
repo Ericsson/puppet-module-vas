@@ -15,6 +15,6 @@ jobs:
 
     - name: Run unit tests
       # Modified puppets-epic-show-theatre with gcc and make installed
-      uses: kodguru/action-pdk-test-unit@buildtools
+      uses: ericsson/action-pdk-test-unit@buildtools
       with:
         puppet-version: "8"

@@ -16,4 +16,4 @@ jobs:
 
     - name: Run pdk validate
       # Modified puppets-epic-show-theatre with gcc and make installed
-      uses: kodguru/action-pdk-validate@buildtools
+      uses: ericsson/action-pdk-validate@buildtools
