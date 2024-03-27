@@ -1225,7 +1225,7 @@ vas::api_fetch("https://host.domain.tld/api/${facts['trusted.certname']}")
 
 Query a remote HTTP-based service for entries to be added to users_allow.
 
-Returns: `Stdlib::Http::Status` If a valid response and contains entries
+Returns: `Hash` Key 'content' with [Array] if API responds. Key 'errors' with [Array[String]] if errors happens.
 
 ##### Examples
 

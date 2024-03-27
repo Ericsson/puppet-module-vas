@@ -678,17 +678,16 @@ class vas (
   } elsif $api_enable == true {
     $api_users_allow_data = vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify)
 
-    case $api_users_allow_data[0] {
-      200,'200': { # api_fetch() returns integer in Puppet 3 and string in Puppet 6
-        # VAS API is configured and responding
-        $manage_users_allow = true
-        $users_allow_entries_real = concat($users_allow_entries, $api_users_allow_data[1])
-      }
-      default: {
-        # VAS API is configured but down. Don't manage users_allow to prevent removal of entries.
-        $manage_users_allow = false
-        warning("VAS API Error. Code: ${api_users_allow_data[0]}, Error: ${api_users_allow_data[1]}")
-      }
+    if $api_users_allow_data['content'] {
+      $manage_users_allow = true
+      $users_allow_entries_real = concat($users_allow_entries, $api_users_allow_data['content'])
+    } else {
+      $manage_users_allow = false
+    }
+
+    if $api_users_allow_data['errors'] {
+      $api_errors = join($api_users_allow_data['errors'], ', ')
+      warning("API Error: ${api_errors}")
     }
   } else {
     $manage_users_allow = true
