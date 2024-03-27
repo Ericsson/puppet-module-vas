@@ -465,12 +465,18 @@
 #
 # @param api_users_allow_url
 #   The URL towards the API.
+#   Deprecated parameter, replaced by $api_config. Will be removed next major releaase.
 #
 # @param api_token
 #   Security token for authenticated access to the API.
+#   Deprecated parameter, replaced by $api_config. Will be removed next major releaase.
 #
 # @param api_ssl_verify
 #   Whether TLS connections should be verified or not.
+#   Deprecated parameter, replaced by $api_config. Will be removed next major releaase
+#
+# @param api_config
+#   API configuration
 class vas (
   Boolean $manage_nis                                                     = true,
   String[1] $package_version                                              = 'installed',
@@ -587,6 +593,7 @@ class vas (
   Array[String[1]] $kpasswd_servers                                       = [],
   Stdlib::Port $kpasswd_server_port                                       = 464,
   Boolean $api_enable                                                     = false,
+  Optional[Vas::API::Config] $api_config                                  = undef,
   Optional[Stdlib::HTTPSUrl] $api_users_allow_url                         = undef,
   Optional[String[1]] $api_token                                          = undef,
   Boolean $api_ssl_verify                                                 = false,
@@ -673,22 +680,33 @@ class vas (
   }
 
   # functionality
-  if $api_enable == true and ($api_users_allow_url == undef or $api_token == undef) {
-    fail('vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing')
-  } elsif $api_enable == true {
-    $api_users_allow_data = vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify)
+  if $api_enable == true {
+    if $api_config {
+      $api_config_real = $api_config
+    } elsif $api_users_allow_url and $api_token {
+      warning('$api_users_allow_url and $api_token deprecated and will be removed next major release. Use $api_config')
 
-    case $api_users_allow_data[0] {
-      200,'200': { # api_fetch() returns integer in Puppet 3 and string in Puppet 6
-        # VAS API is configured and responding
-        $manage_users_allow = true
-        $users_allow_entries_real = concat($users_allow_entries, $api_users_allow_data[1])
-      }
-      default: {
-        # VAS API is configured but down. Don't manage users_allow to prevent removal of entries.
-        $manage_users_allow = false
-        warning("VAS API Error. Code: ${api_users_allow_data[0]}, Error: ${api_users_allow_data[1]}")
-      }
+      $api_config_real = [{
+          'url'        => $api_users_allow_url,
+          'token'      => $api_token,
+          'ssl_verify' => $api_ssl_verify,
+      }]
+    } else {
+      fail('vas::api_enable is set to true but required parameter $api_config missing')
+    }
+
+    $api_users_allow_data = vas::api_fetch($api_config_real)
+
+    if $api_users_allow_data['content'] {
+      $manage_users_allow = true
+      $users_allow_entries_real = concat($users_allow_entries, $api_users_allow_data['content'])
+    } else {
+      $manage_users_allow = false
+    }
+
+    if $api_users_allow_data['errors'] {
+      $api_errors = join($api_users_allow_data['errors'], ', ')
+      warning("API Error: ${api_errors}")
     }
   } else {
     $manage_users_allow = true

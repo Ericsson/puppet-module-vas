@@ -279,51 +279,54 @@ describe 'vas' do
           end
 
           it {
-            is_expected.to compile.and_raise_error(%r{vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing})
+            is_expected.to compile.and_raise_error(%r{vas::api_enable is set to true but required parameter \$api_config missing})
           }
 
           context 'param "api_users_allow_url" set' do
             let(:params) do
-              api_enabled.merge(
+              super().merge(
                 'api_users_allow_url': 'https://host.domain.tld',
               )
             end
 
             it {
-              is_expected.to compile.and_raise_error(%r{vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing})
+              is_expected.to compile.and_raise_error(%r{vas::api_enable is set to true but required parameter \$api_config missing})
             }
           end
 
           context 'param "api_token" set' do
             let(:params) do
-              api_enabled.merge(
+              super().merge(
                 'api_token': 'mytoken',
               )
             end
 
             it {
-              is_expected.to compile.and_raise_error(%r{vas::api_enable is set to true but required parameters vas::api_users_allow_url and/or vas::api_token missing})
+              is_expected.to compile.and_raise_error(%r{vas::api_enable is set to true but required parameter \$api_config missing})
             }
           end
 
           context 'with required parameters' do
             let(:params) do
-              api_enabled.merge(
-                'api_users_allow_url': 'https://host.domain.tld',
-                'api_token': 'mytoken',
+              super().merge(
+                'api_config': [{
+                  'url': 'https://host.domain.tld',
+                  'token': 'mytoken',
+                }],
               )
             end
 
-            context 'and returns 200' do
-              context 'without data' do
+            context 'and queries successfully' do
+              context 'with no return entries' do
                 let(:pre_condition) do
-                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
+                  'function vas::api_fetch($api_config) {
+                    return { content => [] }
+                  }'
                 end
 
                 users_allow_api_nodata_content = <<-END.gsub(%r{^\s+\|}, '')
                   |# This file is being maintained by Puppet.
                   |# DO NOT EDIT
-                  |
                 END
 
                 it {
@@ -332,9 +335,7 @@ describe 'vas' do
 
                 context 'and users_allow parameter specified' do
                   let(:params) do
-                    api_enabled.merge(
-                      'api_users_allow_url': 'https://host.domain.tld',
-                      'api_token': 'mytoken',
+                    super().merge(
                       'users_allow_entries': ['user1@example.com', 'user2@example.com'],
                     )
                   end
@@ -344,7 +345,6 @@ describe 'vas' do
                     |# DO NOT EDIT
                     |user1@example.com
                     |user2@example.com
-                    |
                   END
 
                   it {
@@ -353,9 +353,11 @@ describe 'vas' do
                 end
               end
 
-              context 'with data' do
+              context 'with it returning "apiuser@example.com"' do
                 let(:pre_condition) do
-                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@example.com\'] }'
+                  'function vas::api_fetch($api_config) {
+                    return { content => ["apiuser@example.com"]}
+                  }'
                 end
 
                 users_allow_api_data_content = <<-END.gsub(%r{^\s+\|}, '')
@@ -370,9 +372,7 @@ describe 'vas' do
 
                 context 'and users_allow parameter specified' do
                   let(:params) do
-                    api_enabled.merge(
-                      'api_users_allow_url': 'https://host.domain.tld',
-                      'api_token': 'mytoken',
+                    super().merge(
                       'users_allow_entries': ['user1@example.com', 'user2@example.com'],
                     )
                   end
@@ -392,9 +392,11 @@ describe 'vas' do
               end
             end
 
-            context 'and return non-200 code' do
+            context 'and queries fails' do
               let(:pre_condition) do
-                'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [0, undef] }'
+                'function vas::api_fetch($api_data) {
+                  return { error => ["https://host.domain.tld returns HTTP code: 502"] }
+                }'
               end
 
               it {
