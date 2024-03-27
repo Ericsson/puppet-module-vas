@@ -704,6 +704,9 @@ class vas (
       $manage_users_allow = false
     }
 
+    notify { "api_users_allow_data: ${api_users_allow_data}": }
+    notify { "manage_users_allow: ${manage_users_allow}": }
+
     if $api_users_allow_data['errors'] {
       $api_errors = join($api_users_allow_data['errors'], ', ')
       warning("API Error: ${api_errors}")
