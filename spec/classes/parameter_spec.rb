@@ -88,6 +88,44 @@ describe 'vas' do
         end
       end
 
+      [true, false].each do |value|
+        describe "with manage_nsswitch set to valid #{value}" do
+          let(:params) do
+            required_params.merge(
+              manage_nsswitch: value,
+              # Class PAM includes nsswitch as well, disable it for test
+              manage_pam: value,
+            )
+          end
+
+          case value
+          when true
+            it { is_expected.to contain_class('nsswitch') }
+          else
+            it { is_expected.not_to contain_class('nsswitch') }
+          end
+        end
+      end
+
+      [true, false].each do |value|
+        describe "with manage_pam set to valid #{value}" do
+          let(:params) do
+            required_params.merge(
+              manage_pam: value,
+            )
+          end
+
+          case value
+          when true
+            it { is_expected.to contain_class('pam') }
+            it { is_expected.to contain_exec('vasinst').with_before('Class[Pam]') }
+          else
+            it { is_expected.not_to contain_class('pam') }
+            it { is_expected.not_to contain_exec('vasinst').with_before('Class[Pam]') }
+          end
+        end
+      end
+
       describe 'with manage_nis set to valid true and nisdomainname is defined' do
         let(:params) do
           required_params.merge(
