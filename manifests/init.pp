@@ -31,6 +31,9 @@
 # @param manage_pam
 #   Include pam class
 #
+# @param manage_nsswitch
+#   Include nsswitch class
+#
 # @param package_version
 #   The VAS package version. Used when upgrading.
 #
@@ -477,6 +480,7 @@
 class vas (
   Boolean $manage_nis                                                     = true,
   Boolean $manage_pam                                                     = true,
+  Boolean $manage_nsswitch                                                = true,
   String[1] $package_version                                              = 'installed',
   Boolean $enable_group_policies                                          = true,
   Array[String[1]] $users_allow_entries                                   = [],
@@ -748,7 +752,9 @@ class vas (
     fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>")
   }
 
-  include nsswitch
+  if $manage_nsswitch {
+    include nsswitch
+  }
 
   if $manage_pam {
     include pam

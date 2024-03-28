@@ -39,7 +39,7 @@ describe 'vas' do
           message: 'expects an Array|index .* expects a String value',
         },
         'Boolean' => {
-          name:    ['manage_nis', 'manage_pam', 'enable_group_policies', 'domain_change',
+          name:    ['manage_nis', 'manage_pam', 'manage_nsswitch', 'enable_group_policies', 'domain_change',
                     'vas_conf_vasd_workstation_mode', 'vas_conf_vasd_workstation_mode_group_do_member',
                     'vas_conf_vasd_workstation_mode_groups_skip_update', 'vas_conf_vasd_ws_resolve_uid',
                     'vas_conf_libdefaults_forwardable', 'vas_conf_libvas_site_only_servers', 'vas_conf_libvas_use_dns_srv',
