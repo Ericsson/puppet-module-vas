@@ -50,6 +50,7 @@ vas::realm: 'realm.example.com'
 The following parameters are available in the `vas` class:
 
 * [`manage_nis`](#-vas--manage_nis)
+* [`manage_pam`](#-vas--manage_pam)
 * [`package_version`](#-vas--package_version)
 * [`enable_group_policies`](#-vas--enable_group_policies)
 * [`users_allow_entries`](#-vas--users_allow_entries)
@@ -173,6 +174,14 @@ The following parameters are available in the `vas` class:
 Data type: `Boolean`
 
 FIXME Missing description
+
+Default value: `true`
+
+##### <a name="-vas--manage_pam"></a>`manage_pam`
+
+Data type: `Boolean`
+
+Include pam class
 
 Default value: `true`
 
