@@ -28,6 +28,12 @@
 # @param manage_nis
 #   FIXME Missing description
 #
+# @param manage_pam
+#   Include pam class
+#
+# @param manage_nsswitch
+#   Include nsswitch class
+#
 # @param package_version
 #   The VAS package version. Used when upgrading.
 #
@@ -479,6 +485,8 @@
 #   API configuration
 class vas (
   Boolean $manage_nis                                                     = true,
+  Boolean $manage_pam                                                     = true,
+  Boolean $manage_nsswitch                                                = true,
   String[1] $package_version                                              = 'installed',
   Boolean $enable_group_policies                                          = true,
   Array[String[1]] $users_allow_entries                                   = [],
@@ -762,8 +770,16 @@ class vas (
     fail("VAS domain mismatch, got <${facts['vas_domain']}> but wanted <${realm}>")
   }
 
-  include nsswitch
-  include pam
+  if $manage_nsswitch {
+    include nsswitch
+  }
+
+  if $manage_pam {
+    include pam
+    $vasinst_require = Class['pam']
+  } else {
+    $vasinst_require = undef
+  }
 
   if $_vas_is_v3 == true {
     # vasgpd service only in VAS 3
@@ -988,7 +1004,7 @@ class vas (
       path    => '/sbin:/bin:/usr/bin:/opt/quest/bin',
       timeout => 1800,
       creates => $once_file,
-      before  => Class['pam'],
+      before  => $vasinst_require,
       require => [Package['vasclnt'], Package['vasgp'], File['keytab'], $require_yp_package],
     }
 
