@@ -12,38 +12,30 @@ describe 'vas::api_fetch' do
   }
 
   url = 'https://api.example.local/'
+  params = [
+    {
+      'url'   => url,
+      'token' => 'somesecret',
+    },
+  ]
 
-  describe 'raises an error when arguments are missing' do
+  describe 'raises an error when parameters are missing' do
     describe 'no arguments' do
       it do
         is_expected.to run
           .with_params
-          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects between 2 and 3 arguments, got none')
+          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects 1 argument, got none')
       end
     end
 
-    describe 'token argument is missing' do
+    describe 'when required key url is missing in $config' do
+      params_missing = [{}]
+
       it do
         is_expected.to run
-          .with_params(url)
-          .and_raise_error(ArgumentError, '\'vas::api_fetch\' expects between 2 and 3 arguments, got 1')
+          .with_params(params_missing)
+          .and_raise_error(ArgumentError, '\'vas::api_fetch\' parameter \'config\' index 0 expects size to be between 1 and 3, got 0')
       end
-    end
-  end
-
-  describe 'raises an error when url argument is not a string' do
-    it do
-      is_expected.to run
-        .with_params(1, 'somesecret')
-        .and_raise_error(ArgumentError, %r{'vas::api_fetch' parameter 'url' expects a match for Stdlib::HTTPUrl.* got Integer})
-    end
-  end
-
-  describe 'raises an error when token argument is not a string' do
-    it do
-      is_expected.to run
-        .with_params(url, 1)
-        .and_raise_error(ArgumentError, '\'vas::api_fetch\' parameter \'token\' expects a String value, got Integer')
     end
   end
 
@@ -54,11 +46,11 @@ describe 'vas::api_fetch' do
       ).to_timeout
 
       is_expected.to run
-        .with_params(url, 'somesecret')
+        .with_params(params)
         .and_return({ 'errors' => ['https://api.example.local/ connection failed: execution expired'] })
     end
 
-    it 'returns an array containing http response code and body' do
+    it 'returns a hash containing key \'content\' with an array of contents' do
       response_body = "line1\nline2"
 
       stub_request(:get, url).with(
@@ -66,11 +58,11 @@ describe 'vas::api_fetch' do
       ).to_return(body: response_body, status: 200)
 
       is_expected.to run
-        .with_params(url, 'somesecret')
+        .with_params(params)
         .and_return({ 'content' => ['line1', 'line2'] })
     end
 
-    it 'returns an array containing http response code and an empty array when response body is empty' do
+    it 'returns a hash containing key \'content\' with an empty array' do
       response_body = ''
 
       stub_request(:get, url).with(
@@ -78,27 +70,27 @@ describe 'vas::api_fetch' do
             ).to_return(body: response_body, status: 200)
 
       is_expected.to run
-        .with_params(url, 'somesecret')
+        .with_params(params)
         .and_return({ 'content' => [] })
     end
 
-    it 'returns nil when http response code is not success' do
+    it 'returns a hash containing key \'errors\' when non-sucess http response code is received' do
       stub_request(:get, url).with(
               headers: headers,
             ).to_return(body: nil, status: 404)
 
       is_expected.to run
-        .with_params(url, 'somesecret')
+        .with_params(params)
         .and_return({ 'errors' => ['https://api.example.local/ returns HTTP code: 404'] })
     end
 
-    it 'returns an array containing 0 and error when error occurs' do
+    it 'returns a hash containing key \'errors\' any other error occurs' do
       stub_request(:get, url).with(
               headers: headers,
             ).and_raise(StandardError.new('error'))
 
       is_expected.to run
-        .with_params(url, 'somesecret')
+        .with_params(params)
         .and_return({ 'errors' => ['https://api.example.local/ connection failed: error'] })
     end
   end
