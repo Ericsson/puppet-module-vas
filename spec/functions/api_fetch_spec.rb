@@ -55,7 +55,7 @@ describe 'vas::api_fetch' do
 
       is_expected.to run
         .with_params(url, 'somesecret')
-        .and_return([0, 'execution expired'])
+        .and_return({ 'errors' => ['https://api.example.local/ connection failed: execution expired'] })
     end
 
     it 'returns an array containing http response code and body' do
@@ -63,12 +63,11 @@ describe 'vas::api_fetch' do
 
       stub_request(:get, url).with(
         headers: headers,
-      )
-                             .to_return(body: response_body, status: 200)
+      ).to_return(body: response_body, status: 200)
 
       is_expected.to run
         .with_params(url, 'somesecret')
-        .and_return(['200', ['line1', 'line2']])
+        .and_return({ 'content' => ['line1', 'line2'] })
     end
 
     it 'returns an array containing http response code and an empty array when response body is empty' do
@@ -76,34 +75,31 @@ describe 'vas::api_fetch' do
 
       stub_request(:get, url).with(
               headers: headers,
-            )
-                             .to_return(body: response_body, status: 200)
+            ).to_return(body: response_body, status: 200)
 
       is_expected.to run
         .with_params(url, 'somesecret')
-        .and_return(['200', []])
+        .and_return({ 'content' => [] })
     end
 
     it 'returns nil when http response code is not success' do
       stub_request(:get, url).with(
               headers: headers,
-            )
-                             .to_return(body: nil, status: 404)
+            ).to_return(body: nil, status: 404)
 
       is_expected.to run
         .with_params(url, 'somesecret')
-        .and_return(['404', nil])
+        .and_return({ 'errors' => ['https://api.example.local/ returns HTTP code: 404'] })
     end
 
     it 'returns an array containing 0 and error when error occurs' do
       stub_request(:get, url).with(
               headers: headers,
-            )
-                             .and_raise(StandardError.new('error'))
+            ).and_raise(StandardError.new('error'))
 
       is_expected.to run
         .with_params(url, 'somesecret')
-        .and_return([0, 'error'])
+        .and_return({ 'errors' => ['https://api.example.local/ connection failed: error'] })
     end
   end
 end

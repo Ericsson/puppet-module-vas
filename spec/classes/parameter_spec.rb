@@ -918,11 +918,13 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+            return { content => [] }
+          }'
         end
 
         it do
-          is_expected.to contain_file('vas_users_allow').with_content(header + "\n")
+          is_expected.to contain_file('vas_users_allow').with_content(header)
         end
       end
 
@@ -935,7 +937,9 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@test.ing\'] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+            return { content => ["apiuser@test.ing"] }
+          }'
         end
 
         it do
@@ -953,11 +957,13 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+            return { content => [] }
+          }'
         end
 
         it do
-          is_expected.to contain_file('vas_users_allow').with_content(header + "user1@test.ing\nuser2@test.ing\n\n")
+          is_expected.to contain_file('vas_users_allow').with_content(header + "user1@test.ing\nuser2@test.ing\n")
         end
       end
 
@@ -971,7 +977,9 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@test.ing\'] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+            return { content => ["apiuser@test.ing"] }
+          }'
         end
 
         it do
@@ -1007,11 +1015,13 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+            return { content => [] }
+          }'
         end
 
         it do
-          is_expected.to contain_file('vas_users_allow').with_content(header + "\n")
+          is_expected.to contain_file('vas_users_allow').with_content(header)
         end
       end
 
@@ -1024,7 +1034,9 @@ describe 'vas' do
           }
         end
         let(:pre_condition) do
-          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@test.ing\'] }'
+          'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+            return { content => "apiuser@test.ing" }
+          }'
         end
 
         it do

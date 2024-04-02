@@ -314,16 +314,17 @@ describe 'vas' do
               )
             end
 
-            context 'and returns 200' do
-              context 'without data' do
+            context 'and queries successfully' do
+              context 'with no return entries' do
                 let(:pre_condition) do
-                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, undef] }'
+                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+                    return { content => [] }
+                  }'
                 end
 
                 users_allow_api_nodata_content = <<-END.gsub(%r{^\s+\|}, '')
                   |# This file is being maintained by Puppet.
                   |# DO NOT EDIT
-                  |
                 END
 
                 it {
@@ -344,7 +345,6 @@ describe 'vas' do
                     |# DO NOT EDIT
                     |user1@example.com
                     |user2@example.com
-                    |
                   END
 
                   it {
@@ -353,9 +353,11 @@ describe 'vas' do
                 end
               end
 
-              context 'with data' do
+              context 'with it returning "apiuser@example.com"' do
                 let(:pre_condition) do
-                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [200, \'apiuser@example.com\'] }'
+                  'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+                    return { content => ["apiuser@example.com"]}
+                  }'
                 end
 
                 users_allow_api_data_content = <<-END.gsub(%r{^\s+\|}, '')
@@ -392,9 +394,11 @@ describe 'vas' do
               end
             end
 
-            context 'and return non-200 code' do
+            context 'and queries fails' do
               let(:pre_condition) do
-                'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) { return [0, undef] }'
+                'function vas::api_fetch($api_users_allow_url, $api_token, $api_ssl_verify) {
+                  return { error => ["https://host.domain.tld returns HTTP code: 502"] }
+                }'
               end
 
               it {
