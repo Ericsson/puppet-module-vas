@@ -13,15 +13,15 @@
     },
     {
       "version_requirement": ">= 2.0.0 < 3.0.0",
-      "name": "kodguru/nsswitch"
+      "name": "ericsson/nsswitch"
     },
     {
       "version_requirement": ">= 3.9.0 < 4.0.0",
-      "name": "kodguru/pam"
+      "name": "ericsson/pam"
     },
     {
       "version_requirement": ">= 3.0.0 < 4.0.0",
-      "name": "kodguru/rpcbind"
+      "name": "ericsson/rpcbind"
     },
     {
       "version_requirement": ">= 7.0.1 < 9.0.0",

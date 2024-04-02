@@ -1,9 +1,9 @@
 fixtures:
   repositories:
     'nisclient': 'https://github.com/Ericsson/puppet-module-nisclient.git'
-    'nsswitch': 'https://github.com/kodguru/puppet-nsswitch.git'
-    'pam': 'https://github.com/kodguru/puppet-module-pam.git'
-    'rpcbind': 'https://github.com/kodguru/puppet-module-rpcbind.git'
+    'nsswitch': 'https://github.com/Ericsson/puppet-nsswitch.git'
+    'pam': 'https://github.com/Ericsson/puppet-module-pam.git'
+    'rpcbind': 'https://github.com/Ericsson/puppet-module-rpcbind.git'
     'stdlib': 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
   symlinks:
     vas: "#{source_dir}"
