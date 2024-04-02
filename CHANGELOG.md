@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.2.0](https://github.com/Ericsson/puppet-module-vas/tree/v1.2.0) (2024-04-02)
+
+[Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v1.1.0...v1.2.0)
+
+**Merged pull requests:**
+
+- Add parameters for inclusion of classes nsswitch and pam [\#169](https://github.com/Ericsson/puppet-module-vas/pull/169) ([anders-larsson](https://github.com/anders-larsson))
+- Use action-pdk-test-unit from Ericsson in workflow [\#168](https://github.com/Ericsson/puppet-module-vas/pull/168) ([anders-larsson](https://github.com/anders-larsson))
+- Allow multiple API servers/URLs with token [\#167](https://github.com/Ericsson/puppet-module-vas/pull/167) ([anders-larsson](https://github.com/anders-larsson))
+- Return hash instead of array from API function [\#165](https://github.com/Ericsson/puppet-module-vas/pull/165) ([anders-larsson](https://github.com/anders-larsson))
+- Create SECURITY.md [\#164](https://github.com/Ericsson/puppet-module-vas/pull/164) ([gkunz](https://github.com/gkunz))
+- Configuring dependabot version updated for GH actions [\#163](https://github.com/Ericsson/puppet-module-vas/pull/163) ([gkunz](https://github.com/gkunz))
+- Add Github release configuration [\#162](https://github.com/Ericsson/puppet-module-vas/pull/162) ([anders-larsson](https://github.com/anders-larsson))
+- Pinning dependencies of GitHub actions [\#161](https://github.com/Ericsson/puppet-module-vas/pull/161) ([gkunz](https://github.com/gkunz))
+- Setting GITHUB\_TOKEN permissions [\#160](https://github.com/Ericsson/puppet-module-vas/pull/160) ([gkunz](https://github.com/gkunz))
+
 ## [v1.1.0](https://github.com/Ericsson/puppet-module-vas/tree/v1.1.0) (2024-02-20)
 
 [Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v1.0.2...v1.1.0)
