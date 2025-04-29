@@ -86,7 +86,8 @@
         "16.04",
         "18.04",
         "20.04",
-        "22.04"
+        "22.04",
+        "24.04"
       ]
     }
   ],
@@ -97,7 +98,7 @@
     }
   ],
   "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
-  "pdk-version": "3.0.1",
-  "template-url": "pdk-default#3.0.1",
-  "template-ref": "tags/3.0.1-0-gd13288a"
+  "pdk-version": "3.3.0",
+  "template-url": "pdk-default#3.3.0",
+  "template-ref": "tags/3.3.0-0-g5d17ec1"
 }
