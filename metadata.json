@@ -8,24 +8,24 @@
   "project_page": "https://github.com/Ericsson/puppet-module-vas",
   "dependencies": [
     {
-      "version_requirement": ">= 2.0.0 < 3.0.0",
-      "name": "ericsson/nisclient"
+      "name": "ericsson/nisclient",
+      "version_requirement": ">= 2.0.0 < 3.0.0"
     },
     {
-      "version_requirement": ">= 2.0.0 < 3.0.0",
-      "name": "ericsson/nsswitch"
+      "name": "ericsson/nsswitch",
+      "version_requirement": ">= 3.0.0 < 4.0.0"
     },
     {
-      "version_requirement": ">= 3.9.0 < 4.0.0",
-      "name": "ericsson/pam"
+      "name": "ericsson/pam",
+      "version_requirement": ">= 3.9.0 < 4.0.0"
     },
     {
-      "version_requirement": ">= 3.0.0 < 4.0.0",
-      "name": "ericsson/rpcbind"
+      "name": "ericsson/rpcbind",
+      "version_requirement": ">= 3.0.0 < 4.0.0"
     },
     {
-      "version_requirement": ">= 7.0.1 < 9.0.0",
-      "name": "puppetlabs/stdlib"
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 7.0.1 < 10.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -86,14 +86,15 @@
         "16.04",
         "18.04",
         "20.04",
-        "22.04"
+        "22.04",
+        "24.04"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 6.0.0 < 9.0.0"
+      "version_requirement": ">= 7.0.0 < 9.0.0"
     }
   ],
   "description": "Manage VAS - DELL Authentication Services / QAS / VAS",
