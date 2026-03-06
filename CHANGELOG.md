@@ -1,11 +1,27 @@
 # Changelog
 
+## [v1.3.0](https://github.com/Ericsson/puppet-module-vas/tree/v1.3.0) (2026-03-06)
+
+[Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v1.2.0...v1.3.0)
+
+**Merged pull requests:**
+
+- Update PDK 3.3.0 and Ubuntu 24.04 support [\#183](https://github.com/Ericsson/puppet-module-vas/pull/183) ([dsundq](https://github.com/dsundq))
+- Bump actions/checkout from 6.0.1 to 6.0.2 [\#182](https://github.com/Ericsson/puppet-module-vas/pull/182) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 6.0.0 to 6.0.1 [\#181](https://github.com/Ericsson/puppet-module-vas/pull/181) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.2.2 to 6.0.0 [\#180](https://github.com/Ericsson/puppet-module-vas/pull/180) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.7 to 4.2.2 [\#177](https://github.com/Ericsson/puppet-module-vas/pull/177) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.4 to 4.1.7 [\#176](https://github.com/Ericsson/puppet-module-vas/pull/176) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 4.1.1 to 4.1.4 [\#173](https://github.com/Ericsson/puppet-module-vas/pull/173) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v1.2.0](https://github.com/Ericsson/puppet-module-vas/tree/v1.2.0) (2024-04-02)
 
 [Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v1.1.0...v1.2.0)
 
 **Merged pull requests:**
 
+- Release v1.2.0 [\#171](https://github.com/Ericsson/puppet-module-vas/pull/171) ([anders-larsson](https://github.com/anders-larsson))
+- Update fixtures/dependencies - kodguru -\> ericsson [\#170](https://github.com/Ericsson/puppet-module-vas/pull/170) ([anders-larsson](https://github.com/anders-larsson))
 - Add parameters for inclusion of classes nsswitch and pam [\#169](https://github.com/Ericsson/puppet-module-vas/pull/169) ([anders-larsson](https://github.com/anders-larsson))
 - Use action-pdk-test-unit from Ericsson in workflow [\#168](https://github.com/Ericsson/puppet-module-vas/pull/168) ([anders-larsson](https://github.com/anders-larsson))
 - Allow multiple API servers/URLs with token [\#167](https://github.com/Ericsson/puppet-module-vas/pull/167) ([anders-larsson](https://github.com/anders-larsson))
@@ -22,6 +38,7 @@
 
 **Merged pull requests:**
 
+- Release v1.1.0 [\#158](https://github.com/Ericsson/puppet-module-vas/pull/158) ([anders-larsson](https://github.com/anders-larsson))
 - Convert to EPP templates [\#157](https://github.com/Ericsson/puppet-module-vas/pull/157) ([anders-larsson](https://github.com/anders-larsson))
 - Convert function api\_fetch to new format, add parameter for TLS verify mode [\#156](https://github.com/Ericsson/puppet-module-vas/pull/156) ([anders-larsson](https://github.com/anders-larsson))
 - Fix pdk validate github workflow [\#155](https://github.com/Ericsson/puppet-module-vas/pull/155) ([anders-larsson](https://github.com/anders-larsson))
@@ -233,10 +250,6 @@
 
 [Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v0.12.0...v0.13.0)
 
-**Merged pull requests:**
-
-- Add parameters to lowercase usernames and homedirs [\#67](https://github.com/Ericsson/puppet-module-vas/pull/67) ([ghost](https://github.com/ghost))
-
 ## [v0.12.0](https://github.com/Ericsson/puppet-module-vas/tree/v0.12.0) (2015-09-24)
 
 [Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v0.11.1...v0.12.0)
@@ -277,12 +290,6 @@
 
 [Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/show...v0.10.0)
 
-**Merged pull requests:**
-
-- Add parameters for vas.conf file [\#43](https://github.com/Ericsson/puppet-module-vas/pull/43) ([ghost](https://github.com/ghost))
-- Make vas group policies optional [\#39](https://github.com/Ericsson/puppet-module-vas/pull/39) ([ghost](https://github.com/ghost))
-- Add ability to join in workstation mode [\#38](https://github.com/Ericsson/puppet-module-vas/pull/38) ([ghost](https://github.com/ghost))
-
 ## [show](https://github.com/Ericsson/puppet-module-vas/tree/show) (2014-08-25)
 
 [Full Changelog](https://github.com/Ericsson/puppet-module-vas/compare/v0.9.0...show)
@@ -303,7 +310,6 @@
 
 **Merged pull requests:**
 
-- Add option to set password prompt [\#28](https://github.com/Ericsson/puppet-module-vas/pull/28) ([ghost](https://github.com/ghost))
 - Fix failing spec tests [\#27](https://github.com/Ericsson/puppet-module-vas/pull/27) ([jwennerberg](https://github.com/jwennerberg))
 - Added support for Solaris 9 & 11 [\#26](https://github.com/Ericsson/puppet-module-vas/pull/26) ([nalyanyam](https://github.com/nalyanyam))
 
